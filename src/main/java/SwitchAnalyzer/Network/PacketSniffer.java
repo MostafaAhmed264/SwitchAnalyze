@@ -1,82 +1,92 @@
 package SwitchAnalyzer.Network;
 
 import SwitchAnalyzer.MainHandler_Node;
-import SwitchAnalyzer.Network.ErrorDetection.CRC;
 import SwitchAnalyzer.Sockets.PacketInfoGui;
-import SwitchAnalyzer.miscellaneous.GlobalVariable;
 import org.pcap4j.core.BpfProgram;
+import org.pcap4j.core.PacketListener;
 import org.pcap4j.core.PcapHandle;
-import org.pcap4j.core.Pcaps;
-import org.pcap4j.packet.Packet;
-import org.pcap4j.packet.namednumber.DataLinkType;
+import org.pcap4j.core.PcapPacket;
 
-import javax.crypto.Mac;
-import java.net.Inet4Address;
 import java.util.ArrayList;
-
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class PacketSniffer
 {
+    public static int recievedPacketCount;
     private static final ArrayList<PacketInfoGui> packetInfoGuis = new ArrayList<>();
 
     public PacketSniffer(){}
 
     public static void addToPacketInfoList(PacketInfoGui packetInfoGui) { packetInfoGuis.add(packetInfoGui); }
 
-    public  void setFilter(String expr, PcapHandle handle)
-    {
-        try
-        {
-            BpfProgram pr = Pcaps.compileFilter(2048, new DataLinkType(1, "Ethernet"),
-                    expr, BpfProgram.BpfCompileMode.NONOPTIMIZE, (Inet4Address) PCAP.nif.getAddresses().get(0).getNetmask());
-            handle.setFilter(pr);
-        }
-        catch (Exception e) { System.out.println("COULDN'T SET FILTER"); }
-    }
-
     public static void openThreads()
     {
+        ArrayList<Thread> threads = new ArrayList<>();
         for (PacketInfoGui packetInfo : packetInfoGuis)
         {
             Thread t = new Thread (() -> startRead(packetInfo));
+            threads.add(t);
+            t.start();
         }
+        for (Thread t : threads)
+        {
+            try{ t.join(); }
+            catch (Exception ignored){}
+        }
+        packetInfoGuis.clear();
     }
 
     public static void startRead(PacketInfoGui packetInfoGui)
     {
-        for(int i = 0; i < packetInfoGui.numberOfPackets; ++i)
+
+        PcapHandle handle = PCAP.createHandle();
+        try
         {
-            PacketSniffer packetSniffer = new PacketSniffer();
-            PcapHandle pcapHandle = PCAP.createHandle();
-            packetSniffer.setFilter(packetSniffer.getStringFromPacketInfo(packetInfoGui), pcapHandle);
-            Packet p = packetSniffer.readPacket();
-            System.out.println(p);
+            handle.setFilter(PacketSniffer.getStringFromPacketInfo(packetInfoGui), BpfProgram.BpfCompileMode.OPTIMIZE);
+            PacketListener listener =
+                    new PacketListener() {
+                        @Override
+                        public void gotPacket(PcapPacket pcapPacket) {
+                            System.out.println(Thread.currentThread().getId());
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException e) {
+                            }
+                        }
+                    };
+            ExecutorService pool = Executors.newCachedThreadPool();
+            handle.loop((int) packetInfoGui.numberOfPackets, listener, pool);
         }
+        catch(Exception e){ System.out.println("Couldn't set Filter"); e.printStackTrace(); }
+        try
+        {
+            System.out.println(recievedPacketCount +  " " +  handle.getStats().getNumPacketsReceived());
+            handle.close();
+        }
+        catch (Exception ignored){}
     }
 
-    public String getStringFromPacketInfo(PacketInfoGui packetInfoGui)
+    public static String  getStringFromPacketInfo(PacketInfoGui packetInfoGui)
     {
         StringBuilder filter = new StringBuilder();
-        filter.append("inbound and ");
+        filter.append("outbound and ");
         if (packetInfoGui.networkHeader.equals("ipv4"))
-            filter.append("ip and");
+            filter.append("ip and ");
         filter.append(packetInfoGui.transportHeader);
-        filter.append(" port 12345 and");
-        filter.append("ether dst ").append(MainHandler_Node.node.nodeMacAddress.toString());
+        filter.append(" port 12345 and ");
+        filter.append("ether dst ").append("2C:F0:5D:59:F9:7C");
         System.out.println(filter);
         return filter.toString();
     }
 
-    public Packet readPacket()
+    public static void main(String[] args)
     {
-        Packet p = null;
-        try
-        {
-            p = PCAP.handle.getNextPacket();
-            while (p == null) { p = PCAP.handle.getNextPacket(); }
-        }
-        catch (NullPointerException e) { System.out.println("Packet is NULL"); }
-        catch (Exception e) { System.out.println("ERROR in Capturing packet"); }
-        return p;
+        PCAP.initialize();
+        byte [] bytes = new byte[1000];
+        PacketInfoGui packetInfoGui = new PacketInfoGui("Ethernet", "ipv4", "udp", bytes.toString(), "None",
+                1042,1000000,false);
+        PacketSniffer.addToPacketInfoList(packetInfoGui);
+        PacketSniffer.openThreads();
     }
 }
