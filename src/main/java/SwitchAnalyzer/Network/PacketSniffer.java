@@ -45,15 +45,11 @@ public class PacketSniffer
         {
             handle.setFilter(PacketSniffer.getStringFromPacketInfo(packetInfoGui), BpfProgram.BpfCompileMode.OPTIMIZE);
             PacketListener listener =
-                    new PacketListener() {
-                        @Override
-                        public void gotPacket(PcapPacket pcapPacket) {
-                            System.out.println(Thread.currentThread().getId());
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException e) {
-                            }
-                        }
+                    pcapPacket ->
+                    {
+                        System.out.println(Thread.currentThread().getId());
+                        try { Thread.sleep(1000);}
+                        catch (InterruptedException e) {}
                     };
             ExecutorService pool = Executors.newCachedThreadPool();
             handle.loop((int) packetInfoGui.numberOfPackets, listener, pool);

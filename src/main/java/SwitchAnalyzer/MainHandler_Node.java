@@ -3,6 +3,7 @@ package SwitchAnalyzer;
 import SwitchAnalyzer.Commands.ICommandNode;
 import SwitchAnalyzer.Commands.ProcessCmd;
 import SwitchAnalyzer.Kafka.GenericConsumer;
+import SwitchAnalyzer.Kafka.GenericProducer;
 import SwitchAnalyzer.Kafka.Producer;
 import SwitchAnalyzer.Kafka.Topics;
 import SwitchAnalyzer.Machines.MachineNode;
@@ -12,12 +13,14 @@ import SwitchAnalyzer.miscellaneous.SystemMaps;
 import SwitchAnalyzer.miscellaneous.Time;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.producer.KafkaProducer;
 
 
 public class MainHandler_Node
 {
 
     public static String consumerGroup = "command-consumer-group";
+    public static GenericProducer packetProducer = new GenericProducer(IP.ip1, true);
     static GenericConsumer consumer;
     public static MachineNode node;
     public static Producer dataProducer = new Producer(IP.ip1);
