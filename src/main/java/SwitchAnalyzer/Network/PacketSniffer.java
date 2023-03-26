@@ -1,5 +1,6 @@
 package SwitchAnalyzer.Network;
 
+import SwitchAnalyzer.Kafka.Topics;
 import SwitchAnalyzer.MainHandler_Node;
 import SwitchAnalyzer.Sockets.PacketInfoGui;
 import org.pcap4j.core.BpfProgram;
@@ -45,11 +46,12 @@ public class PacketSniffer
         {
             handle.setFilter(PacketSniffer.getStringFromPacketInfo(packetInfoGui), BpfProgram.BpfCompileMode.OPTIMIZE);
             PacketListener listener =
-                    pcapPacket ->
-                    {
-                        System.out.println(Thread.currentThread().getId());
-                        try { Thread.sleep(1000);}
-                        catch (InterruptedException e) {}
+                    new PacketListener() {
+                        @Override
+                        public void gotPacket(PcapPacket pcapPacket)
+                        {
+                            MainHandler_Node.packetProducer.send(Topics.cmdFromHpcMaster,pcapPacket.getRawData());
+                        }
                     };
             ExecutorService pool = Executors.newCachedThreadPool();
             handle.loop((int) packetInfoGui.numberOfPackets, listener, pool);
