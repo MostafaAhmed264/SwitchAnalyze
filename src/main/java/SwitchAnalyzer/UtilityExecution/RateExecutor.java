@@ -6,5 +6,9 @@ import SwitchAnalyzer.Network.Observer;
 
 public class RateExecutor implements IExecutor
 {
-    public void execute() { UtilityExecutor.result.put(NamingConventions.rates, Float.toString(Observer.getRate())); }
+    public void execute() {
+        float rate = Observer.getRate();
+        UtilityExecutor.result.put(NamingConventions.rates, Float.toString(rate));
+        System.out.println("Rate: "+rate);
+    }
 }

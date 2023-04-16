@@ -7,6 +7,8 @@ public class PacketLossExecutor implements IExecutor
 {
     public void execute()
     {
-        UtilityExecutor.result.put(NamingConventions.packetLoss, Float.toString(PacketLossCalculate.startPacketLossTest()));
+        float pl = PacketLossCalculate.startPacketLossTest();
+        UtilityExecutor.result.put(NamingConventions.packetLoss, Float.toString(pl));
+        System.out.println("packetloss:"+pl);
     }
 }
