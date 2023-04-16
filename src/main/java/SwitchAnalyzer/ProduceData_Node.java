@@ -14,12 +14,12 @@ public class ProduceData_Node {
     public static void produceData()
     {
         UtilityExecutor.executeUtils();
-        SwitchAnalyzer.MainHandler_Node.node.machineInfo.map = UtilityExecutor.result;
+        MainHandler_Node.node.machineInfo.map = UtilityExecutor.result;
         if(GlobalVariable.retrieveDataFromNode)
         {
             try
             {
-                String json = JSONConverter.toJSON(SwitchAnalyzer.MainHandler_Node.node.machineInfo);
+                String json = JSONConverter.toJSON(MainHandler_Node.node.machineInfo);
                 MainHandler_Node.dataProducer.produce(json, Topics.ratesFromMachines);
                 MainHandler_Node.dataProducer.flush();
             }
