@@ -22,6 +22,7 @@ public class StartRunCommand_MOM implements ICommandMOM
     public void GenCmd(SwitchPortPair portPair)
     {
         String json = JSONConverter.toJSON(new StartRunCommand_Master(portPair));
+        System.out.println("the command is : " + json);
         json = "0"+json;
         MainHandler_MOM.cmdProducer.produce(json,Topics.cmdFromMOM);
         MainHandler_MOM.cmdProducer.flush();

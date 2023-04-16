@@ -14,7 +14,7 @@ public class ProduceData_Master
     {
         master.hpcInfo.map = MasterConsumer.consume();
         String json = JSONConverter.toJSON(master.hpcInfo);
-        MainHandler_Master.dataProducer.produce(Topics.ratesFromHPCs,json);
+        MainHandler_Master.dataProducer.produce(json,Topics.ratesFromHPCs);
         MainHandler_Master.dataProducer.flush();
     }
 }

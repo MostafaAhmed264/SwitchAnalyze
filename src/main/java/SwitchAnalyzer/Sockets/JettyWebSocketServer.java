@@ -74,6 +74,7 @@ public class JettyWebSocketServer
             public void configure(WebSocketServletFactory factory)
             {
                 factory.register(JettyWebSocketServer.class);
+                factory.getPolicy().setIdleTimeout(0);
             }
         };
         server.setHandler(wsHandler);

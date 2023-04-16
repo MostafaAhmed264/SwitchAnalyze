@@ -19,7 +19,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 
 public class MainHandler_Master
 {
-    public static String consumerGroup = "command-consumer-grouasdytuytjuyp12";
+    public static String consumerGroup = "cgommdsandq-cosnsumer-gdhshdsffsdhbcxvncbmrouasdybbbbbbbbbbbbbbbbbbtuydtjuyp12";
     public static Producer cmdProducer = new Producer(IP.ip1);
     public static Producer dataProducer = new Producer(IP.ip1);
     static GenericConsumer consumer;

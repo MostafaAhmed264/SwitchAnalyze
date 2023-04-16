@@ -91,10 +91,10 @@ public class SystemMaps
         try
         {
             master1.HPCMacAddr = Builder.buildMacAddress("38:22:E2:F1:C8:E7");
-            master1.HPCIp = Builder.buildIpV4Address("192.168.1.3");
+            master1.HPCIp = Builder.buildIpV4Address("192.168.1.35");
 
-            master2.HPCMacAddr = Builder.buildMacAddress("54:EE:75:DF:82:C4");
-            master2.HPCIp = Builder.buildIpV4Address("192.168.1.100");
+            master2.HPCMacAddr = Builder.buildMacAddress("38:22:E2:F1:C8:E7");
+            master2.HPCIp = Builder.buildIpV4Address("192.168.1.35");
 
             machine1.nodeMacAddress = Builder.buildMacAddress("34:E6:D7:5E:01:CE");
             machine1.nodeIp = Builder.buildIpV4Address("192.168.1.60");
@@ -110,7 +110,7 @@ public class SystemMaps
         }
         catch (Exception ignored){}
 
-        MainHandler_Master.master = master2;
+        MainHandler_Master.master = master1;
     }
 
     public static void initMapsNode()

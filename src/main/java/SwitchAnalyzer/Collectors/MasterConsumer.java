@@ -48,7 +48,7 @@ public class MasterConsumer {
 
                 MachineInfo machineInfo = JSONConverter.fromJSON(json, MachineInfo.class);
                 // TODO: we need to add the machines first to the list of machines
-                master.childNodes.get(machineInfo.machineID).machineInfo = machineInfo;
+                master.childNodes.get(0).machineInfo = machineInfo;
             }
             if(records.count() > 0)
                 break;
