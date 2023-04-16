@@ -2,6 +2,9 @@ package SwitchAnalyzer.Network;
 
 import SwitchAnalyzer.Machines.MachineNode;
 import SwitchAnalyzer.Machines.MasterOfHPC;
+import SwitchAnalyzer.UtilityExecution.UtilityExecutor;
+import SwitchAnalyzer.miscellaneous.GlobalVariable;
+
 import java.util.ArrayList;
 import java.util.Vector;
 
@@ -29,6 +32,7 @@ public class SendThreadsHandler
         }
         clearPacketInfos();
         clearThreads();
+        UtilityExecutor.clearUtils();
     }
 
     public static void openThreads(int toPort , MachineNode node, int rate, long duration)
@@ -51,12 +55,12 @@ public class SendThreadsHandler
 
     public static void stopThreads()
     {
-        try { for (Thread t : threads) t.wait(); }
-        catch (Exception ignored){}
+        GlobalVariable.stopRunSignal = true;
     }
 
     public static void resumeThreads()
     {
+        GlobalVariable.stopRunSignal = false;
         try { for (Thread t : threads) t.notify(); }
         catch (Exception ignored){}
     }

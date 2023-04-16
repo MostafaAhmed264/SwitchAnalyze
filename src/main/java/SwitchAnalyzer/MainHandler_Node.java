@@ -3,7 +3,6 @@ package SwitchAnalyzer;
 import SwitchAnalyzer.Commands.ICommandNode;
 import SwitchAnalyzer.Commands.ProcessCmd;
 import SwitchAnalyzer.Kafka.GenericConsumer;
-import SwitchAnalyzer.Kafka.GenericProducer;
 import SwitchAnalyzer.Kafka.Producer;
 import SwitchAnalyzer.Kafka.Topics;
 import SwitchAnalyzer.Machines.MachineNode;
@@ -13,14 +12,12 @@ import SwitchAnalyzer.miscellaneous.SystemMaps;
 import SwitchAnalyzer.miscellaneous.Time;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.apache.kafka.clients.producer.KafkaProducer;
 
 
 public class MainHandler_Node
 {
 
-    public static String consumerGroup = "command-consumer-group";
-    public static GenericProducer packetProducer = new GenericProducer(IP.ip1, true);
+    public static String consumerGroup = "safsafsafcommand-consumer-grouppp231213fsafa21212g1jhjww1";
     static GenericConsumer consumer;
     public static MachineNode node;
     public static Producer dataProducer = new Producer(IP.ip1);
@@ -47,6 +44,7 @@ public class MainHandler_Node
                 json = json.replaceFirst("[0-9]*",""); //removing the number indicating the command type using regex
                 System.out.println("MainHandlerNode: "+ json);
                 ICommandNode command = JSONConverter.fromJSON(json, SystemMaps.commandClassesNode.get(commandTypeIndex));
+                System.out.println(command.machineID);
                 //we need to re check mapping ,how to make it global in all masters and MOM or what should we do ?
                 if (command.machineID == node.getMachineID())
                 {

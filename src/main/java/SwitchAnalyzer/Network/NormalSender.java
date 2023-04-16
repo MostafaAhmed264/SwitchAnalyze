@@ -1,4 +1,5 @@
 package SwitchAnalyzer.Network;
+import SwitchAnalyzer.miscellaneous.GlobalVariable;
 import com.google.gson.internal.bind.util.ISO8601Utils;
 import org.pcap4j.core.NotOpenException;
 import org.pcap4j.core.PcapNativeException;
@@ -47,6 +48,8 @@ public class NormalSender extends Sender implements Runnable
         {
             try
             {
+                if (GlobalVariable.stopRunSignal)
+                    wait();
                 long startTime=System.nanoTime();
                 PCAP.handle.sendPacket(packet);
                 long endTime =System.nanoTime();
@@ -57,7 +60,7 @@ public class NormalSender extends Sender implements Runnable
                 }
 
             }
-            catch (PcapNativeException | NotOpenException e) { throw new RuntimeException(e); }
+            catch (Exception  e) { throw new RuntimeException(e); }
         }
     }
 }

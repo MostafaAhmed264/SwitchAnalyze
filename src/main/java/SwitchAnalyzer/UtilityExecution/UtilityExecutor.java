@@ -26,4 +26,5 @@ public class UtilityExecutor
             catch (InterruptedException e) {System.out.printf("in MasterConsumer: %s%n", e.getMessage());}
         }
     }
+    public static void clearUtils(){ executors.clear(); }
 }
