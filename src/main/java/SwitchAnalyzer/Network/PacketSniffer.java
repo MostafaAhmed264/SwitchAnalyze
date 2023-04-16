@@ -50,7 +50,7 @@ public class PacketSniffer
                         @Override
                         public void gotPacket(PcapPacket pcapPacket)
                         {
-                            MainHandler_Node.packetProducer.send(Topics.cmdFromHpcMaster,pcapPacket.getRawData());
+//                            MainHandler_Node.packetProducer.send(Topics.cmdFromHpcMaster,pcapPacket.getRawData());
                         }
                     };
             ExecutorService pool = Executors.newCachedThreadPool();

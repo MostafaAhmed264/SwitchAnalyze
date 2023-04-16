@@ -47,11 +47,19 @@ public class Builder
         Packet.Builder etherBuild = getBuilder(ethernetHeader, networkBuild);
         Packet.Builder CRCBuild= getBuilder(CRCbytes,etherBuild);
         Packet packet = CRCBuild.build();
-        System.out.println(packet);
+//        System.out.println(packet);
         Packet.Builder builder = packet.getBuilder();
         UDPModifier.modifiyDstPort(builder, (short) 11111);
-        PayloadModifier.modifiyPayload(builder, "Testing1");
-        packet = builder.build();
-        System.out.println(packet);
+        long counter = 1;
+        long x= 100000L;
+        while(x-- > 0)
+        {
+//            PayloadModifier.modifiyPayload(builder, "1" + Long.MAX_VALUE);
+            PayloadModifier.modifiyPayload(builder, "1" + counter);
+            counter++;
+            packet = builder.build();
+        }
+        System.out.println(packet.getPayload());
+
     }
 }
