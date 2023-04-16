@@ -28,7 +28,11 @@ public class ProduceData_MOM
         {
             json = JSONConverter.toJSON(GlobalVariable.portHpcMap.get(id).hpcInfo);
             System.out.println("Before send" + json);
-            JettyWebSocketServer.writeMessage(json);
+            try {
+                JettyWebSocketServer.writeMessage(json);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
         if (!MOMConsumer.getResults().isEmpty())
         {
