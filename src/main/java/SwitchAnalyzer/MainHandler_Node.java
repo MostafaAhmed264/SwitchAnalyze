@@ -3,6 +3,7 @@ package SwitchAnalyzer;
 import SwitchAnalyzer.Commands.ICommandNode;
 import SwitchAnalyzer.Commands.ProcessCmd;
 import SwitchAnalyzer.Kafka.GenericConsumer;
+import SwitchAnalyzer.Kafka.GenericProducer;
 import SwitchAnalyzer.Kafka.Producer;
 import SwitchAnalyzer.Kafka.Topics;
 import SwitchAnalyzer.Machines.MachineNode;
@@ -21,6 +22,7 @@ public class MainHandler_Node
     static GenericConsumer consumer;
     public static MachineNode node;
     public static Producer dataProducer = new Producer(IP.ip1);
+    public static GenericProducer packetProducer = new GenericProducer(IP.ip1, true);
 
     public static void init()
     {

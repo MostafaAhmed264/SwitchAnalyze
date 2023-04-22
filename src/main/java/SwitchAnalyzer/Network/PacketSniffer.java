@@ -2,6 +2,7 @@ package SwitchAnalyzer.Network;
 
 import SwitchAnalyzer.Kafka.Topics;
 import SwitchAnalyzer.MainHandler_Node;
+import SwitchAnalyzer.Network.ErrorDetection.CRC;
 import SwitchAnalyzer.Sockets.PacketInfoGui;
 import org.pcap4j.core.BpfProgram;
 import org.pcap4j.core.PacketListener;
@@ -16,7 +17,6 @@ public class PacketSniffer
 {
     public static int recievedPacketCount;
     private static final ArrayList<PacketInfoGui> packetInfoGuis = new ArrayList<>();
-
     public PacketSniffer(){}
 
     public static void addToPacketInfoList(PacketInfoGui packetInfoGui) { packetInfoGuis.add(packetInfoGui); }

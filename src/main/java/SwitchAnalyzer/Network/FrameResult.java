@@ -1,4 +1,4 @@
-package SwitchAnalyzer.UtilityExecution;
+package SwitchAnalyzer.Network;
 
 public class FrameResult
 {

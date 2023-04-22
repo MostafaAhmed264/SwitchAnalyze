@@ -7,6 +7,8 @@ import org.pcap4j.packet.Packet;
 
 public class NormalSender extends Sender implements Runnable
 {
+    final public static Object monitor = new Object();
+
     public NormalSender(Packet packet , long numPackets, int sendingRate,long duration)
     {
         super(packet,numPackets,duration,sendingRate);
@@ -43,13 +45,19 @@ public class NormalSender extends Sender implements Runnable
     }
     public void rateSending()
     {
+
         double differenceTime=1e9/(double)sendingRate;//in milli
         for (int i = 0; i < numPackets; i++)
         {
             try
             {
                 if (GlobalVariable.stopRunSignal)
-                    wait();
+                {
+                    synchronized (monitor)
+                    {
+                        monitor.wait();
+                    }
+                }
                 long startTime=System.nanoTime();
                 PCAP.handle.sendPacket(packet);
                 long endTime =System.nanoTime();

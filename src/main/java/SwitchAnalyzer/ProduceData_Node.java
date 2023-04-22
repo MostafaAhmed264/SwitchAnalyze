@@ -9,8 +9,8 @@ import SwitchAnalyzer.miscellaneous.JSONConverter;
  * this class is responsible for sending the rates to kafka
  * so that the master could collect them and send them to the MOM
  */
-public class ProduceData_Node {
-
+public class ProduceData_Node
+{
     public static void produceData()
     {
         UtilityExecutor.executeUtils();

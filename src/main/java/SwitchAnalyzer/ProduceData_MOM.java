@@ -6,7 +6,7 @@ import SwitchAnalyzer.Kafka.Topics;
 import SwitchAnalyzer.Network.IP;
 import SwitchAnalyzer.Network.Ports;
 import SwitchAnalyzer.Sockets.JettyWebSocketServer;
-import SwitchAnalyzer.UtilityExecution.FrameResult;
+import SwitchAnalyzer.Network.FrameResult;
 import SwitchAnalyzer.miscellaneous.GlobalVariable;
 import SwitchAnalyzer.miscellaneous.JSONConverter;
 import SwitchAnalyzer.miscellaneous.Time;

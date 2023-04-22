@@ -1,4 +1,4 @@
-1)Start Run Command: 
+1)Start Run Command:
 0{
   "pairs": [
     {
@@ -55,15 +55,31 @@
   ]
 }
 
-2)Retrieve Command 
-1{"ids" : [1], "retrievals" : ["Rates", "PacketLoss"]} 
+0{
+  "pairs": [
+    {
+      "toPort": 2,
+      "fromPort": {
+        "portConfig": {
+          "utilities": [],
+          "rate": 500,
+          "mode": "reciever"
+        },
+        "ID": 1
+      }
+    }
+  ]
+}
 
-3)StopRetrieve Command 
-2{"ids" : [1]} 
+2)Retrieve Command
+1{"ids" : [1], "retrievals" : ["Rates", "PacketLoss"]}
 
-4)StopRun Command 
+3)StopRetrieve Command
+2{"ids" : [1]}
+
+4)StopRun Command
 3{"ids" : [1]}
 
-5)ResumeRun Command 
-4{"ids" : [1]} 
+5)ResumeRun Command
+4{"ids" : [1]}
 
