@@ -1,5 +1,7 @@
 package SwitchAnalyzer.Commands;
 
+import SwitchAnalyzer.Database.DBConnect;
+import SwitchAnalyzer.Database.DBSwitch;
 import SwitchAnalyzer.Kafka.Topics;
 import SwitchAnalyzer.MainHandler_MOM;
 import SwitchAnalyzer.MapPacketInfo;
@@ -19,6 +21,7 @@ public class StartRunCommand_MOM implements ICommandMOM
     @Override
     public void processCmd()
     {
+        DBConnect.startRun(new DBSwitch("wafy", 10));
         for (SwitchPortPair switchPort : pairs)
         {
            GenCmd(switchPort);

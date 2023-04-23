@@ -2,6 +2,7 @@ package SwitchAnalyzer;
 
 import SwitchAnalyzer.Commands.*;
 import SwitchAnalyzer.Commands.ICommand;
+import SwitchAnalyzer.Database.DBConnect;
 import SwitchAnalyzer.Kafka.Producer;
 import SwitchAnalyzer.Machines.MOM;
 import SwitchAnalyzer.Network.IP;
@@ -24,6 +25,7 @@ public class MainHandler_MOM
 
     public static void init()
     {
+        DBConnect.connect();
         SystemMaps.initMapsMOM();
         JettyWebSocketServer.startServer(Ports.webSocketPort);
     }

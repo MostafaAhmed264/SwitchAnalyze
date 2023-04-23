@@ -1,5 +1,6 @@
 package SwitchAnalyzer.Commands;
 
+import SwitchAnalyzer.Database.DBConnect;
 import SwitchAnalyzer.Kafka.Topics;
 import SwitchAnalyzer.Machines.MachineNode;
 import SwitchAnalyzer.MainHandler_Master;
@@ -22,6 +23,7 @@ public class StartRunCommand_Master extends ICommandMaster
     @Override
     public void processCmd()
     {
+        DBConnect.connectToDB_Node("wafy");
         for (MachineNode node : master.childNodes)
         {
             GenCmd(node.getMachineID());
