@@ -18,7 +18,6 @@ public class DBFrame {
     public HashMap<String, String> frameData;
     private boolean errorInRouting;
     private boolean crcChecker;
-    public byte[] payload;
     public DBFrame() { id = UUIDs.timeBased(); }
     public UUID getID() { return id; }
     public int getSendingPort() { return sendingPort; }
@@ -30,14 +29,4 @@ public class DBFrame {
     public void setRecievingPort(int recievingPort) { this.recievingPort = recievingPort; }
     public void setErrorInRouting(boolean errorInRouting) { this.errorInRouting = errorInRouting; }
     public void setCrcChecker(boolean crcChecker) { this.crcChecker = crcChecker; }
-    @Override
-    public String toString() {
-        return "DBFrame{" +
-                "id=" +
-                "\n, sendingPort=" + sendingPort +
-                "\n, recievingPort=" + recievingPort +
-                "\n, errorInRouting=" + errorInRouting +
-                "\n, crcChecker=" + crcChecker +
-                '}';
-    }
 }

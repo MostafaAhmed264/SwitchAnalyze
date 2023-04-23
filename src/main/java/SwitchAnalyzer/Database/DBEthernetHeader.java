@@ -1,5 +1,8 @@
 package SwitchAnalyzer.Database;
 
+import org.pcap4j.packet.EthernetPacket;
+import org.pcap4j.packet.Packet;
+
 public class DBEthernetHeader
 {
     private String srcAddress;
@@ -35,5 +38,26 @@ public class DBEthernetHeader
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    /**
+     * Input : packet received
+     * Output : String
+     * Description :
+     * This function will retrieve the destination address of the packet received "not used yet"
+     */
+    public void getDstMac(Packet packet)
+    {
+        this.dstAddress = packet.get(EthernetPacket.class).getHeader().getDstAddr().toString();
+    }
+    /**
+     * Input : packet received
+     * Output : String
+     * Description :
+     * This function will retrieve the source address of the packet received "not used yet"
+     */
+    public void getSrcMac(Packet packet)
+    {
+        this.srcAddress = packet.get(EthernetPacket.class).getHeader().getSrcAddr().toString();
     }
 }

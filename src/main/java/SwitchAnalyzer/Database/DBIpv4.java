@@ -1,6 +1,5 @@
 package SwitchAnalyzer.Database;
 
-import org.apache.kafka.common.protocol.types.Field;
 import org.pcap4j.packet.IpV4Packet;
 import org.pcap4j.packet.Packet;
 

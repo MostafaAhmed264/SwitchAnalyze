@@ -2,14 +2,11 @@ package SwitchAnalyzer.Database;
 
 import com.datastax.driver.core.*;
 import com.datastax.driver.core.utils.UUIDs;
-
-import java.util.ArrayList;
 import java.util.UUID;
 
 public class DBInsert
 {
     private static String keyspaceName;
-    private static PreparedStatement preparedStatement;
     public static String getKeyspaceName() {
         return keyspaceName;
     }
@@ -17,47 +14,7 @@ public class DBInsert
     public static void setKeyspaceName(String keyspaceName) {
         DBInsert.keyspaceName = keyspaceName;
     }
-
-    public static PreparedStatement getPreparedStatement() {
-        return preparedStatement;
-    }
-
-    public static void setPreparedStatement(PreparedStatement preparedStatement) {
-        DBInsert.preparedStatement = preparedStatement;
-    }
-
-    /**
-     * Input : the number of the current run
-     * Output : void
-     * Description :
-     * The function makes a prepared statement so, we can enhance insert querie and decrease time
-     * and impact on performance
-     * This function is made for the tables of frames_run
-     */
-    public static void preparedStatement(long runNo) {
-        StringBuilder sb = new StringBuilder("INSERT INTO frames_run")
-                .append(runNo)
-                .append("(id,timeStamp,fullPacket,sendingPort,recievingPort,networkHeaderName,networkHeaderBytes,transportHeaderName,transportHeaderBytes,errorInRouting,crcChecker) ")
-                .append("VALUES (?,?,?,?,?,?,?,?,?,?,?);");
-        setPreparedStatement(DBConnect.getSession().prepare(sb.toString()));
-    }
-    /**
-     * Input : Frame
-     * Output : void
-     * Description :
-     * The function insert a frame in the Frames of the current run table.
-     */
-    public static void  insert(DBFrame frame) {
-        UUID timeUuid = UUIDs.timeBased();
-        BoundStatement boundStatement = preparedStatement.bind(
-                timeUuid,
-                frame.getSendingPort(),
-                frame.getRecievingPort(),
-                frame.errorInRoutingExists(),
-                frame.errorInCrcCheckerExists());
-        DBConnect.getSession().execute(boundStatement);
-    }
-    public static void insertFrameJson(String frameJson)
+    public static void insert(String frameJson)
     {
         StringBuilder sb = new StringBuilder(
                 "INSERT INTO frames_run"+DBConnect.getLastRun()+" JSON '"+frameJson+"';");
@@ -102,7 +59,7 @@ public class DBInsert
      * If it already exists then it will not insert it
      * else it will insert a row including the name of switch and the total number of ports
      */
-    public static void insertSwitch(DBSwitch dbSwitch)
+    public static void insert(DBSwitch dbSwitch)
     {
         if(!isSwitchNameAlreadyExists(dbSwitch.getSwitchName()))
         {

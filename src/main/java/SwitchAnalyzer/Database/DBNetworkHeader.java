@@ -61,23 +61,6 @@ public class DBNetworkHeader
      */
     public static DBNetworkHeader networkHeaderInit(Packet packet)
     {
-//        if(packetInfoGui.networkHeader=="ipv4")
-//        {
-//            byte [] ipv4HeaderBytes = packet.get(IpV4Packet.class).getHeader().getRawData();
-//            String ipv4HeaderString = networkHeaderBytesToString(ipv4HeaderBytes);
-//            return (T) new DBIpv4("Ipv4",ipv4HeaderString);
-//        }
-//        else if (packetInfoGui.networkHeader=="ipv6")
-//        {
-//            byte [] ipv6HeaderBytes = packet.get(IpV6Packet.class).getHeader().getRawData();
-//            StringBuilder sb =new StringBuilder();
-//            String ipv6HeaderString = networkHeaderBytesToString(ipv6HeaderBytes);
-//            return (T) new DBIpv6("Ipv6", ipv6HeaderString);
-//        }
-//        return null;
-//        String networkHeaderBytes = networkHeaderBytesToString(setNetworkHeaderDetails(packetInfoGui,packet));
-//        String networkHeaderName = packetInfoGui.networkHeader;
-//        return new DBNetworkHeader(networkHeaderName,networkHeaderBytes);
         String networkHeaderName;
         if(packet.contains(IpV4Packet.class))
         {
@@ -94,11 +77,7 @@ public class DBNetworkHeader
         String networkHeaderBytes = networkHeaderBytesToString(setNetworkHeaderDetails(networkHeaderName,packet));
         return new DBNetworkHeader(networkHeaderName,networkHeaderBytes);
     }
-//    public static void networkHeaderInit(PacketInfoGui packetInfoGui,Packet packet,DBFrame frame)
-//    {
-//        frame.getNetworkHeader().setNetworkHeaderName(packetInfoGui.networkHeader);
-//        frame.getNetworkHeader().setNetworkFullHeader(setNetworkHeaderDetails(packetInfoGui.networkHeader,packet));
-//    }
+
     private static byte [] setNetworkHeaderDetails(String networkHeaderName, Packet packet)
     {
         byte [] networkHeaderBytes = new byte[0];

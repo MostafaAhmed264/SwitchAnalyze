@@ -10,13 +10,9 @@ public class KeySpace {
     private static int numberOfReplicas = 1;
     private static boolean historyKeyspaceCreated = false;
 
-    public void setReplicationStrategy(String replicationStrategy) {
-        this.replicationStrategy = replicationStrategy;
-    }
+    public void setReplicationStrategy(String replicationStrategy) { this.replicationStrategy = replicationStrategy; }
 
-    public void setNumberOfReplicas(int numberOfReplicas) {
-        this.numberOfReplicas = numberOfReplicas;
-    }
+    public void setNumberOfReplicas(int numberOfReplicas) { this.numberOfReplicas = numberOfReplicas; }
     /**
      * Input: name of keyspace , replication strategy and number of replicas
      * Output: void
@@ -91,14 +87,6 @@ public class KeySpace {
      */
     private static boolean isKeyspaceExists(String keyspaceName)
     {
-//        StringBuilder sb = new StringBuilder("SELECT keyspace_name FROM system_schema.keyspaces WHERE keyspace_name = '").append(keyspaceName).append("';");
-//        ResultSet rs = session.execute(sb.toString());
-//        Row row = rs.one();
-//        if(row != null)
-//        {
-//            return true;
-//        }
-//        return false;
         // Check if the keyspace exists
         if (DBConnect.getMetadata().getKeyspace(keyspaceName) != null) {
             System.out.println("Keyspace " + keyspaceName + " exists");

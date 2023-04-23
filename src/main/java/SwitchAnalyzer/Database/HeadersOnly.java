@@ -17,7 +17,7 @@ public class HeadersOnly implements IStorage{
         frameHeader.id = frame.getID();
         frameHeader.headers.addAll(frame.frameData.keySet());
         String json = JSONConverter.toJSON(frameHeader);
-        DBInsert.insertFrameJson(json);
+        DBInsert.insert(json);
     }
 
     private class HeadersFrame

@@ -6,7 +6,7 @@ import java.sql.Timestamp;
 
 public class DBSelect {
     //session is used in order to execute the query
-    private static Session session = DBConnect.getSession();
+    private static final Session session = DBConnect.getSession();
     //selectedAttributes is string builder containing the attributes passed next to the word SELECT
     private static StringBuilder selectedAttributes;
     //private static List<String> attributesToBeShown;
@@ -21,7 +21,14 @@ public class DBSelect {
     private static String TableName;
     private static boolean JSON;
     private static boolean condition;
+    private static boolean ALLOWFILTERING;
 
+    public static void setALLOWFILTERING(boolean ALLOWFILTERING) {
+        DBSelect.ALLOWFILTERING = ALLOWFILTERING;
+    }
+    public static boolean isALLOWFILTERING() {
+        return ALLOWFILTERING;
+    }
     public static long getLastRun(){
         StringBuilder sb = new StringBuilder("SELECT MAX(runNo) FROM runs ;");
         final String query = sb.toString();
@@ -70,13 +77,13 @@ public class DBSelect {
     }
 
     /*
-                        Input : condition string
-                        Output : void
-                        Description :
-                            This function will begin the select query with a condition all or specific
-                            all means we need to execute select all
-                            specific means we need to execute select certain attributes
-                    */
+    Input : condition string
+    Output : void
+    Description :
+        This function will begin the select query with a condition all or specific
+        all means we need to execute select all
+        specific means we need to execute select certain attributes
+    */
     public static void beginSelectRuns() {
         fromTableName = new StringBuilder("FROM runs");
         TableName = "runs";
@@ -117,7 +124,7 @@ public class DBSelect {
         whereCondition = new StringBuilder(" WHERE ");
     }
 
-    /*********************************************************************************************************************************/
+    /****************************************************Run conditions and view*****************************************************************************/
     public static void conditionRunNo(long runNo) {
         whereCondition.append("RunNo = ").append(String.valueOf(runNo));
     }
@@ -209,7 +216,7 @@ public class DBSelect {
     }
 
 
-    /****************************************************************************************************************************/
+    /******************************************************Frame condition and view**********************************************************************/
     public static void conditionID(long id) {
         whereCondition.append("ID = ").append(String.valueOf(id));
 
@@ -218,15 +225,6 @@ public class DBSelect {
     public static void viewID() {
         selectedAttributes.append("ID ");
         //attributesToBeShown.add("ID");
-    }
-
-    public static void conditionBytes(byte[] bytes) {
-        whereCondition.append("Bytes = ").append(byteArrToString(bytes));
-    }
-
-    public static void viewBytes() {
-        selectedAttributes.append("Bytes ");
-        //attributesToBeShown.add("Bytes");
     }
 
     public static void conditionTimestamp(Timestamp timestamp) {
@@ -258,23 +256,15 @@ public class DBSelect {
         //attributesToBeShown.add("RecievingPort");
     }
 
-    public static void conditionNetworkHeader(String networkHeader) {
-        whereCondition.append("NetworkHeader = ").append(networkHeader);
-
+    public static void conditionFrameData(String headerName)
+    {
+        whereCondition.append("frameData CONTAINS KEY '").append(String.valueOf(headerName));
+        ALLOWFILTERING = true;
     }
 
-    public static void viewNetworkHeader() {
-        selectedAttributes.append("NetworkHeader ");
-        //attributesToBeShown.add("NetworkHeader");
-    }
-
-    public static void conditionTransportHeader(String transportHeader) {
-        whereCondition.append("TransportHeader = ").append(transportHeader);
-    }
-
-    public static void viewTransportHeader() {
-        selectedAttributes.append("TransportHeader ");
-        //attributesToBeShown.add("TransportHeader");
+    public static void viewFrameData() {
+        selectedAttributes.append("frameData ");
+        //attributesToBeShown.add("frameData");
     }
 
     public static void conditionErrorInRouting(boolean errorInRouting) {
@@ -301,8 +291,6 @@ public class DBSelect {
      * Description :
      * If select is select all the function will add the word AND in the condition
      * If select is selected specific the function will add the condition and the attribute
-     *
-     * @return
      */
     public static void otherCondition() {
         whereCondition.append(" AND ");
@@ -314,8 +302,6 @@ public class DBSelect {
      * Description :
      * If select is select all the function will add the word AND in the condition
      * If select is selected specific the function will add the condition and the attribute
-     *
-     * @return
      */
     public static void otherAttribute() {
         selectedAttributes.append(", ");
@@ -326,8 +312,10 @@ public class DBSelect {
         wholeSelectQuery = new StringBuilder();
         if(isThereCondition())
         {
-            wholeSelectQuery.append(selectedAttributes).append(fromTableName).append(whereCondition).append(";");
-
+            wholeSelectQuery.append(selectedAttributes).append(fromTableName).append(whereCondition);
+            if(isALLOWFILTERING())
+                wholeSelectQuery.append(" ALLOWFILTERING");
+            wholeSelectQuery.append(";");
         }
         else
         {
@@ -340,14 +328,14 @@ public class DBSelect {
         ResultSet rs = session.execute(x);
         if(isJSON())
         {
-            return (T) selectAllJSON(rs);
+            return (T) selectJSON(rs);
         }
         else
         {
             return (T) rs;
         }
     }
-    public static String selectAllJSON(ResultSet rs) {
+    public static String selectJSON(ResultSet rs) {
         StringBuilder result = new StringBuilder("{\n");
         // Iterate over the ResultSet and print out the JSON data
         for (Row row : rs) {
@@ -359,48 +347,21 @@ public class DBSelect {
         result.append("}");
         return result.toString();
     }
-
-//    public static List<Run> executeSelectRuns()
-//    {
-//        wholeSelectQuery = new StringBuilder();
-//        wholeSelectQuery.append(selectedAttributes).append(fromTableName).append(whereCondition).append(";");
-//        final String query = wholeSelectQuery.toString();
-//        SimpleStatement x= new SimpleStatement(query);
-//        x.setConsistencyLevel(ConsistencyLevel.ONE);
-//        ResultSet rs = session.execute(x);
-//        ColumnDefinitions columnDefinitions = rs.getColumnDefinitions();
-//
-//        // Retrieve the column names
-//        for (ColumnDefinitions.Definition definition : columnDefinitions) {
-//            String columnName = definition.getName();
-//            System.out.print(columnName + "\t");
-//        }
-//
-//        List<Run> runs = new ArrayList<Run>();
-////        for (Row r : rs) {
-////            //add id for each frame and put it in the constructor
-////            int id =r.get("id", Integer.class);
-////            List<Byte> tinyintList = r.getList("payload", Byte.class);
-////            byte[] byteArray = new byte[tinyintList.size()];
-////            for (int i = 0; i < tinyintList.size(); i++) {
-////                byteArray[i] = tinyintList.get(i);
-////            }
-////            Frame frame = new Frame(id,byteArray);
-////            frames.add(frame);
-////        }
-//        return runs;
-//    }
-
-    private static String byteArrToString(byte[] bytes) {
-        StringBuilder s = new StringBuilder("[ ");
-        int i = 0;
-        for (; i < bytes.length - 1; i++) {
-            s.append(bytes[i]);
-            s.append(",");
-
-        }
-        s.append(bytes[i]);
-        s.append("]");
-        return s.toString();
+    public static String selectAllJson_LastRunTest()
+    {
+        setSelectAll(true);
+        setJSON(true);
+        beginSelectFrames(getLastRun());
+        String jsonResult = executeSelect();
+        return jsonResult;
+    }
+    public static String selectAllJson_LastRun_SpecificHeaderTest(String headerName)
+    {
+        setSelectAll(true);
+        setJSON(true);
+        beginSelectFrames(getLastRun());
+        conditionFrameData(headerName);
+        String jsonResult = executeSelect();
+        return jsonResult;
     }
 }

@@ -1,14 +1,9 @@
 package SwitchAnalyzer.Database;
 import com.datastax.driver.core.Metadata;
-import com.datastax.driver.core.ResultSet;
-import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
-import jnr.ffi.annotations.In;
 import org.apache.log4j.BasicConfigurator;
-
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 /*
 *these IPS for DataBase Nodes
 * 192.168.1.60
@@ -21,7 +16,7 @@ public class DBConnect {
     /**
      * This arraylist has the ips of the cassandra nodes
      */
-    public static ArrayList<String> IPS=new ArrayList<String>(Arrays.asList("192.168.1.70","192.168.1.60"));
+    public static ArrayList<String> IPS=new ArrayList<>(Arrays.asList("192.168.1.70","192.168.1.60"));
     /**
      * This object will be used when a device want to connect to a cassandra node
      */
@@ -70,11 +65,11 @@ public class DBConnect {
      * 8. It creates UDTs for the network and transport headers if not already created to be used later for insertions and selections
      * 9. It creates a table for frames_Run that is specific to the new run that will begin now
      */
-    public static void startRuh(DBSwitch dbSwitch)
+    public static void startRun(DBSwitch dbSwitch)
     {
         KeySpace.useKeyspace_MOM("history");
         DBCreate.createSwitchesTable("history");
-        DBInsert.insertSwitch(dbSwitch);
+        DBInsert.insert(dbSwitch);
         KeySpace.useKeyspace_MOM(dbSwitch.getSwitchName());
         DBCreate.createRunsTable(dbSwitch.getSwitchName());
         lastRun = DBSelect.getLastRun();
@@ -108,7 +103,7 @@ public class DBConnect {
      * 2. It gets a session for the connector it connected to in order to be able to use that session later in queries
      * 3. It creates keyspacerepo to be used in managing keyspaces
      */
-    private static void connect() {
+    public static void connect() {
         try {
             BasicConfigurator.configure();
             connector = new CassandraConnector();
