@@ -2,6 +2,10 @@ package SwitchAnalyzer;
 
 import SwitchAnalyzer.Commands.ICommandMaster;
 import SwitchAnalyzer.Commands.ProcessCmd;
+import SwitchAnalyzer.Database.HeadersOnly;
+import SwitchAnalyzer.Database.Headers_Data;
+import SwitchAnalyzer.Database.IStorage;
+import SwitchAnalyzer.Database.NoStore;
 import SwitchAnalyzer.Kafka.GenericConsumer;
 import SwitchAnalyzer.Kafka.Producer;
 import SwitchAnalyzer.Kafka.Topics;
@@ -17,6 +21,9 @@ import SwitchAnalyzer.miscellaneous.Time;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class MainHandler_Master
 {
     public static String consumerGroup = "cgommdsandq-cosnsumer-gdhshdsffsdhbcxvncbmrouasdybbbbbbbbbbbbbbbbbbtuydtjuyp12";
@@ -24,6 +31,7 @@ public class MainHandler_Master
     public static Producer dataProducer = new Producer(IP.ip1);
     static GenericConsumer consumer;
     public static MasterOfHPC master;
+    public static ArrayList<IStorage> storages = new ArrayList<>(Arrays.asList(new NoStore() , new HeadersOnly(), new Headers_Data()));
 
     public static void init()
     {

@@ -5,7 +5,7 @@ package SwitchAnalyzer.Network;
  * later this will be taken from a configuration file
  */
 public class IP {
-    public static String ip1 ="localhost";
+    public static String ip1 = "localhost";
 
     // this ip was used to consume from the broker that contains cmdFromHpcMaster
     public static String singleMachine1Ip = "192.168.1.3";

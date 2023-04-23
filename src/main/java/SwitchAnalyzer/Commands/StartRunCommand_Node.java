@@ -65,19 +65,11 @@ public class StartRunCommand_Node extends ICommandNode
 
     public void openSendAndRecThreads()
     {
-        if (config.mode.equals("sender"))
+        for (PacketInfoGui packetInfo : config.packetInfos)
         {
-            for (PacketInfoGui packetInfo :config.packetInfos)
-            {
-                SendThreadsHandler.addToPacketInfoList((PacketInfo) new MapPacketInfo().map(packetInfo));
-            }
-            SendThreadsHandler.sendToSelectedPort(toPortID, config.rate, config.duration);
+            SendThreadsHandler.addToPacketInfoList((PacketInfo) new MapPacketInfo().map(packetInfo));
         }
-        else
-        {
-            for (PacketInfoGui packetInfo :config.packetInfos) { PacketSniffer.addToPacketInfoList(packetInfo); }
-            PacketSniffer.openThreads();
-        }
+        SendThreadsHandler.sendToSelectedPort(toPortID, config.rate, config.duration);
     }
 
 }

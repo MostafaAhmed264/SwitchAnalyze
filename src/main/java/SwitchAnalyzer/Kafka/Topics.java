@@ -9,4 +9,6 @@ public class Topics {
     public static String  ratesFromMachines = "RatesFromMachines";
     public static String  cmdFromHpcMaster = "CMD_FromHPC_Master";
     public static String FramesFromHPC = "FramesFromHPC";
+    public static String ProcessedFramesFromHPC = "ProcessedFrames";
+
 }

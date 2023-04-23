@@ -7,7 +7,6 @@ import SwitchAnalyzer.Machines.MOM;
 import SwitchAnalyzer.Network.IP;
 import SwitchAnalyzer.Network.Ports;
 import SwitchAnalyzer.Sockets.JettyWebSocketServer;
-import SwitchAnalyzer.Sockets.UserRequestHandler;
 import SwitchAnalyzer.Sockets.WebSocketServer;
 import SwitchAnalyzer.miscellaneous.SystemMaps;
 

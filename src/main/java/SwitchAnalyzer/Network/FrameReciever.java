@@ -2,10 +2,8 @@ package SwitchAnalyzer.Network;
 
 import SwitchAnalyzer.Kafka.Topics;
 import SwitchAnalyzer.MainHandler_Node;
-import org.pcap4j.core.BpfProgram;
 import org.pcap4j.core.PacketListener;
 import org.pcap4j.core.PcapHandle;
-import org.pcap4j.core.PcapPacket;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -19,7 +17,7 @@ public class FrameReciever
         try
         {
             PacketListener listener = pcapPacket ->
-                    MainHandler_Node.packetProducer.send(Topics.FramesFromHPC,pcapPacket.getRawData());
+                MainHandler_Node.packetProducer.send(Topics.FramesFromHPC, pcapPacket.getRawData());
             ExecutorService pool = Executors.newCachedThreadPool();
             handle.loop(-1, listener, pool);
         }
