@@ -11,4 +11,5 @@ public class Topics {
     public static String FramesFromHPC = "FramesFromHPC";
     public static String ProcessedFramesFromHPC = "ProcessedFrames";
 
+    public static String  configurations ="FARES";
 }

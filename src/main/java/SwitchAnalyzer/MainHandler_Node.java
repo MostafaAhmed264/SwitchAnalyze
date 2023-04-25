@@ -8,6 +8,7 @@ import SwitchAnalyzer.Kafka.Producer;
 import SwitchAnalyzer.Kafka.Topics;
 import SwitchAnalyzer.Machines.MachineNode;
 import SwitchAnalyzer.Network.*;
+import SwitchAnalyzer.miscellaneous.GlobalVariable;
 import SwitchAnalyzer.miscellaneous.JSONConverter;
 import SwitchAnalyzer.miscellaneous.SystemMaps;
 import SwitchAnalyzer.miscellaneous.Time;
@@ -32,7 +33,7 @@ public class MainHandler_Node
         PCAP.initialize();
     }
 
-    public static void main(String[] args)
+    public static void start()
     {
         init();
         int commandTypeIndex;
@@ -55,5 +56,10 @@ public class MainHandler_Node
                 }
             }
         }
+    }
+
+    //temp main for testing
+    public static void main(String[] args){
+        start();
     }
 }

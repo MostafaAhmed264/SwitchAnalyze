@@ -30,7 +30,7 @@ public class MainHandler_MOM
         JettyWebSocketServer.startServer(Ports.webSocketPort);
     }
 
-    public static void main(String[] args)
+    public static void start()
     {
         init();
         while(true)
@@ -43,5 +43,10 @@ public class MainHandler_MOM
             ProcessCmd.processCmd(c);
         }
 
+    }
+
+    //temp main for testing
+    public static void main(String[] args){
+        start();
     }
 }

@@ -40,7 +40,7 @@ public class MainHandler_Master
         consumer.selectTopic(Topics.cmdFromMOM);
     }
 
-    public static void main(String[] args)
+    public static void start()
     {
         init();
         int commandTypeIndex;
@@ -61,6 +61,11 @@ public class MainHandler_Master
                 }
             }
         }
+    }
+
+    //temp main for testing
+    public static void main(String[] args){
+        start();
     }
 }
 
