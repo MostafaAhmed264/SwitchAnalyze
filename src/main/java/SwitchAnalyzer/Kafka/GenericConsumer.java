@@ -19,7 +19,7 @@ public class GenericConsumer {
         props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         //TODO: note this must be removed it is just for testing
-        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
+       props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
         this.consumer = new KafkaConsumer<>(props);
 
     }

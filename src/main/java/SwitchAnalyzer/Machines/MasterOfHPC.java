@@ -1,6 +1,6 @@
 package SwitchAnalyzer.Machines;
 
-import SwitchAnalyzer.Cluster.MachineConfigurations;
+import SwitchAnalyzer.ClusterConfigurations.MachineConfigurations;
 
 import java.util.ArrayList;
 
@@ -15,7 +15,7 @@ public class MasterOfHPC {
     // Machine node object carrying it's information (Mac ,ip)
 //    private MacAddress HPCMacAddr;
 //    private Inet4Address HPCIp;
-    public MachineNode machineNode;
+    public MachineNode machineNode=new MachineNode();
 
     public MasterOfHPC(int HPCID,String clusterName){
         hpcInfo =new HPC_INFO(HPCID,clusterName);

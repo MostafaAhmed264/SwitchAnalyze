@@ -39,7 +39,7 @@ public class MainHandler_Node
         consumer.selectTopic(Topics.cmdFromHpcMaster);
         commandClasses.add(StartRunCommand_Node.class);
         commandClasses.add(RetrieveCmd_Node.class);
-        PCAP.initialize();
+       // PCAP.initialize();
     }
 
     public static void start()

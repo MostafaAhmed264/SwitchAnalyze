@@ -42,7 +42,7 @@ public class MainHandler_Master
         commandClasses.add(RetrieveCmd_Master.class);
         collectors.add(new RatesCollectorMaster());
         collectors.add(new PLossCollectorMaster());
-        PCAP.initialize();
+        //PCAP.initialize();
     }
 
     public static void start()

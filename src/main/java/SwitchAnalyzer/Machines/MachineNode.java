@@ -53,22 +53,26 @@ public class MachineNode {
 
     private MacAddress detectMyMacAddress(){
         InetAddress ipAddress = null;
-        try {
-            ipAddress = InetAddress.getLocalHost();
+        MacAddress mac=MacAddress.getByName("B8:88:E3:83:BE:73");
 
-            NetworkInterface networkInterface = NetworkInterface.getByInetAddress(ipAddress);
-            byte[] macAddressBytes = networkInterface.getHardwareAddress();
-
-            if (macAddressBytes != null) {
-                return MacAddress.getByAddress(macAddressBytes);
-
-            }
-        } catch (UnknownHostException e) {
-            throw new RuntimeException(e);
-        } catch (SocketException e) {
-            throw new RuntimeException(e);
-        }
-        return null;
+//
+//        try {
+//            ipAddress = InetAddress.getLocalHost();
+//
+//            NetworkInterface networkInterface = NetworkInterface.getByInetAddress(ipAddress);
+//            byte[] macAddressBytes = networkInterface.getHardwareAddress();
+//
+//            if (macAddressBytes != null) {
+//                return MacAddress.getByAddress(macAddressBytes);
+//
+//            }
+//        } catch (UnknownHostException e) {
+//            throw new RuntimeException(e);
+//        } catch (SocketException e) {
+//            throw new RuntimeException(e);
+//        }
+//        return null;
+    return mac;
     }
 
     public void setNodeIp(String nodeIp) {

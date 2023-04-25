@@ -1,4 +1,4 @@
-package SwitchAnalyzer.Cluster;
+package SwitchAnalyzer.ClusterConfigurations;
 
 import org.pcap4j.util.MacAddress;
 
@@ -26,6 +26,9 @@ public class MachineConfigurations {
     }
 
     public boolean Is_master() {
-        return is_master.equalsIgnoreCase("True");
+        if(is_master.equals("True"))
+            return true;
+
+        return false;
     }
 }

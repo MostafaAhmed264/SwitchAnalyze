@@ -1,4 +1,4 @@
-package SwitchAnalyzer.Cluster;
+package SwitchAnalyzer.ClusterConfigurations;
 
 import org.pcap4j.util.MacAddress;
 

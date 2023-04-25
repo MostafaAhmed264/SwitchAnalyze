@@ -8,5 +8,5 @@ public class Topics {
     public static String  ratesFromHPCs="RatesFromHPCs";
     public static String  ratesFromMachines = "RatesFromMachines";
     public static String  cmdFromHpcMaster = "CMD_FromHPC_Master";
-    public static String  configurations ="Configurations";
+    public static String  configurations ="FARES";
 }
