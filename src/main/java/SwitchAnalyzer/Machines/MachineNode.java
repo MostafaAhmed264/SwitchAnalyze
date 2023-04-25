@@ -14,12 +14,9 @@ public class MachineNode
     public Inet4Address nodeIp;
 
     //TODO: will be used when constructing packets to be sent
-    public MacAddress nodeMacAddress;
-    public Inet4Address nodeIp;
     public MachineNode(){
         nodeMacAddress= detectMyMacAddress();
     }
-
     public MachineNode(int id)
     {
         machineInfo = new MachineInfo(id);

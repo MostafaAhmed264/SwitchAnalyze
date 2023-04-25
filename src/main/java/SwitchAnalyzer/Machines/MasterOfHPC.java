@@ -3,6 +3,7 @@ package SwitchAnalyzer.Machines;
 import org.pcap4j.util.MacAddress;
 import SwitchAnalyzer.ClusterConfigurations.MachineConfigurations;
 
+import java.net.Inet4Address;
 import java.util.ArrayList;
 
 public class MasterOfHPC {
@@ -26,12 +27,7 @@ public class MasterOfHPC {
         this.machineNode=machineNode;
 
     }
-    public int getNoOfChilNodes() {
-        return childNodes.size();
-    }
-    public int getHPCID() {
-        return hpcInfo.HPCID;
-    }
+
     public String getClusterName(){
         return hpcInfo.clusterName;
     }
@@ -41,10 +37,6 @@ public class MasterOfHPC {
             childNodes.add(new MachineNode(machineConfig.getMachine_id(), machineConfig.getIp(),machineConfig.getMac()));
         }
     }
-
-
-
-    public MasterOfHPC(int HPCID) { hpcInfo = new HPC_INFO(HPCID); }
     public int getNoOfChilNodes() { return childNodes.size(); }
     public int getHPCID() { return hpcInfo.HPCID; }
 }
