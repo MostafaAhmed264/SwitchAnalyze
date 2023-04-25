@@ -1,44 +1,43 @@
 package SwitchAnalyzer.Database;
 
-import java.sql.Timestamp;
-import java.util.Date;
-
 public class DBRun {
 
-    private long runNo;
-    private Date startTimeStamp;
-    private Date endTimeStamp;
-    private float packetLoss;
+    private long runno;
+    public String starttimestamp;
+    public String endtimestamp;
+    private float packetloss;
     private float latency;
     private float throughput;
-    private float successfulFramesPercentage;
-    private float framesWithErrorsPercentage;
+    private float successfulframespercentage;
+    private float frameswitherrorspercentage;
+    public DBRun(){
 
-    public DBRun(Date startTimeStamp, Date endTimeStamp, float packetLoss, float latency, float throughput, float successfulFramesPercentage, float framesWithErrorsPercentage) {
-        this.runNo = DBConnect.getLastRun();
-        this.startTimeStamp = startTimeStamp;
-        this.endTimeStamp = endTimeStamp;
-        this.packetLoss = packetLoss;
+    }
+    public DBRun(String startTimeStamp, String endTimeStamp, float packetLoss, float latency, float throughput, float successfulFramesPercentage, float framesWithErrorsPercentage) {
+        this.runno = DBConnect.getLastRun();
+        this.starttimestamp = startTimeStamp;
+       this.endtimestamp = endTimeStamp;
+        this.packetloss = packetLoss;
         this.latency = latency;
         this.throughput = throughput;
-        this.successfulFramesPercentage = successfulFramesPercentage;
-        this.framesWithErrorsPercentage = framesWithErrorsPercentage;
+        this.successfulframespercentage = successfulFramesPercentage;
+        this.frameswitherrorspercentage = framesWithErrorsPercentage;
     }
 
     public void setRunNo(long runNo) {
-        this.runNo = runNo;
+        this.runno = runNo;
     }
 
-    public void setStartTimeStamp(Date startTimeStamp) {
-        this.startTimeStamp = startTimeStamp;
+    public void setStartTimeStamp(String startTimeStamp) {
+        this.starttimestamp = startTimeStamp;
     }
 
-    public void setEndTimeStamp(Date endTimeStamp) {
-        this.endTimeStamp = endTimeStamp;
+    public void setEndTimeStamp(String endTimeStamp) {
+        this.endtimestamp = endTimeStamp;
     }
 
     public void setPacketLoss(float packetLoss) {
-        this.packetLoss = packetLoss;
+        this.packetloss = packetLoss;
     }
 
     public void setLatency(float latency) {
@@ -50,27 +49,27 @@ public class DBRun {
     }
 
     public void setSuccessfulFramesPercentage(float successfulFramesPercentage) {
-        this.successfulFramesPercentage = successfulFramesPercentage;
+        this.successfulframespercentage = successfulFramesPercentage;
     }
 
     public void setFramesWithErrorsPercentage(float framesWithErrorsPercentage) {
-        this.framesWithErrorsPercentage = framesWithErrorsPercentage;
+        this.frameswitherrorspercentage = framesWithErrorsPercentage;
     }
 
     public long getRunNo() {
-        return runNo;
+        return runno;
     }
 
-    public Date getStartTimeStamp() {
-        return startTimeStamp;
+    public String getStartTimeStamp() {
+        return starttimestamp;
     }
 
-    public Date getEndTimeStamp() {
-        return endTimeStamp;
+    public String getEndTimeStamp() {
+        return endtimestamp;
     }
 
     public float getPacketLoss() {
-        return packetLoss;
+        return packetloss;
     }
 
     public float getLatency() {
@@ -82,10 +81,10 @@ public class DBRun {
     }
 
     public float getSuccessfulFramesPercentage() {
-        return successfulFramesPercentage;
+        return successfulframespercentage;
     }
 
     public float getFramesWithErrorsPercentage() {
-        return framesWithErrorsPercentage;
+        return frameswitherrorspercentage;
     }
 }

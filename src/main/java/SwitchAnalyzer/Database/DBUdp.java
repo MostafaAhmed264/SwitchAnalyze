@@ -1,10 +1,7 @@
 package SwitchAnalyzer.Database;
 
-import SwitchAnalyzer.Network.UDPHeader;
 import org.pcap4j.packet.Packet;
 import org.pcap4j.packet.UdpPacket;
-
-import java.util.Arrays;
 
 public class DBUdp extends DBTransportHeader
 {

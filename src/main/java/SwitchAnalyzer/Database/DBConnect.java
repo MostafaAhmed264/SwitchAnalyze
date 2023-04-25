@@ -1,9 +1,9 @@
 package SwitchAnalyzer.Database;
+import SwitchAnalyzer.Network.IP;
 import com.datastax.driver.core.Metadata;
 import com.datastax.driver.core.Session;
 import org.apache.log4j.BasicConfigurator;
-import java.util.ArrayList;
-import java.util.Arrays;
+
 /*
 *these IPS for DataBase Nodes
 * 192.168.1.60
@@ -13,10 +13,7 @@ import java.util.Arrays;
 *
 * */
 public class DBConnect {
-    /**
-     * This arraylist has the ips of the cassandra nodes
-     */
-    public static ArrayList<String> IPS=new ArrayList<>(Arrays.asList("192.168.1.70","192.168.1.60"));
+
     /**
      * This object will be used when a device want to connect to a cassandra node
      */
@@ -108,7 +105,7 @@ public class DBConnect {
             BasicConfigurator.configure();
             connector = new CassandraConnector();
             /* choose the node or nodes to connect with */
-            connector.connect(IPS,null,metadata);
+            connector.connect(IP.DBIps,null,metadata);
             session = connector.getSession();
         } catch (Exception e) {
             System.out.println("Cant connect to DB server ");

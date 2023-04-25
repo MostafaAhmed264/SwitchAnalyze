@@ -1,8 +1,10 @@
 package SwitchAnalyzer.Database;
 
+import SwitchAnalyzer.miscellaneous.JSONConverter;
 import com.datastax.driver.core.*;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 
 public class DBSelect {
     //session is used in order to execute the query
@@ -18,7 +20,7 @@ public class DBSelect {
     private static boolean selectAll;
     //wholeSelectQuery is the whole cql statement that will be executed
     private static StringBuilder wholeSelectQuery;
-    private static String TableName;
+    private static String jsonConverter;
     private static boolean JSON;
     private static boolean condition;
     private static boolean ALLOWFILTERING;
@@ -86,7 +88,27 @@ public class DBSelect {
     */
     public static void beginSelectRuns() {
         fromTableName = new StringBuilder("FROM runs");
-        TableName = "runs";
+        jsonConverter = "runs";
+        if (selectAll) {
+            if (JSON) {
+                selectedAttributes = new StringBuilder("SELECT JSON * ");
+            } else {
+                selectedAttributes = new StringBuilder("SELECT * ");
+            }
+        } else {
+            if (JSON) {
+                selectedAttributes = new StringBuilder("SELECT JSON ");
+            } else {
+                selectedAttributes = new StringBuilder("SELECT ");
+            }
+
+        }
+        whereCondition = new StringBuilder(" WHERE ");
+    }
+
+    public static void beginSelectHistory() {
+        fromTableName = new StringBuilder("FROM switches");
+        //TableName = "switches";
         if (selectAll) {
             if (JSON) {
                 selectedAttributes = new StringBuilder("SELECT JSON * ");
@@ -106,7 +128,7 @@ public class DBSelect {
 
     public static void beginSelectFrames(long runNo) {
         fromTableName = new StringBuilder("FROM frames_run").append(runNo);
-        TableName = "frames_run" + String.valueOf(runNo);
+        jsonConverter = "frames";
         if (selectAll) {
             if (JSON) {
                 selectedAttributes = new StringBuilder("SELECT JSON * ");
@@ -136,8 +158,6 @@ public class DBSelect {
 
     public static void conditionStartTimeStamp(Timestamp startTimeStamp) {
         whereCondition.append("StartTimeStamp = ").append(startTimeStamp.toString());
-
-
     }
 
     public static void viewStartTimeStamp() {
@@ -258,7 +278,7 @@ public class DBSelect {
 
     public static void conditionFrameData(String headerName)
     {
-        whereCondition.append("frameData CONTAINS KEY '").append(String.valueOf(headerName));
+        whereCondition.append("frameData CONTAINS KEY '").append(headerName).append("'");
         ALLOWFILTERING = true;
     }
 
@@ -310,19 +330,16 @@ public class DBSelect {
     public static <T> T executeSelect()
     {
         wholeSelectQuery = new StringBuilder();
+        wholeSelectQuery.append(selectedAttributes).append(fromTableName);
         if(isThereCondition())
         {
-            wholeSelectQuery.append(selectedAttributes).append(fromTableName).append(whereCondition);
+            wholeSelectQuery.append(whereCondition);
             if(isALLOWFILTERING())
-                wholeSelectQuery.append(" ALLOWFILTERING");
-            wholeSelectQuery.append(";");
+                wholeSelectQuery.append(" ALLOW FILTERING");
         }
-        else
-        {
-            wholeSelectQuery.append(selectedAttributes).append(fromTableName).append(";");
-
-        }
+        wholeSelectQuery.append(";");
         final String query = wholeSelectQuery.toString();
+        System.out.println(query);
         SimpleStatement x = new SimpleStatement(query);
         x.setConsistencyLevel(ConsistencyLevel.ONE);
         ResultSet rs = session.execute(x);
@@ -335,23 +352,41 @@ public class DBSelect {
             return (T) rs;
         }
     }
-    public static String selectJSON(ResultSet rs) {
-        StringBuilder result = new StringBuilder("{\n");
-        // Iterate over the ResultSet and print out the JSON data
-        for (Row row : rs) {
-            String jsonString = row.getString("[json]");
-            result.append(jsonString).append(",\n");
-            //System.out.println(jsonString);
+    public static <T> T selectJSON(ResultSet rs)
+    {
+        if(jsonConverter == "runs")
+        {
+            return (T) selectJSON_runs(rs);
         }
-        result.deleteCharAt(result.length()-2);
-        result.append("}");
-        return result.toString();
+        return (T) selectJSON_frames(rs);
+    }
+    private static ArrayList<DBRun> selectJSON_runs(ResultSet rs)
+    {
+        ArrayList<DBRun> runs=new ArrayList<>();
+        for (Row row : rs)
+        {
+            String jsonString = row.getString("[json]");
+            DBRun run = JSONConverter.fromJSON(jsonString,DBRun.class);
+            runs.add(run);
+        }
+        return runs;
+    }
+    private static ArrayList<DBFrame> selectJSON_frames(ResultSet rs)
+    {
+        ArrayList<DBFrame> frames=new ArrayList<>();
+        for (Row row : rs)
+        {
+            String jsonString = row.getString("[json]");
+            DBFrame frame = JSONConverter.fromJSON(jsonString,DBFrame.class);
+            frames.add(frame);
+        }
+        return frames;
     }
     public static String selectAllJson_LastRunTest()
     {
         setSelectAll(true);
         setJSON(true);
-        beginSelectFrames(getLastRun());
+        beginSelectFrames(DBConnect.getLastRun());
         String jsonResult = executeSelect();
         return jsonResult;
     }
@@ -359,9 +394,46 @@ public class DBSelect {
     {
         setSelectAll(true);
         setJSON(true);
-        beginSelectFrames(getLastRun());
+        setCondition(true);
+        setALLOWFILTERING(false);
+        beginSelectFrames(DBConnect.getLastRun());
         conditionFrameData(headerName);
         String jsonResult = executeSelect();
         return jsonResult;
+    }
+    private static ArrayList<DBSwitch> convertResultSetHistory(ResultSet historyResult)
+    {
+        ArrayList<DBSwitch> switches = new ArrayList<>();
+        for (Row row : historyResult)
+        {
+            String switchName = row.getString("switchName");
+            long totalNoOfPorts = row.getLong("totalNoOfPorts");
+            DBSwitch dbswitch = new DBSwitch(switchName,totalNoOfPorts);
+            switches.add(dbswitch);
+        }
+        return switches;
+    }
+    private static DBSwitches selectSwitches()
+    {
+        setSelectAll(true);
+        setJSON(false);
+        setCondition(false);
+        setALLOWFILTERING(false);
+        beginSelectHistory();
+        ResultSet historyResult = executeSelect();
+        ArrayList<DBSwitch> dbSwitches = convertResultSetHistory(historyResult);
+        for (int i = 0; i < dbSwitches.size(); i++)
+        {
+            KeySpace.useKeyspace_Node(dbSwitches.get(i).getSwitchName());
+            setJSON(true);
+            beginSelectRuns();
+            dbSwitches.get(i).setSwitchRuns(executeSelect());
+        }
+        return new DBSwitches(dbSwitches);
+    }
+    public static String showHistory()
+    {
+        KeySpace.useKeyspace_Node("history");
+        return JSONConverter.toJSON(selectSwitches());
     }
 }

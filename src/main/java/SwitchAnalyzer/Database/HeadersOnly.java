@@ -1,7 +1,6 @@
 package SwitchAnalyzer.Database;
 
 import SwitchAnalyzer.miscellaneous.JSONConverter;
-import com.datastax.driver.core.utils.UUIDs;
 
 import java.util.ArrayList;
 import java.util.UUID;

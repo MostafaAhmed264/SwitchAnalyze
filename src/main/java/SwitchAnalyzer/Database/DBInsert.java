@@ -1,7 +1,8 @@
 package SwitchAnalyzer.Database;
 
-import com.datastax.driver.core.*;
+import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.utils.UUIDs;
+
 import java.util.UUID;
 
 public class DBInsert
@@ -18,8 +19,6 @@ public class DBInsert
     {
         StringBuilder sb = new StringBuilder(
                 "INSERT INTO frames_run"+DBConnect.getLastRun()+" JSON '"+frameJson+"';");
-        final String query = sb.toString();
-        DBConnect.getSession().execute(query);
     }
     /**
      * Input : run

@@ -1,5 +1,8 @@
 package SwitchAnalyzer.Network;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /**
  * this class will hold all the ip of the machines that will be used
  * later this will be taken from a configuration file
@@ -20,4 +23,7 @@ public class IP {
      */
     public static String srcIpAddr = "192.168.1.1";
     public static String dstIpAddr = "192.168.1.1";
+
+    public static ArrayList<String> DBIps=new ArrayList<>(Arrays.asList("192.168.1.70","192.168.1.60"));
+
 }

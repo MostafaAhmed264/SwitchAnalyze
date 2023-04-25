@@ -1,7 +1,6 @@
 package SwitchAnalyzer.Database;
 
 import com.datastax.driver.core.KeyspaceMetadata;
-import com.datastax.driver.core.UserType;
 
 
 public class DBCreate {
