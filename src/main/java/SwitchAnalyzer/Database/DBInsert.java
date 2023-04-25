@@ -18,6 +18,8 @@ public class DBInsert
     {
         StringBuilder sb = new StringBuilder(
                 "INSERT INTO frames_run"+DBConnect.getLastRun()+" JSON '"+frameJson+"';");
+        final String query = sb.toString();
+        DBConnect.getSession().execute(query);
     }
     /**
      * Input : run

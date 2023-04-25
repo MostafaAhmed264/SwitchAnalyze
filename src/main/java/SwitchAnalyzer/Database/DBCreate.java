@@ -73,7 +73,7 @@ public class DBCreate {
                 .append("timeStamp timestamp,")
                 .append("sendingPort int,")
                 .append("recievingPort int,")
-                .append("frameData <text, text>,")
+                .append("frameData map<text, text>,")
                 .append("errorInRouting boolean,")
                 .append("crcChecker boolean,")
                 .append("PRIMARY KEY(id)" )

@@ -1,11 +1,12 @@
 package SwitchAnalyzer.Network;
 
 import SwitchAnalyzer.Database.DBFrame;
+import SwitchAnalyzer.Database.Headers_Data;
 import SwitchAnalyzer.Kafka.GenericConsumer;
 import SwitchAnalyzer.Kafka.GenericProducer;
 import SwitchAnalyzer.Kafka.Producer;
 import SwitchAnalyzer.Kafka.Topics;
-import SwitchAnalyzer.MainHandler_Master;
+import SwitchAnalyzer.Network.ErrorDetection.CRC;
 import SwitchAnalyzer.Network.ErrorDetection.ErrorDetectingAlgorithms;
 import SwitchAnalyzer.miscellaneous.GlobalVariable;
 import SwitchAnalyzer.miscellaneous.JSONConverter;
@@ -29,19 +30,25 @@ public class FrameProcessing
 
     public static DBFrame processFrames(byte[] frameBytes) {
         DBFrame frameResult = new DBFrame();
-        frameResult.setCrcChecker(errorDetectingAlgorithms.isAlgorithmCorrect(frameBytes));
+        frameResult.setCrcChecker(new CRC().isAlgorithmCorrect(frameBytes));
         EthernetPacket packet = null;
         try { packet = EthernetPacket.newPacket(frameBytes, 0, frameBytes.length); }
         catch (Exception e) { e.printStackTrace(); }
+        System.out.println(packet);
         HashMap<String, String> map = new HashMap<>();
         Packet.Builder builder = packet.getBuilder();
         do
         {
             Packet p = builder.build();
+            if(p.getHeader() == null) break;
             map.put(getType(p.getHeader()), bytesToString(p.getRawData()));
             builder = builder.getPayloadBuilder();
         }while(builder != null);
+        if(builder != null)
+            map.put("Payload", bytesToString(builder.build().getRawData()));
         frameResult.frameData = map;
+        System.out.println("ASDSADDASADSDS");
+        System.out.println(frameResult.frameData.keySet().toArray()[0]);
         return frameResult;
     }
 
@@ -55,37 +62,40 @@ public class FrameProcessing
 
     public static void startProcessFrames()
     {
+        consumer.selectTopicByteArray(Topics.FramesFromHPC);
         while (!GlobalVariable.stopRecieving) { consumeFrames(); }
     }
 
     private static void consumeFrames()
     {
-        consumer.selectTopicByteArray(Topics.FramesFromHPC);
         ConsumerRecords<String, byte[]> frames = consumer.consumeByteArray(Time.waitTime);
         for (ConsumerRecord<String, byte[]> frame : frames)
         {
             DBFrame dbFrame = processFrames(frame.value());
             String json = JSONConverter.toJSON(dbFrame);
             cmdProducer.produce(json, Topics.ProcessedFramesFromHPC);
-            MainHandler_Master.storages.get(GlobalVariable.storageClass).store(dbFrame);
+            new Headers_Data().store(dbFrame);
+            //MainHandler_Master.storages.get(GlobalVariable.storageClass).store(dbFrame);
         }
     }
 
     public static String getType(Packet.Header header)
     {
-        String headerString = header.toString();
-        StringBuilder result = new StringBuilder("");
-        int i = 0;
-        while(headerString.charAt(i) != ']')
-        {
-            char c = headerString.charAt(i++);
-            if (c == '[')
-                continue;
-            if (c == '(')
-                break;
-            result.append(c);
+        if (header.getRawData().length != 0) {
+            String headerString = header.toString();
+            StringBuilder result = new StringBuilder("");
+            int i = 0;
+            while (headerString.charAt(i) != ']') {
+                char c = headerString.charAt(i++);
+                if (c == '[')
+                    continue;
+                if (c == '(')
+                    break;
+                result.append(c);
+            }
+            return result.toString();
         }
-        return result.toString();
+        return "";
     }
 
     public static void main(String[] args)
