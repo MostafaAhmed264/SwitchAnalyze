@@ -27,48 +27,50 @@ public class Main {
 
     public static void main(String[] args) {
         MachineNode myNode = new MachineNode();
-        GenericConsumer MainConsumer = new GenericConsumer(IP.ConfigurationsIP + ":" + Ports.port1, consumerConfigurationGroup);
-        MainConsumer.selectTopic(Topics.configurations);
-
-        while (true) {
-            ConsumerRecords<String, String> records = MainConsumer.consume(100);
-
-            for (ConsumerRecord<String, String> record : records) {
-                MoMConfigurations momConfigurations = JSONConverter.fromJSON(record.value(), MoMConfigurations.class);
-
-                Thread HandlerThread;
-
-                if (momConfigurations.getMaster_Mac().equals(myNode.nodeMacAddress)) {
-                    SystemInitializer.MoMinit(myNode, momConfigurations);
-                    HandlerThread = new Thread(MainHandler_MOM::start);
-                    HandlerThread.start();
-
-                } else {
-
-                    for (ClusterConfiguartions clusterConfig : momConfigurations.cluster) {
-
-                        for (MachineConfigurations machineConfig : clusterConfig.machines) {
-
-                            if (machineConfig.getMac().equals(myNode.nodeMacAddress)) {
-
-                                if (machineConfig.Is_master()) {
-                                    SystemInitializer.MasterInit(myNode, machineConfig, clusterConfig);
-                                    HandlerThread = new Thread(MainHandler_Master::start);
-                                    HandlerThread.start();
-                                } else {
-                                    SystemInitializer.NodeInit(myNode, machineConfig);
-                                    HandlerThread = new Thread(MainHandler_Node::start);
-                                    HandlerThread.start();
-                                }
-                            }
-                        }
-
-                    }
-                }
-            }
-
-
+        System.out.println(myNode.getNodeMacAddress());
+        System.out.println(myNode.getNodeIp());
+//        GenericConsumer MainConsumer = new GenericConsumer(IP.ConfigurationsIP + ":" + Ports.port1, consumerConfigurationGroup);
+//        MainConsumer.selectTopic(Topics.configurations);
+//
+//        while (true) {
+//            ConsumerRecords<String, String> records = MainConsumer.consume(100);
+//
+//            for (ConsumerRecord<String, String> record : records) {
+//                MoMConfigurations momConfigurations = JSONConverter.fromJSON(record.value(), MoMConfigurations.class);
+//
+//                Thread HandlerThread;
+//
+//                if (momConfigurations.getMaster_Mac().equals(myNode.nodeMacAddress)) {
+//                    SystemInitializer.MoMinit(myNode, momConfigurations);
+//                    HandlerThread = new Thread(MainHandler_MOM::start);
+//                    HandlerThread.start();
+//
+//                } else {
+//
+//                    for (ClusterConfiguartions clusterConfig : momConfigurations.cluster) {
+//
+//                        for (MachineConfigurations machineConfig : clusterConfig.machines) {
+//
+//                            if (machineConfig.getMac().equals(myNode.nodeMacAddress)) {
+//
+//                                if (machineConfig.Is_master()) {
+//                                    SystemInitializer.MasterInit(myNode, machineConfig, clusterConfig);
+//                                    HandlerThread = new Thread(MainHandler_Master::start);
+//                                    HandlerThread.start();
+//                                } else {
+//                                    SystemInitializer.NodeInit(myNode, machineConfig);
+//                                    HandlerThread = new Thread(MainHandler_Node::start);
+//                                    HandlerThread.start();
+//                                }
+//                            }
+//                        }
+//
+//                    }
+//                }
+//            }
+//
+//
+//        }
         }
-    }
 
 }

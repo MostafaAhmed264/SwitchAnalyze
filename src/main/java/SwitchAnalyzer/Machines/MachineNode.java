@@ -1,5 +1,6 @@
 package SwitchAnalyzer.Machines;
 
+import SwitchAnalyzer.Network.NIC_INFO;
 import org.pcap4j.util.MacAddress;
 
 import java.net.*;
@@ -14,7 +15,7 @@ public class MachineNode {
     public MacAddress nodeMacAddress;
     public Inet4Address nodeIp;
     public MachineNode(){
-        nodeMacAddress= detectMyMacAddress();
+        nodeMacAddress= NIC_INFO.detectMyMacAddress();
     }
 
     public MachineNode(int id)
@@ -51,33 +52,13 @@ public class MachineNode {
         return nodeIp;
     }
 
-    private MacAddress detectMyMacAddress(){
-        InetAddress ipAddress = null;
-        MacAddress mac=MacAddress.getByName("B8:88:E3:83:BE:73");
 
-//
-//        try {
-//            ipAddress = InetAddress.getLocalHost();
-//
-//            NetworkInterface networkInterface = NetworkInterface.getByInetAddress(ipAddress);
-//            byte[] macAddressBytes = networkInterface.getHardwareAddress();
-//
-//            if (macAddressBytes != null) {
-//                return MacAddress.getByAddress(macAddressBytes);
-//
-//            }
-//        } catch (UnknownHostException e) {
-//            throw new RuntimeException(e);
-//        } catch (SocketException e) {
-//            throw new RuntimeException(e);
-//        }
-//        return null;
-    return mac;
-    }
+
 
     public void setNodeIp(String nodeIp) {
         try {
             //TODO : set the decive ip then set the attribute
+
             this.nodeIp = (Inet4Address) Inet4Address.getByName(nodeIp);
         } catch (UnknownHostException e) {
             throw new RuntimeException(e);
