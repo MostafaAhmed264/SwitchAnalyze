@@ -17,12 +17,16 @@ public class DBInsert
     {
         StringBuilder sb = new StringBuilder(
                 "INSERT INTO frames_run"+DBConnect.getLastRun()+" JSON '"+frameJson+"';");
+        final String query = sb.toString();
+        DBConnect.getSession().execute(query);
     }
     public static void insertRun(String frameJson)
     {
         DBRun run = JSONConverter.fromJSON(frameJson,DBRun.class);
         run.setRunno_DBInsert();
         StringBuilder sb = new StringBuilder("INSERT INTO runs JSON '"+JSONConverter.toJSON(run)+"';");
+        final String query = sb.toString();
+        DBConnect.getSession().execute(query);
     }
     /**
      * Input : switch
