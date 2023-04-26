@@ -16,6 +16,7 @@ public class DBSelect {
     private static StringBuilder whereCondition;
     //fromTableName is string builder containing FROM table name
     private static StringBuilder fromTableName;
+    private static String tableName;
     //wholeSelectQuery is the whole cql statement that will be executed
     private static StringBuilder wholeSelectQuery;
     private static boolean selectAll;
@@ -54,75 +55,105 @@ public class DBSelect {
     public static void beginSelectRuns()
     {
         fromTableName = new StringBuilder("FROM runs");
+        tableName = "runs";
         begin();
     }
     public static void beginSelectSwitches()
     {
         fromTableName = new StringBuilder("FROM switches");
+        tableName = "switches";
         begin();
     }
     public static void beginSelectFrames(long runNo)
     {
         fromTableName = new StringBuilder("FROM frames_run").append(runNo);
+        tableName = "frames";
         begin();
     }
     private static void begin()
     {
-        if (selectAll) {
-            if (JSON) {
-                selectedAttributes = new StringBuilder("SELECT JSON * ");
-            } else {
-                selectedAttributes = new StringBuilder("SELECT * ");
-            }
+        if (JSON) {
+            selectedAttributes = new StringBuilder("SELECT JSON ");
         } else {
-            if (JSON) {
-                selectedAttributes = new StringBuilder("SELECT JSON ");
-            } else {
-                selectedAttributes = new StringBuilder("SELECT ");
+            selectedAttributes = new StringBuilder("SELECT ");
+        }
+        if (selectAll) {
+            if(tableName == "switches")
+            {
+                viewSwitchName();
+                otherAttribute();
+                viewTotalNoOfPorts();
+            }
+            else if (tableName == "runs")
+            {
+                viewRunNo();
+                otherAttribute();
+                viewRunDetails();
+            }
+            else
+            {
+                viewPort();
+                otherAttribute();
+                viewDirection();
+                otherAttribute();
+                viewFrameData();
+                otherAttribute();
+                viewCrcChecker();
+                otherAttribute();
+                viewErrorInRouting();
             }
         }
         whereCondition = new StringBuilder(" WHERE ");
     }
-    /******************************Run conditions and view*******************************8*******/
-    public static void conditionRunNo(long runNo) {
-        whereCondition.append("runNo = ").append(String.valueOf(runNo));
+    /****************************** Switch conditions and view **************************************/
+    public static void viewSwitchName(){ selectedAttributes.append("switchName "); }
+
+    public static void viewTotalNoOfPorts(){ selectedAttributes.append("totalNoOfPorts "); }
+    public static void conditionSwitchName(String switchName) {
+        whereCondition.append("switchName = ").append(switchName);
     }
+    public static void conditionTotalNoOfPorts(long totalNoOfPorts) {
+        whereCondition.append("totalNoOfPorts = ").append(String.valueOf(totalNoOfPorts));
+    }
+    /****************************** Run conditions and view ***************************************/
     public static void viewRunNo() { selectedAttributes.append("runNo "); }
+    public static void viewRunDetails() { selectedAttributes.append("runDetails "); }
     public static void conditionRunDetails(String headerName)
     {
         whereCondition.append("runDetails CONTAINS KEY '").append(headerName).append("'");
         ALLOWFILTERING = true;
     }
-    public static void viewRunDetails() { selectedAttributes.append("runDetails "); }
+    public static void conditionRunNo(long runNo) {
+
+        whereCondition.append("runNo = ").append(String.valueOf(runNo));
+    }
     /*********************** Frame condition and view ******************************************/
+    public static void viewPort() { selectedAttributes.append("port "); }
+    public static void viewDirection() { selectedAttributes.append("direction "); }
+    public static void viewFrameData() { selectedAttributes.append("frameData "); }
+    public static void viewCrcChecker() { selectedAttributes.append("crcChecker "); }
+    public static void viewErrorInRouting() { selectedAttributes.append("errorInRouting "); }
     public static void conditionID(long id) {
         whereCondition.append("ID = ").append(String.valueOf(id));
     }
-    public static void viewID() { selectedAttributes.append("ID "); }
     public static void conditionPort(int port) {
         whereCondition.append("port = ").append(String.valueOf(port));
     }
-    public static void viewPort() { selectedAttributes.append("port "); }
     public static void conditionDirection(String direction) {
         whereCondition.append("direction = ").append(direction);
     }
-    public static void viewDirection() { selectedAttributes.append("direction "); }
-
     public static void conditionFrameData(String headerName)
     {
         whereCondition.append("frameData CONTAINS KEY '").append(headerName).append("'");
         ALLOWFILTERING = true;
     }
-    public static void viewFrameData() { selectedAttributes.append("frameData "); }
-
-    public static void conditionErrorInRouting(boolean errorInRouting) {
-        whereCondition.append("errorInRouting = ").append(String.valueOf(errorInRouting));
-    }
-    public static void viewErrorInRouting() { selectedAttributes.append("errorInRouting "); }
     public static void conditionCrcChecker(boolean crcChecker) {
         whereCondition.append("crcChecker = ").append(String.valueOf(crcChecker));
     }
-    public static void viewCrcChecker() { selectedAttributes.append("crcChecker "); }
+    public static void conditionErrorInRouting(boolean errorInRouting) {
+        whereCondition.append("errorInRouting = ").append(String.valueOf(errorInRouting));
+    }
+    /*********************************Other condition or attribute ********************************/
     /**
      * Input : void
      * Output : void
