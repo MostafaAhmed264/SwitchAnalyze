@@ -1,5 +1,6 @@
 package SwitchAnalyzer.Database;
 
+import SwitchAnalyzer.miscellaneous.JSONConverter;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.utils.UUIDs;
 
@@ -19,7 +20,9 @@ public class DBInsert
     }
     public static void insertRun(String frameJson)
     {
-        StringBuilder sb = new StringBuilder("INSERT INTO runs JSON '"+frameJson+"';");
+        DBRun run = JSONConverter.fromJSON(frameJson,DBRun.class);
+        run.setRunno_DBInsert();
+        StringBuilder sb = new StringBuilder("INSERT INTO runs JSON '"+JSONConverter.toJSON(run)+"';");
     }
     /**
      * Input : switch

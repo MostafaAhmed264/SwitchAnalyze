@@ -11,4 +11,5 @@ public class DBRun {
     public long getRunNo() {
         return runno;
     }
+    public void setRunno_DBInsert(){ runno = DBConnect.getLastRun(); }
 }
