@@ -13,20 +13,29 @@ import java.util.UUID;
  */
 public class DBFrame {
     private UUID id ;
-    private int sendingPort;
-    private int recievingPort;
+
+    public int port;
+    public enum Direction {INBOUND,OUTBOUND}
+    public Direction directionEnum;
+    public String direction;
     public HashMap<String, String> frameData;
     private boolean errorInRouting;
     private boolean crcChecker;
+    // Member variables for producing in kafka
+    public String frame_json;
+    public long runNo;
+    public String switchName;
     public DBFrame() { id = UUIDs.timeBased(); }
+    public DBFrame(String frame_json, long runNo, String switchName) {
+        this.frame_json = frame_json;
+        this.runNo = runNo;
+        this.switchName = switchName;
+    }
+
     public UUID getID() { return id; }
-    public int getSendingPort() { return sendingPort; }
-    public int getRecievingPort() { return recievingPort; }
     public boolean errorInRoutingExists() { return errorInRouting; }
     public boolean errorInCrcCheckerExists() { return crcChecker; }
     public void setId(UUID id) { this.id = id; }
-    public void setSendingPort(int sendingPort) { this.sendingPort = sendingPort; }
-    public void setRecievingPort(int recievingPort) { this.recievingPort = recievingPort; }
     public void setErrorInRouting(boolean errorInRouting) { this.errorInRouting = errorInRouting; }
     public void setCrcChecker(boolean crcChecker) { this.crcChecker = crcChecker; }
 }

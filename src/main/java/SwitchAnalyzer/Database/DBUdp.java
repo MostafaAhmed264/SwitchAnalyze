@@ -82,9 +82,7 @@ public class DBUdp extends DBTransportHeader
         String payloadOfUdp = udpPacket.getPayload().toString();
         System.out.println(payloadOfUdp);
         setSourcePortNo(udpHeader.getSrcPort().valueAsInt());
-        frame.setSendingPort(getSourcePortNo());
         setDestinationPortNo(udpHeader.getDstPort().valueAsInt());
-        frame.setRecievingPort(getDestinationPortNo());
         setLengthInBytes(udpHeader.getLengthAsInt());
         setChecksum(Integer.toHexString(udpHeader.getChecksum() & 0xffff));
     }

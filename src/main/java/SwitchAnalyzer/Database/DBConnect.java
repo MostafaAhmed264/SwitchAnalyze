@@ -59,18 +59,17 @@ public class DBConnect {
      * 5. It uses the keyspace of this switch if it is already created or it will create it and then use it
      * 6. It creates the table runs if not already created
      * 7. It calls for the getLastRun to get the number of the last run made in this switch
-     * 8. It creates UDTs for the network and transport headers if not already created to be used later for insertions and selections
      * 9. It creates a table for frames_Run that is specific to the new run that will begin now
      */
     public static void startRun(DBSwitch dbSwitch)
     {
         KeySpace.useKeyspace_MOM("history");
         DBCreate.createSwitchesTable("history");
-        DBInsert.insert(dbSwitch);
+        DBInsert.insertSwitch(dbSwitch);
         KeySpace.useKeyspace_MOM(dbSwitch.getSwitchName());
         DBCreate.createRunsTable(dbSwitch.getSwitchName());
-        lastRun = DBSelect.getLastRun();
-        DBCreate.createFrames_RunTable(lastRun+1);
+        lastRun = DBSelect.getLastRun()+1;
+        DBCreate.createFrames_RunTable(lastRun);
     }
     /**
      * input : switch name

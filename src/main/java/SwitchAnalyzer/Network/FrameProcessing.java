@@ -47,6 +47,9 @@ public class FrameProcessing
         if(builder != null)
             map.put("Payload", bytesToString(builder.build().getRawData()));
         frameResult.frameData = map;
+        // set the port
+        // set the directionEnum in DBFrame then set direction according to it
+        // set error in routing
         System.out.println("ASDSADDASADSDS");
         System.out.println(frameResult.frameData.keySet().toArray()[0]);
         return frameResult;

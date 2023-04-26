@@ -3,6 +3,11 @@ package SwitchAnalyzer.Database;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+
 public class CassandraClient {
     private static final Logger LOG = LoggerFactory.getLogger(CassandraClient.class);
 
@@ -12,12 +17,23 @@ public class CassandraClient {
 //        DBStorage.remainingStorage();
 //        System.out.println(DBStorage.getRemainingDiskSpace());
         DBConnect.connect();
+        DBConnect.startRun(new DBSwitch("abbas",34));
         System.out.println(DBSelect.showHistory());
-//        String str = DBSelect.selectAllJson_LastRun_SpecificHeaderTest("ARP Header ");
+        DBConnect.closeConnectionToDB();
+
+//        ArrayList<String> switchNames = new ArrayList<>();
+//        switchNames.add("wafy");
+//        switchNames.add("wafy");
+//        ArrayList<Long> runNos = new ArrayList<>();
+//        runNos.add(1L);
+//        runNos.add(1L);
+//        //ArrayList<String> str = DBSelect.compareRuns(switchNames,runNos);
+////        String str = DBSelect.selectAllJson_LastRun_SpecificHeaderTest("ARP Header ");
 //        String filePath = "output.txt";
 //        try {
 //            BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
-//            writer.write(str);
+//            writer.write(str.get(0));
+//            writer.write(str.get(1));
 //            writer.close();
 //            System.out.println("Successfully wrote to the file.");
 //        } catch (IOException e) {

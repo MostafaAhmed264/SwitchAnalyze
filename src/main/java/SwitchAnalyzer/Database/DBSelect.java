@@ -1,9 +1,10 @@
 package SwitchAnalyzer.Database;
 
+import SwitchAnalyzer.Kafka.Producer;
+import SwitchAnalyzer.Kafka.Topics;
+import SwitchAnalyzer.Network.IP;
 import SwitchAnalyzer.miscellaneous.JSONConverter;
 import com.datastax.driver.core.*;
-
-import java.sql.Timestamp;
 import java.util.ArrayList;
 
 public class DBSelect {
@@ -11,16 +12,13 @@ public class DBSelect {
     private static final Session session = DBConnect.getSession();
     //selectedAttributes is string builder containing the attributes passed next to the word SELECT
     private static StringBuilder selectedAttributes;
-    //private static List<String> attributesToBeShown;
     //whereCondition is string builder containing the conditions passed next to WHERE
     private static StringBuilder whereCondition;
     //fromTableName is string builder containing FROM table name
     private static StringBuilder fromTableName;
-    //This is a boolean that will be set in order to tell me if the select has specific attributes or it is select all
-    private static boolean selectAll;
     //wholeSelectQuery is the whole cql statement that will be executed
     private static StringBuilder wholeSelectQuery;
-    private static String jsonConverter;
+    private static boolean selectAll;
     private static boolean JSON;
     private static boolean condition;
     private static boolean ALLOWFILTERING;
@@ -28,9 +26,14 @@ public class DBSelect {
     public static void setALLOWFILTERING(boolean ALLOWFILTERING) {
         DBSelect.ALLOWFILTERING = ALLOWFILTERING;
     }
-    public static boolean isALLOWFILTERING() {
-        return ALLOWFILTERING;
+    public static void setSelectAll(boolean selectAll) {
+        DBSelect.selectAll = selectAll;
     }
+    public static void setJSON(boolean JSON) {
+        DBSelect.JSON = JSON;
+    }
+    public static void setCondition(boolean condition) {DBSelect.condition = condition;}
+    /*********************get last runNo in the current switch**********/
     public static long getLastRun(){
         StringBuilder sb = new StringBuilder("SELECT MAX(runNo) FROM runs ;");
         final String query = sb.toString();
@@ -47,88 +50,24 @@ public class DBSelect {
 
         return latestRun;
     }
-
-    public static boolean isSelectAll() {
-        return selectAll;
-    }
-    public static <T> T selectAllNoConditionsTest(){
-        DBSelect.setSelectAll(true);
-        DBSelect.setJSON(true);
-        DBSelect.setCondition(false);
-        DBSelect.beginSelectFrames(1);
-        return (T) DBSelect.executeSelect();
-    }
-    public static void setSelectAll(boolean selectAll) {
-        DBSelect.selectAll = selectAll;
-    }
-
-    public static void setJSON(boolean JSON) {
-        DBSelect.JSON = JSON;
-    }
-
-    public static void setCondition(boolean condition) {
-        DBSelect.condition = condition;
-    }
-
-    public static boolean isThereCondition() {
-        return condition;
-    }
-
-    public static boolean isJSON() {
-        return JSON;
-    }
-
-    /*
-    Input : condition string
-    Output : void
-    Description :
-        This function will begin the select query with a condition all or specific
-        all means we need to execute select all
-        specific means we need to execute select certain attributes
-    */
-    public static void beginSelectRuns() {
+    /***********************************Begin select**************************************/
+    public static void beginSelectRuns()
+    {
         fromTableName = new StringBuilder("FROM runs");
-        jsonConverter = "runs";
-        if (selectAll) {
-            if (JSON) {
-                selectedAttributes = new StringBuilder("SELECT JSON * ");
-            } else {
-                selectedAttributes = new StringBuilder("SELECT * ");
-            }
-        } else {
-            if (JSON) {
-                selectedAttributes = new StringBuilder("SELECT JSON ");
-            } else {
-                selectedAttributes = new StringBuilder("SELECT ");
-            }
-
-        }
-        whereCondition = new StringBuilder(" WHERE ");
+        begin();
     }
-
-    public static void beginSelectHistory() {
+    public static void beginSelectSwitches()
+    {
         fromTableName = new StringBuilder("FROM switches");
-        //TableName = "switches";
-        if (selectAll) {
-            if (JSON) {
-                selectedAttributes = new StringBuilder("SELECT JSON * ");
-            } else {
-                selectedAttributes = new StringBuilder("SELECT * ");
-            }
-        } else {
-            if (JSON) {
-                selectedAttributes = new StringBuilder("SELECT JSON ");
-            } else {
-                selectedAttributes = new StringBuilder("SELECT ");
-            }
-
-        }
-        whereCondition = new StringBuilder(" WHERE ");
+        begin();
     }
-
-    public static void beginSelectFrames(long runNo) {
+    public static void beginSelectFrames(long runNo)
+    {
         fromTableName = new StringBuilder("FROM frames_run").append(runNo);
-        jsonConverter = "frames";
+        begin();
+    }
+    private static void begin()
+    {
         if (selectAll) {
             if (JSON) {
                 selectedAttributes = new StringBuilder("SELECT JSON * ");
@@ -141,170 +80,49 @@ public class DBSelect {
             } else {
                 selectedAttributes = new StringBuilder("SELECT ");
             }
-
         }
         whereCondition = new StringBuilder(" WHERE ");
     }
-
-    /****************************************************Run conditions and view*****************************************************************************/
+    /******************************Run conditions and view*******************************8*******/
     public static void conditionRunNo(long runNo) {
-        whereCondition.append("RunNo = ").append(String.valueOf(runNo));
+        whereCondition.append("runNo = ").append(String.valueOf(runNo));
     }
-
-    public static void viewRunNo() {
-        selectedAttributes.append("RunNo ");
-        //attributesToBeShown.add("RunNo");
+    public static void viewRunNo() { selectedAttributes.append("runNo "); }
+    public static void conditionRunDetails(String headerName)
+    {
+        whereCondition.append("runDetails CONTAINS KEY '").append(headerName).append("'");
+        ALLOWFILTERING = true;
     }
-
-    public static void conditionStartTimeStamp(Timestamp startTimeStamp) {
-        whereCondition.append("StartTimeStamp = ").append(startTimeStamp.toString());
-    }
-
-    public static void viewStartTimeStamp() {
-        selectedAttributes.append("StartTimeStamp ");
-        //attributesToBeShown.add("StartTimeStamp");
-    }
-
-    public static void conditionEndTimeStamp(Timestamp endTimeStamp) {
-        whereCondition.append("EndTimeStamp = ").append(endTimeStamp.toString());
-
-    }
-
-    public static void viewEndTimeStamp() {
-        selectedAttributes.append("EndTimeStamp ");
-        //attributesToBeShown.add("EndTimeStamp");
-    }
-
-    public static void conditionSwitchName(String switchName) {
-        whereCondition.append("SwitchName = ").append(switchName);
-
-    }
-
-    public static void viewSwitchName() {
-        selectedAttributes.append("SwitchName ");
-        //attributesToBeShown.add("SwitchName");
-    }
-
-    public static void conditionPacketLoss(float packetLoss) {
-        whereCondition.append("PacketLoss = ").append(String.valueOf(packetLoss));
-
-    }
-
-    public static void viewPacketLoss() {
-        selectedAttributes.append("PacketLoss ");
-        //attributesToBeShown.add("PacketLoss");
-    }
-
-    public static void conditionLatency(float latency) {
-        whereCondition.append("Latency = ").append(String.valueOf(latency));
-
-    }
-
-    public static void viewLatency() {
-        selectedAttributes.append("Latency ");
-        //attributesToBeShown.add("Latency");
-    }
-
-    public static void conditionThroughput(float throughput) {
-        whereCondition.append("Throughput = ").append(String.valueOf(throughput));
-
-    }
-
-    public static void viewThroughput() {
-        selectedAttributes.append("Throughput ");
-        //attributesToBeShown.add("Throughput");
-    }
-
-    public static void conditionSuccessfulFramesPercentage(float successfulFramesPercentage) {
-        whereCondition.append("SuccessfulFramesPercentage = ").append(String.valueOf(successfulFramesPercentage));
-
-    }
-
-    public static void viewSuccessfulFramesPercentage() {
-        selectedAttributes.append("SuccessfulFramesPercentage ");
-        //attributesToBeShown.add("SuccessfulFramesPercentage");
-    }
-
-    public static void conditionFramesWithErrorsPercentage(float framesWithErrorsPercentage) {
-        whereCondition.append("FramesWithErrorsPercentage = ").append(String.valueOf(framesWithErrorsPercentage));
-
-    }
-
-    public static void viewFramesWithErrorsPercentage() {
-        selectedAttributes.append("FramesWithErrorsPercentage ");
-        //attributesToBeShown.add("FramesWithErrorsPercentage");
-    }
-
-
-    /******************************************************Frame condition and view**********************************************************************/
+    public static void viewRunDetails() { selectedAttributes.append("runDetails "); }
+    /*********************** Frame condition and view ******************************************/
     public static void conditionID(long id) {
         whereCondition.append("ID = ").append(String.valueOf(id));
-
     }
-
-    public static void viewID() {
-        selectedAttributes.append("ID ");
-        //attributesToBeShown.add("ID");
+    public static void viewID() { selectedAttributes.append("ID "); }
+    public static void conditionPort(int port) {
+        whereCondition.append("port = ").append(String.valueOf(port));
     }
-
-    public static void conditionTimestamp(Timestamp timestamp) {
-        whereCondition.append("Timestamp = ").append(timestamp.toString());
-
+    public static void viewPort() { selectedAttributes.append("port "); }
+    public static void conditionDirection(String direction) {
+        whereCondition.append("direction = ").append(direction);
     }
-
-    public static void viewTimestamp() {
-        selectedAttributes.append("Timestamp ");
-        //attributesToBeShown.add("Timestamp");
-    }
-
-    public static void conditionSendingPort(int sendingPort) {
-        whereCondition.append("SendingPort = ").append(String.valueOf(sendingPort));
-
-    }
-
-    public static void viewSendingPort() {
-        selectedAttributes.append("SendingPort ");
-        //attributesToBeShown.add("SendingPort");
-    }
-
-    public static void conditionRecievingPort(int recievingPort) {
-        whereCondition.append("RecievingPort = ").append(String.valueOf(recievingPort));
-    }
-
-    public static void viewRecievingPort() {
-        selectedAttributes.append("RecievingPort ");
-        //attributesToBeShown.add("RecievingPort");
-    }
+    public static void viewDirection() { selectedAttributes.append("direction "); }
 
     public static void conditionFrameData(String headerName)
     {
         whereCondition.append("frameData CONTAINS KEY '").append(headerName).append("'");
         ALLOWFILTERING = true;
     }
-
-    public static void viewFrameData() {
-        selectedAttributes.append("frameData ");
-        //attributesToBeShown.add("frameData");
-    }
+    public static void viewFrameData() { selectedAttributes.append("frameData "); }
 
     public static void conditionErrorInRouting(boolean errorInRouting) {
-        whereCondition.append("ErrorInRouting = ").append(String.valueOf(errorInRouting));
+        whereCondition.append("errorInRouting = ").append(String.valueOf(errorInRouting));
     }
-
-    public static void viewErrorInRouting() {
-        selectedAttributes.append("ErrorInRouting ");
-        //attributesToBeShown.add("ErrorInRouting");
-    }
-
+    public static void viewErrorInRouting() { selectedAttributes.append("errorInRouting "); }
     public static void conditionCrcChecker(boolean crcChecker) {
-        whereCondition.append("CrcChecker = ").append(String.valueOf(crcChecker));
+        whereCondition.append("crcChecker = ").append(String.valueOf(crcChecker));
     }
-
-    public static void viewCrcChecker() {
-        selectedAttributes.append("CrcChecker ");
-        //attributesToBeShown.add("CrcChecker");
-    }
-
+    public static void viewCrcChecker() { selectedAttributes.append("crcChecker "); }
     /**
      * Input : void
      * Output : void
@@ -312,10 +130,7 @@ public class DBSelect {
      * If select is select all the function will add the word AND in the condition
      * If select is selected specific the function will add the condition and the attribute
      */
-    public static void otherCondition() {
-        whereCondition.append(" AND ");
-    }
-
+    public static void otherCondition() { whereCondition.append(" AND "); }
     /**
      * Input : void
      * Output : void
@@ -323,18 +138,16 @@ public class DBSelect {
      * If select is select all the function will add the word AND in the condition
      * If select is selected specific the function will add the condition and the attribute
      */
-    public static void otherAttribute() {
-        selectedAttributes.append(", ");
-    }
-
-    public static <T> T executeSelect()
+    public static void otherAttribute() { selectedAttributes.append(", "); }
+    /************************************* Execute select ***************************************/
+    private static ResultSet beginExecuteSelect()
     {
         wholeSelectQuery = new StringBuilder();
         wholeSelectQuery.append(selectedAttributes).append(fromTableName);
-        if(isThereCondition())
+        if(condition)
         {
             wholeSelectQuery.append(whereCondition);
-            if(isALLOWFILTERING())
+            if(ALLOWFILTERING)
                 wholeSelectQuery.append(" ALLOW FILTERING");
         }
         wholeSelectQuery.append(";");
@@ -342,24 +155,47 @@ public class DBSelect {
         System.out.println(query);
         SimpleStatement x = new SimpleStatement(query);
         x.setConsistencyLevel(ConsistencyLevel.ONE);
-        ResultSet rs = session.execute(x);
-        if(isJSON())
+        return session.execute(x);
+    }
+    /**
+     * Description :
+     *          build the string builder called wholeSelectQuery depending on different scenarios
+     *          and return a type accordingly (arraylist of runs or resultSet)
+     */
+    public static <T> T executeSelect()
+    {
+        ResultSet rs = beginExecuteSelect();
+        if(JSON)
         {
-            return (T) selectJSON(rs);
+            return (T) selectJSON_runs(rs);
         }
         else
         {
             return (T) rs;
         }
     }
-    public static <T> T selectJSON(ResultSet rs)
+    /**
+     * Description :
+     *          build the string builder called wholeSelectQuery depending on different scenarios
+     *          and set attributes for DBFrame and produce the frame in kafka
+     */
+    public static void executeSelect(String switchName,long runNo)
     {
-        if(jsonConverter == "runs")
+        ResultSet rs = beginExecuteSelect();
+        if(JSON)
         {
-            return (T) selectJSON_runs(rs);
+            selectJSON_frames_kafka(rs,switchName,runNo);
         }
-        return (T) selectJSON_frames(rs);
+        else
+        {
+            System.out.println("the select is not json");
+        }
     }
+    /**
+     * Description :
+     *          it iterates on the rows of resultSet and convert the result into DBRun object and
+     *          returns arraylist of DBRun
+     */
     private static ArrayList<DBRun> selectJSON_runs(ResultSet rs)
     {
         ArrayList<DBRun> runs=new ArrayList<>();
@@ -371,36 +207,87 @@ public class DBSelect {
         }
         return runs;
     }
-    private static ArrayList<DBFrame> selectJSON_frames(ResultSet rs)
+    /**
+     * Description :
+     *          it iterates on the rows of resultSet and produce the frame in kafka
+     */
+    private static void selectJSON_frames_kafka(ResultSet rs,String switchName,long runNo)
     {
-        ArrayList<DBFrame> frames=new ArrayList<>();
+        Producer dataProducer = new Producer(IP.ip1);
         for (Row row : rs)
         {
-            String jsonString = row.getString("[json]");
-            DBFrame frame = JSONConverter.fromJSON(jsonString,DBFrame.class);
-            frames.add(frame);
+            String frame_json = row.getString("[json]");
+            long runno = runNo;
+            String switchname = switchName;
+            dataProducer.produce(JSONConverter.toJSON(new DBFrame(frame_json,runNo,switchName)), Topics.ProcessedFramesFromHPC);
+            System.out.println("produced frame in kafka");
+            dataProducer.flush();
         }
-        return frames;
     }
-    public static String selectAllJson_LastRunTest()
+    /************************ selectAll based on specific frame data header **********************/
+    public static String selectSpecificFrameDataHeader(String headerName)
     {
-        setSelectAll(true);
-        setJSON(true);
+        setConditions_SpecificFrameDataHeader();
         beginSelectFrames(DBConnect.getLastRun());
-        String jsonResult = executeSelect();
-        return jsonResult;
+        conditionFrameData(headerName);
+        return executeSelect();
     }
-    public static String selectAllJson_LastRun_SpecificHeaderTest(String headerName)
+    public static String selectSpecificFrameDataHeader(long runNo,String headerName)
+    {
+        setConditions_SpecificFrameDataHeader();
+        beginSelectFrames(runNo);
+        conditionFrameData(headerName);
+        return executeSelect();
+    }
+    public static String selectSpecificFrameDataHeader(String switchName,long runNo,String headerName)
+    {
+        KeySpace.useKeyspace_Node(switchName);
+        setConditions_SpecificFrameDataHeader();
+        beginSelectFrames(runNo);
+        conditionFrameData(headerName);
+        return executeSelect();
+    }
+    private static void setConditions_SpecificFrameDataHeader()
     {
         setSelectAll(true);
         setJSON(true);
         setCondition(true);
         setALLOWFILTERING(false);
-        beginSelectFrames(DBConnect.getLastRun());
-        conditionFrameData(headerName);
-        String jsonResult = executeSelect();
-        return jsonResult;
     }
+
+    /************************************ Show history ******************************************/
+    /**
+     * Description :
+     *       it goes into history keyspace and retrieve all the details about all switches in it
+     */
+    public static String showHistory()
+    {
+        KeySpace.useKeyspace_Node("history");
+        return JSONConverter.toJSON(selectSwitches());
+    }
+    private static DBSwitches selectSwitches()
+    {
+        setSelectAll(true);
+        setJSON(false);
+        setCondition(false);
+        setALLOWFILTERING(false);
+        beginSelectSwitches();
+        ResultSet historyResult = executeSelect();
+        ArrayList<DBSwitch> dbSwitches = convertResultSetHistory(historyResult);
+        for (int i = 0; i < dbSwitches.size(); i++)
+        {
+            KeySpace.useKeyspace_Node(dbSwitches.get(i).getSwitchName());
+            setJSON(true);
+            beginSelectRuns();
+            dbSwitches.get(i).setSwitchRuns(executeSelect());
+        }
+        return new DBSwitches(dbSwitches);
+    }
+    /**
+     * Description :
+     *          it iterates on the rows of resultSet and handles the attributes of DBSwitch by
+     *          setting them and returns arraylist of DBSwitch
+     */
     private static ArrayList<DBSwitch> convertResultSetHistory(ResultSet historyResult)
     {
         ArrayList<DBSwitch> switches = new ArrayList<>();
@@ -413,27 +300,26 @@ public class DBSelect {
         }
         return switches;
     }
-    private static DBSwitches selectSwitches()
+    /************************************ Compare runs ******************************************/
+    public static void compareRuns(ArrayList<Run_Gui> run_guis)
+    {
+        for (int i = 0; i < run_guis.size(); i++)
+        {
+            showSpecificRun(run_guis.get(i).switchName,run_guis.get(i).runNo);
+        }
+    }
+    public static void showSpecificRun(String switchName, long runNo)
+    {
+        KeySpace.useKeyspace_Node(switchName);
+        selectRunDetails(switchName, runNo);
+    }
+    private static void selectRunDetails(String switchName ,long runNo)
     {
         setSelectAll(true);
-        setJSON(false);
+        setJSON(true);
         setCondition(false);
         setALLOWFILTERING(false);
-        beginSelectHistory();
-        ResultSet historyResult = executeSelect();
-        ArrayList<DBSwitch> dbSwitches = convertResultSetHistory(historyResult);
-        for (int i = 0; i < dbSwitches.size(); i++)
-        {
-            KeySpace.useKeyspace_Node(dbSwitches.get(i).getSwitchName());
-            setJSON(true);
-            beginSelectRuns();
-            dbSwitches.get(i).setSwitchRuns(executeSelect());
-        }
-        return new DBSwitches(dbSwitches);
-    }
-    public static String showHistory()
-    {
-        KeySpace.useKeyspace_Node("history");
-        return JSONConverter.toJSON(selectSwitches());
+        beginSelectFrames(runNo);
+        executeSelect(switchName,runNo);
     }
 }
