@@ -1,7 +1,12 @@
 1)Start Run Command:
 0{
+ "DefRun" : true
+}
+0{
+  "defRun" : false
   "pairs": [
     {
+      "saveOption" : 0,1,2  => (Save Headers and bytes/ Save Headers / No Save) For Database
       "toPort": 1,
       "fromPort": {
         "portConfig": {
@@ -27,63 +32,53 @@
   ]
 }
 
-0{
-  "pairs": [
-    {
-      "toPort": 2,
-      "fromPort": {
-        "portConfig": {
-          "packetInfos": [
-            {
-              "dataLinkHeader": "Ethernet",
-              "networkHeader": "ipv4",
-              "transportHeader": "udp",
-              "payloadBuilder": "5555555",
-              "packetSize": 1000,
-              "numberOfPackets": 50000,
-              "errorDetectingAlgorithm" : "CRC",
-              "injectErrors" : false
-            }
-          ],
-          "utilities": [],
-          "rate": 500,
-          "mode": "reciever"
-        },
-        "ID": 1
-      }
-    }
-  ]
-}
-
-0{
-  "pairs": [
-    {
-      "toPort": 2,
-      "fromPort": {
-        "portConfig": {
-          "utilities": [],
-          "rate": 500,
-          "mode": "reciever"
-        },
-        "ID": 1
-      }
-    }
-  ]
-}
-
-2)Retrieve Command
+Retrieve Command
 1{"ids" : [1], "retrievals" : ["Rates", "PacketLoss"]}
 
-3)StopRetrieve Command
+
+StopRetrieve Command
 2{"ids" : [1]}
 
-4)StopRun Command
+PauseSend Command
 3{"ids" : [1]}
 
-5)ResumeRun Command
+ResumeSend Command
 4{"ids" : [1]}
 
+StartRecieve
+5{}
 
+
+//End Run CMD
+6{"ids" : []}
+//Reply -> Map of avg values.
 {
-    [2,1,0,0]
+[
+    {
+    ID:1
+    map {"rate" : 35, "packetLoss", "CRC" :  }
+    },
+    {
+    ID:2
+    map {"rate" : 40, "PacketLoss" :}
+    }
+    ]
 }
+//Show Run History command when user presses on button
+7{"Switch" : ""}
+//Reply
+{ "Switch" : ["s1", "s2"]}
+//Show Run History when user chooses a specific switch to see.
+7{"Switch" : "s1"}
+//Replay
+{
+"RID" :
+    {
+        "" :
+    }
+}
+
+
+
+
+
