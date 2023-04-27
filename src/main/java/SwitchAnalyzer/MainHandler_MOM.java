@@ -17,6 +17,7 @@ import java.util.Queue;
 
 public class MainHandler_MOM
 {
+    public static boolean working = false;
     public static WebSocketServer server;
     public static Producer cmdProducer = new Producer(IP.ip1);
     static volatile int x;
@@ -30,10 +31,13 @@ public class MainHandler_MOM
         JettyWebSocketServer.startServer(Ports.webSocketPort);
     }
 
+    public static void end() { working = false; }
+
     public static void start()
     {
+        working  = true;
         init();
-        while(true)
+        while(working)
         {
             while (commands.peek() == null)
             {
@@ -42,11 +46,7 @@ public class MainHandler_MOM
             ICommand c = commands.poll();
             ProcessCmd.processCmd(c);
         }
-
-    }
-
-    //temp main for testing
-    public static void main(String[] args){
-        start();
+        DBConnect.closeConnectionToDB();
+        SystemMaps.clear();
     }
 }

@@ -9,10 +9,8 @@ import SwitchAnalyzer.Database.NoStore;
 import SwitchAnalyzer.Kafka.GenericConsumer;
 import SwitchAnalyzer.Kafka.Producer;
 import SwitchAnalyzer.Kafka.Topics;
-import SwitchAnalyzer.Machines.MachineNode;
 import SwitchAnalyzer.Machines.MasterOfHPC;
 import SwitchAnalyzer.Network.IP;
-import SwitchAnalyzer.Network.PCAP;
 import SwitchAnalyzer.Network.Ports;
 import SwitchAnalyzer.miscellaneous.GlobalVariable;
 import SwitchAnalyzer.miscellaneous.JSONConverter;
@@ -26,7 +24,8 @@ import java.util.Arrays;
 
 public class MainHandler_Master
 {
-    public static String consumerGroup = "cv-asjfll-cookgfgllsnsumer-gdhshdsffsdhbcxvncbmrouasdybbbbbbbbbbbbbbbbbbtuydtjuyp12";
+    public static boolean working = false;
+    public static String consumerGroup = "Master_Cons1";
     public static Producer cmdProducer = new Producer(IP.ip1);
     public static Producer dataProducer = new Producer(IP.ip1);
     static GenericConsumer consumer;
@@ -40,11 +39,14 @@ public class MainHandler_Master
         consumer.selectTopic(Topics.cmdFromMOM);
     }
 
+    public static void end() { working = false; }
+
     public static void start()
     {
+        working = true;
         init();
         int commandTypeIndex;
-        while (true)
+        while (working)
         {
             ConsumerRecords<String, String> records = consumer.consume(Time.waitTime);
             for (ConsumerRecord<String, String> record : records)
@@ -62,11 +64,7 @@ public class MainHandler_Master
                 }
             }
         }
-    }
-
-    //temp main for testing
-    public static void main(String[] args){
-        start();
+        SystemMaps.clear();
     }
 }
 
