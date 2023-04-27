@@ -31,7 +31,8 @@ public class MasterOfHPC {
     public String getClusterName(){
         return hpcInfo.clusterName;
     }
-    public void setChildNodes(ArrayList<MachineConfigurations> machineConfigs) {
+    public void setChildNodes(ArrayList<MachineConfigurations> machineConfigs)
+    {
         for(MachineConfigurations machineConfig :machineConfigs){
             if(!(machineConfig.Is_master()))
             childNodes.add(new MachineNode(machineConfig.getMachine_id(), machineConfig.getIp(),machineConfig.getMac()));

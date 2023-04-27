@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 public class ProduceData_MOM
 {
-    static GenericConsumer consumer = new GenericConsumer(IP.ip1 + ":" + Ports.port1, "asdadsasfasbzx", true);
+    static GenericConsumer consumer = new GenericConsumer(IP.ip1 + ":" + Ports.port1, "frame_Consumer32", true);
     public static void produceData(ArrayList<Integer> ids)
     {
         getFrames();
@@ -28,11 +28,8 @@ public class ProduceData_MOM
         {
             json = JSONConverter.toJSON(GlobalVariable.portHpcMap.get(id).hpcInfo);
             System.out.println("Before send" + json);
-            try {
-                JettyWebSocketServer.writeMessage(json);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            try { JettyWebSocketServer.writeMessage(json); }
+            catch (Exception e) { throw new RuntimeException(e); }
         }
         if (!MOMConsumer.getResults().isEmpty())
         {
@@ -60,5 +57,4 @@ public class ProduceData_MOM
             JettyWebSocketServer.writeMessage(json);
         }
     }
-
 }

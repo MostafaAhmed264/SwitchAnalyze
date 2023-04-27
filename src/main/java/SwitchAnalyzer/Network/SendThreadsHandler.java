@@ -4,14 +4,15 @@ import SwitchAnalyzer.Machines.MachineNode;
 import SwitchAnalyzer.Machines.MasterOfHPC;
 import SwitchAnalyzer.UtilityExecution.UtilityExecutor;
 import SwitchAnalyzer.miscellaneous.GlobalVariable;
+import jnr.ffi.annotations.Synchronized;
 
 import java.util.ArrayList;
-import java.util.Vector;
+
 
 public class SendThreadsHandler
 {
     private static final ArrayList<PacketInfo> packetInfos = new ArrayList<>();
-    public static Vector<Thread> threads = new Vector<>();
+    public static ArrayList<Thread> threads = new ArrayList<>();
 
     public static void addToPacketInfoList(PacketInfo info) { packetInfos.add(info); }
 
@@ -33,6 +34,7 @@ public class SendThreadsHandler
         clearPacketInfos();
         clearThreads();
         UtilityExecutor.clearUtils();
+
     }
 
     public static void openThreads(int toPort , MachineNode node, int rate, long duration)
@@ -61,7 +63,7 @@ public class SendThreadsHandler
     public static void resumeThreads()
     {
         GlobalVariable.stopRunSignal = false;
-        try { for (Thread t : threads) t.notify(); }
+        try {  synchronized (NormalSender.monitor) { NormalSender.monitor.notifyAll(); } }
         catch (Exception ignored){}
     }
 
