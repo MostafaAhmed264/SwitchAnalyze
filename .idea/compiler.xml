@@ -7,6 +7,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="SwitchAnalyze" />
+        <module name="SwitchAnalyze1" />
         <module name="SwitchAnalyzer" />
       </profile>
     </annotationProcessing>

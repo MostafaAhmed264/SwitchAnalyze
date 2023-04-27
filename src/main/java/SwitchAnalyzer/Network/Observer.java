@@ -13,7 +13,7 @@ public class Observer
         String buffSend = "";
         String buffRec = "";
         int outputIndx = 3;
-        SystemAnalyser system = new SystemAnalyser();
+        ExecutorCMD system = new ExecutorCMD();
         system.runCommand("sudo ./netscript.sh "+ GlobalVariable.interfaceName); // Run script in shell
         output = system.outputStore; // Output from terminal (command)
         // Get send rate

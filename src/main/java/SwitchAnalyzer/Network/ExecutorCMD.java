@@ -3,7 +3,7 @@ package SwitchAnalyzer.Network;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-public class SystemAnalyser {
+public class ExecutorCMD {
     public String outputStore;
 
     public void runCommand(String command) {
