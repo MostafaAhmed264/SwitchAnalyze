@@ -3,6 +3,7 @@ package SwitchAnalyzer.Commands;
 import SwitchAnalyzer.Kafka.Topics;
 import SwitchAnalyzer.MainHandler_MOM;
 import SwitchAnalyzer.Network.HardwareObjects.SwitchPort;
+import SwitchAnalyzer.miscellaneous.GlobalVariable;
 import SwitchAnalyzer.miscellaneous.JSONConverter;
 
 import java.util.ArrayList;
@@ -18,8 +19,8 @@ public class ResumeRunCmd_MOM implements ICommandMOM
 
     public void GenCmd(SwitchPort port)
     {
-        String json = JSONConverter.toJSON(new StopRunCmdMaster(port.ID));
-        json = "4" + json;
+        String json = JSONConverter.toJSON(new ResumeRunCmd_Master(port.ID));
+        json = GlobalVariable.CMD_IDX.RESUMESEND_IDX + json;
         MainHandler_MOM.cmdProducer.produce(json, Topics.cmdFromMOM);
         MainHandler_MOM.cmdProducer.flush();
     }

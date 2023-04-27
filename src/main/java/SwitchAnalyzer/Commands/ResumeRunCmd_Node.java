@@ -4,8 +4,6 @@ import SwitchAnalyzer.Network.SendThreadsHandler;
 
 public class ResumeRunCmd_Node extends ICommandNode
 {
-    public void processCmd()
-    {
-        SendThreadsHandler.resumeThreads();
-    }
+    ResumeRunCmd_Node(int id) { this.machineID = id; }
+    public void processCmd() { SendThreadsHandler.resumeThreads(); }
 }
