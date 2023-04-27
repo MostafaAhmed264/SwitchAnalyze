@@ -18,7 +18,6 @@ public class PLossCollectorMaster implements Collector {
     @Override
     public String collect()
     {
-
         float packetLoss = 0;
         String packetLossString;
 
@@ -27,7 +26,8 @@ public class PLossCollectorMaster implements Collector {
             packetLossString = master.childNodes.get(i).machineInfo.map.get(NamingConventions.packetLoss);
             packetLoss += Float.parseFloat(packetLossString);
         }
-        return String.valueOf(packetLoss);
+
+        return String.valueOf(packetLoss/master.childNodes.size());
 
     }
 
