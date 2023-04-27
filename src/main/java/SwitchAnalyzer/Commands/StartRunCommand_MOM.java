@@ -1,31 +1,39 @@
 package SwitchAnalyzer.Commands;
 
-import SwitchAnalyzer.Database.DBConnect;
-import SwitchAnalyzer.Database.DBSwitch;
+import SwitchAnalyzer.Collectors.MOMConsumer;
 import SwitchAnalyzer.Kafka.Topics;
 import SwitchAnalyzer.MainHandler_MOM;
 import SwitchAnalyzer.MapPacketInfo;
 import SwitchAnalyzer.Network.ErrorDetection.CRC;
-import SwitchAnalyzer.Network.ErrorDetection.ErrorDetectingAlgorithms;
 import SwitchAnalyzer.Network.ErrorDetection.None;
 import SwitchAnalyzer.Network.HardwareObjects.SwitchPortPair;
 import SwitchAnalyzer.Network.PacketInfo;
 import SwitchAnalyzer.Sockets.PacketInfoGui;
+import SwitchAnalyzer.miscellaneous.GlobalVariable;
 import SwitchAnalyzer.miscellaneous.JSONConverter;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class StartRunCommand_MOM implements ICommandMOM
 {
-    ArrayList<SwitchPortPair> pairs= new ArrayList<>();
+    int saveOption;
+    boolean defRun;
+    ArrayList<SwitchPortPair> pairs = new ArrayList<>();
     @Override
     public void processCmd()
     {
-        DBConnect.startRun(new DBSwitch("wafy", 10));
-        for (SwitchPortPair switchPort : pairs)
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Calendar cal = Calendar.getInstance();
+        MOMConsumer.results.put("StartTime", dateFormat.format(cal.getTime()));
+
+        if (defRun)
         {
-           GenCmd(switchPort);
+            for (SwitchPortPair switchPortPair : GlobalVariable.defPairs) { GenCmd(switchPortPair); }
         }
+        else { for (SwitchPortPair switchPort : pairs) { GenCmd(switchPort); } }
     }
 
     public static boolean isCrc(ArrayList<PacketInfoGui> packetInfoGuis)
@@ -42,19 +50,21 @@ public class StartRunCommand_MOM implements ICommandMOM
 
     public void GenCmd(SwitchPortPair portPair)
     {
-        String json = JSONConverter.toJSON(new StartRunCommand_Master(portPair));
+        String startRunJSON = JSONConverter.toJSON(new StartRunCommand_Master(portPair, saveOption, GlobalVariable.switchName));
+        String startRecJson = JSONConverter.toJSON(buildStartRecieveMaster(portPair));
+        startRunJSON = GlobalVariable.CMD_IDX.STARTRUN_IDX + startRunJSON;
+        startRecJson = GlobalVariable.CMD_IDX.STARTRECIEVE_IDX + startRecJson;
+        MainHandler_MOM.cmdProducer.produce(startRunJSON,Topics.cmdFromMOM);
+        MainHandler_MOM.cmdProducer.produce(startRecJson,Topics.cmdFromMOM);
+        MainHandler_MOM.cmdProducer.flush();
+    }
+
+    private StartRecieve_Master buildStartRecieveMaster(SwitchPortPair portPair)
+    {
         StartRecieve_Master startRecieve_master = new StartRecieve_Master();
         startRecieve_master.errorDetectingAlgorithm = new None();
         if (isCrc(portPair.fromPort.portConfig.packetInfos)) { startRecieve_master.errorDetectingAlgorithm = new CRC(); }
         startRecieve_master.portID = 0;
-        String json2 = JSONConverter.toJSON(startRecieve_master);
-        System.out.println("the command is : " + json);
-        System.out.println("Receive cmd is" + json2);
-        json = "0"+json;
-        json2 = "5" + json2;
-        System.out.println(json2);
-        MainHandler_MOM.cmdProducer.produce(json,Topics.cmdFromMOM);
-        MainHandler_MOM.cmdProducer.produce(json2,Topics.cmdFromMOM);
-        MainHandler_MOM.cmdProducer.flush();
+        return startRecieve_master;
     }
 }
