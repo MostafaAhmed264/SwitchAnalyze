@@ -1,6 +1,5 @@
 package SwitchAnalyzer.Database;
 
-import SwitchAnalyzer.Sockets.PacketInfoGui;
 import org.pcap4j.packet.IpV4Packet;
 import org.pcap4j.packet.IpV6Packet;
 import org.pcap4j.packet.Packet;

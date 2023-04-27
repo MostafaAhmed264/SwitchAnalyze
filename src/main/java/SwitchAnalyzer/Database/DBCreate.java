@@ -1,7 +1,6 @@
 package SwitchAnalyzer.Database;
 
 import com.datastax.driver.core.KeyspaceMetadata;
-import com.datastax.driver.core.UserType;
 
 
 public class DBCreate {
@@ -42,13 +41,7 @@ public class DBCreate {
                     " EXISTS runs")
                     .append("(")
                     .append("runNo bigint,")
-                    .append("startTimeStamp timestamp,")
-                    .append("endTimeStamp timestamp,")
-                    .append("packetLoss float,")
-                    .append("latency float,")
-                    .append("throughput float,")
-                    .append("successfulFramesPercentage float,")
-                    .append("framesWithErrorsPercentage float,")
+                    .append("runDetails map<text, text>,")
                     .append("PRIMARY KEY(runNo)" )
                     .append(");");
             final String query = sb.toString();
@@ -70,9 +63,8 @@ public class DBCreate {
                 sb.append(runNO)
                 .append("(")
                 .append("id timeuuid,")
-                .append("timeStamp timestamp,")
-                .append("sendingPort int,")
-                .append("recievingPort int,")
+                .append("port int,")
+                .append("direction text,")
                 .append("frameData map<text, text>,")
                 .append("errorInRouting boolean,")
                 .append("crcChecker boolean,")

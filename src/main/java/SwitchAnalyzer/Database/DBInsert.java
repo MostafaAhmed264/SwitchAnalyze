@@ -1,7 +1,9 @@
 package SwitchAnalyzer.Database;
 
-import com.datastax.driver.core.*;
+import SwitchAnalyzer.miscellaneous.JSONConverter;
+import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.utils.UUIDs;
+
 import java.util.UUID;
 
 public class DBInsert
@@ -10,46 +12,19 @@ public class DBInsert
     public static String getKeyspaceName() {
         return keyspaceName;
     }
-
-    public static void setKeyspaceName(String keyspaceName) {
-        DBInsert.keyspaceName = keyspaceName;
-    }
-    public static void insert(String frameJson)
+    public static void setKeyspaceName(String keyspaceName) { DBInsert.keyspaceName = keyspaceName; }
+    public static void insertFrame(String frameJson)
     {
         StringBuilder sb = new StringBuilder(
                 "INSERT INTO frames_run"+DBConnect.getLastRun()+" JSON '"+frameJson+"';");
         final String query = sb.toString();
         DBConnect.getSession().execute(query);
     }
-    /**
-     * Input : run
-     * Output : void
-     * Description :
-     * The function insert a run in the Runs table of the current switch .
-     */
-    public static void insert(DBRun run)
+    public static void insertRun(String frameJson)
     {
-        UUID timeUuid = UUIDs.timeBased();
-        StringBuilder sb = new StringBuilder("INSERT INTO frames_run")
-                .append(DBConnect.getLastRun())
-                .append("(runNo,startTimeStamp,endTimeStamp,packetLoss,latency,throughput,successfulFramesPercentage,framesWithErrorsPercentage) ")
-                .append("VALUES (")
-                .append(String.valueOf(run.getRunNo()))
-                .append(", ")
-                .append(run.getStartTimeStamp().toString())
-                .append(", ")
-                .append(run.getEndTimeStamp().toString())
-                .append(", ")
-                .append(String.valueOf(run.getPacketLoss()))
-                .append(", ")
-                .append(String.valueOf(run.getLatency()))
-                .append(", ")
-                .append(run.getThroughput())
-                .append(", ")
-                .append(run.getSuccessfulFramesPercentage())
-                .append(", ")
-                .append(String.valueOf(run.getFramesWithErrorsPercentage()))
-                .append(");");
+        DBRun run = JSONConverter.fromJSON(frameJson,DBRun.class);
+        run.setRunno_DBInsert();
+        StringBuilder sb = new StringBuilder("INSERT INTO runs JSON '"+JSONConverter.toJSON(run)+"';");
         final String query = sb.toString();
         DBConnect.getSession().execute(query);
     }
@@ -61,12 +36,16 @@ public class DBInsert
      * If it already exists then it will not insert it
      * else it will insert a row including the name of switch and the total number of ports
      */
-    public static void insert(DBSwitch dbSwitch)
+    public static void insertSwitch(DBSwitch dbSwitch)
     {
         if(!isSwitchNameAlreadyExists(dbSwitch.getSwitchName()))
         {
             UUID timeUuid = UUIDs.timeBased();
-            StringBuilder sb = new StringBuilder("INSERT INTO ").append("switches").append("(id,switchName,totalNoOfPorts) ").append("VALUES (").append(timeUuid.toString()).append(", '").append(dbSwitch.getSwitchName()).append("', ").append(String.valueOf(dbSwitch.getTotalNoOfPorts())).append(");");
+            StringBuilder sb = new StringBuilder("INSERT INTO ").append("switches")
+                    .append("(id,switchName,totalNoOfPorts) ").append("VALUES (")
+                    .append(timeUuid.toString()).append(", '")
+                    .append(dbSwitch.getSwitchName()).append("', ")
+                    .append(String.valueOf(dbSwitch.getTotalNoOfPorts())).append(");");
             final String query = sb.toString();
             DBConnect.getSession().execute(query);
         }
@@ -81,7 +60,8 @@ public class DBInsert
      */
     private static boolean isSwitchNameAlreadyExists(String switchName)
     {
-        StringBuilder sb = new StringBuilder("SELECT * FROM switches WHERE switchName = '").append(switchName).append("'ALLOW FILTERING;");
+        StringBuilder sb = new StringBuilder("SELECT * FROM switches WHERE switchName = '")
+                .append(switchName).append("'ALLOW FILTERING;");
         final String query = sb.toString();
         ResultSet rs = DBConnect.getSession().execute(query);
         if(rs.isExhausted())
@@ -90,5 +70,4 @@ public class DBInsert
         }
         return true;
     }
-
 }
