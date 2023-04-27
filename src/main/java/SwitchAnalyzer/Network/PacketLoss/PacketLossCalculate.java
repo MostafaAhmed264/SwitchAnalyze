@@ -2,7 +2,9 @@ package SwitchAnalyzer.Network.PacketLoss;
 
 import SwitchAnalyzer.Machines.MasterOfHPC;
 import SwitchAnalyzer.MainHandler_Node;
+import SwitchAnalyzer.NamingConventions;
 import SwitchAnalyzer.Network.*;
+import SwitchAnalyzer.UtilityExecution.UtilityExecutor;
 import SwitchAnalyzer.miscellaneous.GlobalVariable;
 import org.pcap4j.core.*;
 import org.pcap4j.packet.*;
@@ -12,6 +14,7 @@ import org.pcap4j.util.MacAddress;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -28,6 +31,8 @@ public class PacketLossCalculate {
     private PcapHandle handle;
     private PcapHandle sendHandle;
     private final ExecutorService pool = Executors.newSingleThreadExecutor();
+    ArrayList<Long> sendTimes = new ArrayList<Long>();
+    ArrayList<Long> receiveTimes = new ArrayList<Long>();
 
 
     private void init()
@@ -49,6 +54,7 @@ public class PacketLossCalculate {
                         @Override
                         public void gotPacket(PcapPacket pcapPacket) {
                             recievedPacketCount++;
+                            receiveTimes.add(System.nanoTime());
                         }
                     };
             Task t = new Task(handle, listener);
@@ -97,20 +103,27 @@ public class PacketLossCalculate {
                     .srcAddr(MainHandler_Node.node.nodeMacAddress)
                     .type(EtherType.IPV4)
                     .paddingAtBuild(true);
-            for (int i = 0; i < COUNT; i++)
-            {
+            for (int i = 0; i < COUNT; i++) {
                 (echoBuilder).sequenceNumber((short) i);
                 (ipV4Builder).identification((short) i);
                 (etherBuilder).payloadBuilder(ipV4Builder);
                 Packet p = etherBuilder.build();
+                sendTimes.add(System.nanoTime());
                 sendHandle.sendPacket(p);
-                try { Thread.sleep(100); }
-                catch (InterruptedException e) {
-                    System.out.println(";-;");break; }
-                try { Thread.sleep(100); }
-                catch (InterruptedException e) {
-                    System.out.println(";-;");break; }
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    System.out.println(";-;");
+                    break;
+                }
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    System.out.println(";-;");
+                    break;
+                }
             }
+
         }
         catch(Exception ignored){}
         finally
@@ -127,6 +140,18 @@ public class PacketLossCalculate {
             if (!pool.isShutdown()) { pool.shutdown(); }
         }
     }
+    public long calculateLatency()
+    {
+        long max = -1;
+        for (int i = 0 ; i < receiveTimes.size() ;++i)
+        {
+            long diff = receiveTimes.get(i) - sendTimes.get(i);
+            if (diff > max)
+                max = diff;
+        }
+        return max/2;
+    }
+
 
     public static float startPacketLossTest()
     {
@@ -135,6 +160,7 @@ public class PacketLossCalculate {
         float pl = (((float)COUNT - packetLossCalculate.recievedPacketCount)/COUNT) * 100;
         if (pl < 0)
             return 0;
+        UtilityExecutor.result.put(NamingConventions.latency, String.valueOf(packetLossCalculate.calculateLatency()));
         return pl ;
     }
 
