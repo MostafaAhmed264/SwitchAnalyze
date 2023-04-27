@@ -15,23 +15,22 @@ public class MOM {
         this.HPCs = new ArrayList<>();
 
     }
-    public void setHPCsInformation(ArrayList<ClusterConfiguartions>  clusterConfigs){
-        for(ClusterConfiguartions oneHPCconfig:clusterConfigs){
-            MasterOfHPC master=new MasterOfHPC(oneHPCconfig.getCluster_Id(),oneHPCconfig.getCluster_name(),getMasterNode(oneHPCconfig.machines));
+    public void setHPCsInformation(ArrayList<ClusterConfiguartions>  clusterConfigs)
+    {
+        for(ClusterConfiguartions oneHPCconfig:clusterConfigs)
+        {
+            MasterOfHPC master = new MasterOfHPC(oneHPCconfig.getCluster_Id(),oneHPCconfig.getCluster_name(),getMasterNode(oneHPCconfig.machines));
             master.setChildNodes(oneHPCconfig.machines);
             HPCs.add(master);
-
-
-
             GlobalVariable.portHpcMap.put(oneHPCconfig.getPort_id(),master);
         }
     }
     public MachineNode getMasterNode(ArrayList<MachineConfigurations> machineConfigs){
-        for(MachineConfigurations machineConfig :machineConfigs){
-            if(machineConfig.Is_master()){
-
+        for(MachineConfigurations machineConfig :machineConfigs)
+        {
+            if(machineConfig.Is_master())
+            {
                 return new MachineNode(machineConfig.getMachine_id(),machineConfig.getIp(),machineConfig.getMac());
-
             }
         }
         return null;
