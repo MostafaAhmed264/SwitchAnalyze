@@ -33,19 +33,19 @@ public class NormalSender extends Sender implements Runnable
     {
         send();
     }
-
     public void durationSending()
     {
         long startTime = System.currentTimeMillis();
         while (System.currentTimeMillis() - startTime <= duration)
         {
+            if (GlobalVariable.stopSending)
+                break;
             try { PCAP.handle.sendPacket(packet); }
             catch (PcapNativeException | NotOpenException e) { throw new RuntimeException(e); }
         }
     }
     public void rateSending()
     {
-
         double differenceTime=1e9/(double)sendingRate;//in milli
         for (int i = 0; i < numPackets; i++)
         {
@@ -53,11 +53,10 @@ public class NormalSender extends Sender implements Runnable
             {
                 if (GlobalVariable.stopRunSignal)
                 {
-                    synchronized (monitor)
-                    {
-                        monitor.wait();
-                    }
+                    synchronized (monitor) { monitor.wait(); }
                 }
+                if (GlobalVariable.stopSending)
+                    break;
                 long startTime=System.nanoTime();
                 PCAP.handle.sendPacket(packet);
                 long endTime =System.nanoTime();

@@ -39,21 +39,11 @@ public class RetrieveCmd_Master extends ICommandMaster{
         openConsumeAndProduceThread();
     }
 
-    @Override
-    public void GenCmd(int machineID)
-    {
-        String json = JSONConverter.toJSON(new RetrieveCmd_Node(machineID));
-        json = "1"+json;
-        MainHandler_Master.cmdProducer.produce(json, Topics.cmdFromHpcMaster);
-        MainHandler_Master.cmdProducer.flush();
-    }
+
 
     private void addCollectors()
     {
-        for (String key : retrievals)
-        {
-            MasterConsumer.addCollector(SystemMaps.collectors.get(key));
-        }
+        for (String key : retrievals) { MasterConsumer.addCollector(SystemMaps.collectors.get(key)); }
     }
 
     private void openConsumeAndProduceThread()
@@ -66,5 +56,14 @@ public class RetrieveCmd_Master extends ICommandMaster{
             }
         });
         dataConsumeAndProduceThread.start();
+    }
+
+    @Override
+    public void GenCmd(int machineID)
+    {
+        String json = JSONConverter.toJSON(new RetrieveCmd_Node(machineID));
+        json = GlobalVariable.CMD_IDX.RETRIEVE_CMD_IDX + json;
+        MainHandler_Master.cmdProducer.produce(json, Topics.cmdFromHpcMaster);
+        MainHandler_Master.cmdProducer.flush();
     }
 }

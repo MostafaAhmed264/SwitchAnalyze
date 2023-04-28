@@ -4,8 +4,8 @@ import SwitchAnalyzer.Database.DBConnect;
 import SwitchAnalyzer.Kafka.Topics;
 import SwitchAnalyzer.Machines.MachineNode;
 import SwitchAnalyzer.MainHandler_Master;
-import SwitchAnalyzer.Network.FrameProcessing;
 import SwitchAnalyzer.Network.HardwareObjects.SwitchPortPair;
+import SwitchAnalyzer.miscellaneous.GlobalVariable;
 import SwitchAnalyzer.miscellaneous.JSONConverter;
 
 import static SwitchAnalyzer.MainHandler_Master.master;
@@ -13,6 +13,8 @@ import static SwitchAnalyzer.MainHandler_Master.master;
 public class StartRunCommand_Master extends ICommandMaster
 {
     public SwitchPortPair portPair;
+    int saveOption;
+    String switchName;
 
     public StartRunCommand_Master(SwitchPortPair portPair)
     {
@@ -20,10 +22,18 @@ public class StartRunCommand_Master extends ICommandMaster
         this.portID = portPair.fromPort.ID;
     }
 
+    public StartRunCommand_Master(SwitchPortPair portPair, int saveOption, String switchName)
+    {
+        this.portPair = portPair ;
+        this.portID = portPair.fromPort.ID;
+        GlobalVariable.storageClass = saveOption;
+        this.switchName = switchName;
+    }
+
     @Override
     public void processCmd()
     {
-        DBConnect.connectToDB_Node("wafy");
+        DBConnect.connectToDB_Node(switchName);
         for (MachineNode node : master.childNodes)
         {
             GenCmd(node.getMachineID());

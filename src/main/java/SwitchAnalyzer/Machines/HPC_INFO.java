@@ -10,10 +10,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class HPC_INFO {
     public int HPCID;
+    public String clusterName;
     public Map<String,String> map;
-    public HPC_INFO(int id )
+    public HPC_INFO(int id ,String clusterName)
     {
         this.HPCID = id;
+        this.clusterName=clusterName;
         map =new ConcurrentHashMap<>();
     }
 }

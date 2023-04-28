@@ -1,9 +1,9 @@
 package SwitchAnalyzer.Database;
+import SwitchAnalyzer.Network.IP;
 import com.datastax.driver.core.Metadata;
 import com.datastax.driver.core.Session;
 import org.apache.log4j.BasicConfigurator;
-import java.util.ArrayList;
-import java.util.Arrays;
+
 /*
 *these IPS for DataBase Nodes
 * 192.168.1.60
@@ -13,10 +13,7 @@ import java.util.Arrays;
 *
 * */
 public class DBConnect {
-    /**
-     * This arraylist has the ips of the cassandra nodes
-     */
-    public static ArrayList<String> IPS=new ArrayList<>(Arrays.asList("192.168.1.70","192.168.1.60"));
+
     /**
      * This object will be used when a device want to connect to a cassandra node
      */
@@ -62,18 +59,17 @@ public class DBConnect {
      * 5. It uses the keyspace of this switch if it is already created or it will create it and then use it
      * 6. It creates the table runs if not already created
      * 7. It calls for the getLastRun to get the number of the last run made in this switch
-     * 8. It creates UDTs for the network and transport headers if not already created to be used later for insertions and selections
      * 9. It creates a table for frames_Run that is specific to the new run that will begin now
      */
     public static void startRun(DBSwitch dbSwitch)
     {
         KeySpace.useKeyspace_MOM("history");
         DBCreate.createSwitchesTable("history");
-        DBInsert.insert(dbSwitch);
+        DBInsert.insertSwitch(dbSwitch);
         KeySpace.useKeyspace_MOM(dbSwitch.getSwitchName());
         DBCreate.createRunsTable(dbSwitch.getSwitchName());
-        lastRun = DBSelect.getLastRun();
-        DBCreate.createFrames_RunTable(lastRun+1);
+        lastRun = DBSelect.getLastRun()+1;
+        DBCreate.createFrames_RunTable(lastRun);
     }
     /**
      * input : switch name
@@ -108,7 +104,7 @@ public class DBConnect {
             BasicConfigurator.configure();
             connector = new CassandraConnector();
             /* choose the node or nodes to connect with */
-            connector.connect(IPS,null,metadata);
+            connector.connect(IP.DBIps,null,metadata);
             session = connector.getSession();
         } catch (Exception e) {
             System.out.println("Cant connect to DB server ");

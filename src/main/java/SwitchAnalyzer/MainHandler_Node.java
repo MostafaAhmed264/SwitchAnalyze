@@ -17,8 +17,8 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 
 public class MainHandler_Node
 {
-
-    public static String consumerGroup = "safsafsafcommand-consumer-grouppp231213fsafa21212g1jhjww1";
+    public static boolean working = false;
+    public static String consumerGroup = "Node_Cons1";
     static GenericConsumer consumer;
     public static MachineNode node;
     public static Producer dataProducer = new Producer(IP.ip1);
@@ -32,11 +32,14 @@ public class MainHandler_Node
         PCAP.initialize();
     }
 
-    public static void main(String[] args)
+    public static void end() { working = false; }
+
+    public static void start()
     {
+        working = true;
         init();
         int commandTypeIndex;
-        while (true)
+        while (working)
         {
             ConsumerRecords<String, String> records = consumer.consume(Time.waitTime);
             for (ConsumerRecord<String, String> record : records)
@@ -55,5 +58,6 @@ public class MainHandler_Node
                 }
             }
         }
+        SystemMaps.clear();
     }
 }

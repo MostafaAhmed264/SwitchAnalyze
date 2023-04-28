@@ -3,13 +3,14 @@ package SwitchAnalyzer.Collectors;
 import SwitchAnalyzer.Kafka.GenericConsumer;
 import SwitchAnalyzer.Kafka.Topics;
 import SwitchAnalyzer.Machines.HPC_INFO;
+import SwitchAnalyzer.NamingConventions;
 import SwitchAnalyzer.Network.IP;
 import SwitchAnalyzer.Network.Ports;
+import SwitchAnalyzer.miscellaneous.GlobalVariable;
 import SwitchAnalyzer.miscellaneous.JSONConverter;
 import SwitchAnalyzer.miscellaneous.Time;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,12 +36,19 @@ public class MOMConsumer {
      */
     public static Map<String, String> results = new ConcurrentHashMap<>();
 
-    public static void setRequestedData()
+    public static void prepareStats()
     {
-        updateHpcInfo();
-        reduce();
+        while (!GlobalVariable.endRun)
+        {
+            updateHpcInfo();
+            reduce();
+        }
+        results.put(NamingConventions.overAllRates, String.valueOf(Double.parseDouble(results.get(NamingConventions.overAllRates))/RatesCollectorMOM.count));
+        results.put(NamingConventions.overAllAvgPacketLoss, String.valueOf(Double.parseDouble(results.get(NamingConventions.overAllAvgPacketLoss))/PLossCollectorMOM.count));
+        results.put(NamingConventions.overAllAvgLatency, String.valueOf(Double.parseDouble(results.get(NamingConventions.overAllAvgLatency))/LatencyCollectorMOM.count));
     }
 
+    public static void clear() { RatesCollectorMOM.count = 0; PLossCollectorMOM.count = 0; LatencyCollectorMOM.count = 0;}
     public static void updateHpcInfo()
     {
         consumer.selectTopic(Topics.ratesFromHPCs);
@@ -73,7 +81,8 @@ public class MOMConsumer {
                 public void run()
                 {
                     String res = collectors.get(index).collect();
-                    results.put(collectors.get(index).getName(), res);
+                    if (!res.equals("-1"))
+                        results.put(collectors.get(index).getName(), res);
                 }
             });
             threads.add(thread);

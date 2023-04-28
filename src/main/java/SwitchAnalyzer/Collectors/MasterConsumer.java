@@ -45,10 +45,9 @@ public class MasterConsumer {
             for (ConsumerRecord<String, String> record : records) {
                 // Convert the JSON string to a Command object
                 String json = record.value();
-
                 MachineInfo machineInfo = JSONConverter.fromJSON(json, MachineInfo.class);
                 // TODO: we need to add the machines first to the list of machines
-                master.childNodes.get(0).machineInfo = machineInfo;
+                master.childNodes.get(machineInfo.machineID).machineInfo = machineInfo;
             }
             if(records.count() > 0)
                 break;

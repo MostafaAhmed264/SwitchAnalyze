@@ -188,9 +188,7 @@ public class DBTcp extends DBTransportHeader
         //String payloadOfTcp = tcpPacket.getPayload().toString();
         //System.out.println(payloadOfTcp);
         setSourcePort(tcpHeader.getSrcPort().valueAsInt());
-        frame.setSendingPort(getSourcePort());
         setDestinationPort(tcpHeader.getDstPort().valueAsInt());
-        frame.setRecievingPort(getDestinationPort());
         setSequenceNumber(tcpHeader.getSequenceNumber());
         setAcknowledgementNumber(tcpHeader.getAcknowledgmentNumber());
         setDataOffset(tcpHeader.getDataOffsetAsInt());

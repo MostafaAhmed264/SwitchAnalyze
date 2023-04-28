@@ -1,7 +1,8 @@
 package SwitchAnalyzer.Database;
 
-import SwitchAnalyzer.Sockets.PacketInfoGui;
-import org.pcap4j.packet.*;
+import org.pcap4j.packet.Packet;
+import org.pcap4j.packet.TcpPacket;
+import org.pcap4j.packet.UdpPacket;
 
 public class DBTransportHeader
 {

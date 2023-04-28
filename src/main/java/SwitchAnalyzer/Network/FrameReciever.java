@@ -2,6 +2,7 @@ package SwitchAnalyzer.Network;
 
 import SwitchAnalyzer.Kafka.Topics;
 import SwitchAnalyzer.MainHandler_Node;
+import SwitchAnalyzer.miscellaneous.GlobalVariable;
 import org.pcap4j.core.PacketListener;
 import org.pcap4j.core.PcapHandle;
 
@@ -19,17 +20,13 @@ public class FrameReciever
             PacketListener listener = pcapPacket ->
                 MainHandler_Node.packetProducer.send(Topics.FramesFromHPC, pcapPacket.getRawData());
             ExecutorService pool = Executors.newCachedThreadPool();
-            handle.loop(-1, listener, pool);
+            if (!GlobalVariable.stopRecieving)
+                handle.loop(-1, listener, pool);
+            else
+                handle.breakLoop();
         }
         catch(Exception e){ System.out.println("Couldn't set Filter"); e.printStackTrace(); }
         try { handle.close(); }
         catch (Exception ignored){}
     }
-
-    public static void endRec()
-    {
-        try { handle.breakLoop(); }
-        catch (Exception e) { System.out.println("Couldn't break handle loop "); }
-    }
-
 }

@@ -12,6 +12,9 @@ import SwitchAnalyzer.NamingConventions;
 import SwitchAnalyzer.Network.*;
 import SwitchAnalyzer.Network.ErrorDetection.CRC;
 import SwitchAnalyzer.Network.ErrorDetection.None;
+import SwitchAnalyzer.Network.HardwareObjects.SwitchPort;
+import SwitchAnalyzer.Network.HardwareObjects.SwitchPortConfig;
+import SwitchAnalyzer.Network.HardwareObjects.SwitchPortPair;
 import SwitchAnalyzer.UtilityExecution.IExecutor;
 import SwitchAnalyzer.UtilityExecution.PacketLossExecutor;
 import SwitchAnalyzer.UtilityExecution.RateExecutor;
@@ -36,28 +39,22 @@ public class SystemMaps
         commandClasses.add(StopRetrieveCmd_MOM.class);
         commandClasses.add(StopRunCmd_MOM.class);
         commandClasses.add(ResumeRunCmd_MOM.class);
-
-        MOMinitStub();
+        initDefaultPortPair();
     }
 
-    public static void MOMinitStub()
+    public static void initDefaultPortPair()
     {
-        MasterOfHPC master1 = new MasterOfHPC(0);
-        MasterOfHPC master2 = new MasterOfHPC(1);
-        GlobalVariable.portHpcMap.put(1, master1);
-        GlobalVariable.portHpcMap.put(2, master2);
-
-        master1.childNodes.add(new MachineNode(0));
-        master1.childNodes.add(new MachineNode(1));
-        master2.childNodes.add(new MachineNode(0));
-        master2.childNodes.add(new MachineNode(1));
-
-        MainHandler_MOM.masterOfMasters = new MOM();
-        MainHandler_MOM.masterOfMasters.HPCs.add(master1);
-        MainHandler_MOM.masterOfMasters.HPCs.add(master2);
+        SwitchPortConfig config = new SwitchPortConfig( GlobalVariable.defaultPacketInfos, GlobalVariable.defUtilities, 500, "send");
+        for (MasterOfHPC master : MainHandler_MOM.masterOfMasters.HPCs)
+        {
+            if (master.getHPCID() % 2 == 0)
+            {
+                SwitchPort fromPort = new SwitchPort(config , master.getHPCID());
+                SwitchPortPair switchPortPair = new SwitchPortPair(fromPort , master.getHPCID()-1);
+                GlobalVariable.defPairs.add(switchPortPair);
+            }
+        }
     }
-
-
     public static void initMapsMaster()
     {
         commandClassesMaster.add(StartRunCommand_Master.class);
@@ -65,52 +62,9 @@ public class SystemMaps
         commandClassesMaster.add(StopRetrieveCmd_Master.class);
         commandClassesMaster.add(StopRunCmdMaster.class);
         commandClassesMaster.add(ResumeRunCmd_Master.class);
+        commandClassesMaster.add(StartRecieve_Master.class);
         collectors.put(NamingConventions.rates, new RatesCollectorMaster());
         collectors.put(NamingConventions.packetLoss, new PLossCollectorMaster());
-
-        MasterinitStub();
-    }
-
-    public static void MasterinitStub()
-    {
-        MasterOfHPC master1 = new MasterOfHPC(0);
-        MasterOfHPC master2 = new MasterOfHPC(1);
-        MachineNode machine1 = new MachineNode(0);
-        //MachineNode machine2 = new MachineNode(1);
-        MachineNode machine3 = new MachineNode(1);
-        //MachineNode machine4 = new MachineNode(1);
-
-        GlobalVariable.portHpcMap.put(1, master1);
-        GlobalVariable.portHpcMap.put(2, master2);
-
-        master1.childNodes.add(machine1);
-        //master1.childNodes.add(machine2);
-        master2.childNodes.add(machine3);
-        //master2.childNodes.add(machine4);
-
-        try
-        {
-            master1.HPCMacAddr = Builder.buildMacAddress("38:22:E2:F1:C8:E7");
-            master1.HPCIp = Builder.buildIpV4Address("192.168.1.35");
-
-            master2.HPCMacAddr = Builder.buildMacAddress("38:22:E2:F1:C8:E7");
-            master2.HPCIp = Builder.buildIpV4Address("192.168.1.35");
-
-            machine1.nodeMacAddress = Builder.buildMacAddress("34:E6:D7:5E:01:CE");
-            machine1.nodeIp = Builder.buildIpV4Address("192.168.1.60");
-
-            //machine2.nodeMacAddress = Builder.buildMacAddress("00:00:00:00:00:01");
-            //  machine2.nodeIp = Builder.buildIpV4Address("192.168.1.100");
-
-            machine3.nodeMacAddress = Builder.buildMacAddress("3C:2C:30:9B:3B:90");
-            machine3.nodeIp = Builder.buildIpV4Address("192.168.1.101");
-
-            //machine4.nodeMacAddress = Builder.buildMacAddress("00:00:00:00:00:01");
-            //machine4.nodeIp = Builder.buildIpV4Address("192.168.1.100");
-        }
-        catch (Exception ignored){}
-
-        MainHandler_Master.master = master1;
     }
 
     public static void initMapsNode()
@@ -122,49 +76,16 @@ public class SystemMaps
         commandClassesNode.add(StopRetrieveCmd_Node.class);
         commandClassesNode.add(StopRunCmd_Node.class);
         commandClassesNode.add(ResumeRunCmd_Node.class);
-        nodeInitStub();
+        commandClassesNode.add(StartRecieve_Node.class);
     }
 
-    public static void nodeInitStub()
+    public static void clear()
     {
-        MasterOfHPC master1 = new MasterOfHPC(0);
-        MasterOfHPC master2 = new MasterOfHPC(1);
-        MachineNode machine1 = new MachineNode(0);
-        MachineNode machine2 = new MachineNode(1);
-        MachineNode machine3 = new MachineNode(0);
-        MachineNode machine4 = new MachineNode(1);
-
-        GlobalVariable.portHpcMap.put(1, master1);
-        GlobalVariable.portHpcMap.put(2, master2);
-
-        master1.childNodes.add(machine1);
-        master1.childNodes.add(machine2);
-        master2.childNodes.add(machine3);
-        master2.childNodes.add(machine4);
-
-        try
-        {
-            master1.HPCMacAddr = Builder.buildMacAddress("00:00:00:00:00:01");
-            master1.HPCIp = Builder.buildIpV4Address("192.168.1.100");
-
-            master2.HPCMacAddr = Builder.buildMacAddress("00:00:00:00:00:01");
-            master2.HPCIp = Builder.buildIpV4Address("192.168.1.100");
-
-            machine1.nodeMacAddress = Builder.buildMacAddress("00:00:00:00:00:01");
-            machine1.nodeIp = Builder.buildIpV4Address("192.168.1.100");
-
-            machine2.nodeMacAddress = Builder.buildMacAddress("00:00:00:00:00:01");
-            machine2.nodeIp = Builder.buildIpV4Address("192.168.1.100");
-
-            machine3.nodeMacAddress = Builder.buildMacAddress("00:00:00:00:00:01");
-            machine3.nodeIp = Builder.buildIpV4Address("192.168.1.100");
-
-            machine4.nodeMacAddress = Builder.buildMacAddress("00:00:00:00:00:01");
-            machine4.nodeIp = Builder.buildIpV4Address("192.168.1.100");
-        }
-        catch (Exception ignored){}
-
-        MainHandler_Node.node = machine1;
+        commandClasses.clear();
+        commandClassesMaster.clear();
+        collectors.clear();
+        commandClassesNode.clear();
+        executorHashMap.clear();
     }
 
     public static void initPortInfoMap(Map <String , Header> map)

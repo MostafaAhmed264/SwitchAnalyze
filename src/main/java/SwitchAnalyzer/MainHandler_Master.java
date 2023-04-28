@@ -9,10 +9,8 @@ import SwitchAnalyzer.Database.NoStore;
 import SwitchAnalyzer.Kafka.GenericConsumer;
 import SwitchAnalyzer.Kafka.Producer;
 import SwitchAnalyzer.Kafka.Topics;
-import SwitchAnalyzer.Machines.MachineNode;
 import SwitchAnalyzer.Machines.MasterOfHPC;
 import SwitchAnalyzer.Network.IP;
-import SwitchAnalyzer.Network.PCAP;
 import SwitchAnalyzer.Network.Ports;
 import SwitchAnalyzer.miscellaneous.GlobalVariable;
 import SwitchAnalyzer.miscellaneous.JSONConverter;
@@ -26,7 +24,8 @@ import java.util.Arrays;
 
 public class MainHandler_Master
 {
-    public static String consumerGroup = "cgommdsandq-cosnsumer-gdhshdsffsdhbcxvncbmrouasdybbbbbbbbbbbbbbbbbbtuydtjuyp12";
+    public static boolean working = false;
+    public static String consumerGroup = "Master_Cons1";
     public static Producer cmdProducer = new Producer(IP.ip1);
     public static Producer dataProducer = new Producer(IP.ip1);
     static GenericConsumer consumer;
@@ -40,11 +39,14 @@ public class MainHandler_Master
         consumer.selectTopic(Topics.cmdFromMOM);
     }
 
-    public static void main(String[] args)
+    public static void end() { working = false; }
+
+    public static void start()
     {
+        working = true;
         init();
         int commandTypeIndex;
-        while (true)
+        while (working)
         {
             ConsumerRecords<String, String> records = consumer.consume(Time.waitTime);
             for (ConsumerRecord<String, String> record : records)
@@ -52,15 +54,17 @@ public class MainHandler_Master
                 String json = record.value();
                 commandTypeIndex = Character.getNumericValue(json.charAt(0));
                 json = json.replaceFirst("[0-9]*",""); //removing the number indicating the command type using regex
+                System.out.println(json);
                 ICommandMaster command = JSONConverter.fromJSON(json, SystemMaps.commandClassesMaster.get(commandTypeIndex));
                 System.out.println(command.portID);
-                if (GlobalVariable.portHpcMap.get(command.portID).getHPCID() == master.getHPCID())
+                if (command.portID == 0 || GlobalVariable.portHpcMap.get(command.portID).getHPCID() == master.getHPCID())
                 {
                     Thread t1 = new Thread(() -> ProcessCmd.processCmd(command));
                     t1.start();
                 }
             }
         }
+        SystemMaps.clear();
     }
 }
 

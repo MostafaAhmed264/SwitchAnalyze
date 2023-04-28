@@ -1,10 +1,7 @@
 package SwitchAnalyzer.Database;
 
-import SwitchAnalyzer.Network.UDPHeader;
 import org.pcap4j.packet.Packet;
 import org.pcap4j.packet.UdpPacket;
-
-import java.util.Arrays;
 
 public class DBUdp extends DBTransportHeader
 {
@@ -85,9 +82,7 @@ public class DBUdp extends DBTransportHeader
         String payloadOfUdp = udpPacket.getPayload().toString();
         System.out.println(payloadOfUdp);
         setSourcePortNo(udpHeader.getSrcPort().valueAsInt());
-        frame.setSendingPort(getSourcePortNo());
         setDestinationPortNo(udpHeader.getDstPort().valueAsInt());
-        frame.setRecievingPort(getDestinationPortNo());
         setLengthInBytes(udpHeader.getLengthAsInt());
         setChecksum(Integer.toHexString(udpHeader.getChecksum() & 0xffff));
     }

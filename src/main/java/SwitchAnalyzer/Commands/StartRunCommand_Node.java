@@ -4,7 +4,6 @@ import SwitchAnalyzer.MainHandler_Master;
 import SwitchAnalyzer.MapPacketInfo;
 import SwitchAnalyzer.Network.HardwareObjects.SwitchPortConfig;
 import SwitchAnalyzer.Network.PacketInfo;
-import SwitchAnalyzer.Network.PacketSniffer;
 import SwitchAnalyzer.Network.SendThreadsHandler;
 import SwitchAnalyzer.ProduceData_Node;
 import SwitchAnalyzer.Sockets.PacketInfoGui;
@@ -40,7 +39,7 @@ public class StartRunCommand_Node extends ICommandNode
     {
         addUtils();
         openProduceThread();
-        openSendAndRecThreads();
+        openSendThreads();
     }
 
     public void addUtils()
@@ -63,7 +62,7 @@ public class StartRunCommand_Node extends ICommandNode
         if(!UtilityExecutor.executors.isEmpty()) { executeUtilitiesThread.start(); }
     }
 
-    public void openSendAndRecThreads()
+    public void openSendThreads()
     {
         for (PacketInfoGui packetInfo : config.packetInfos)
         {
@@ -71,5 +70,4 @@ public class StartRunCommand_Node extends ICommandNode
         }
         SendThreadsHandler.sendToSelectedPort(toPortID, config.rate, config.duration);
     }
-
 }

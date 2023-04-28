@@ -1,7 +1,5 @@
 package SwitchAnalyzer.Database;
 
-import com.datastax.driver.core.ResultSet;
-import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 
 public class KeySpace {
