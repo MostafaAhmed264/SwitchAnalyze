@@ -4,11 +4,11 @@ import java.util.ArrayList;
 
 public class ClusterConfiguartions {
 
-    String cluster_name;
+    public String cluster_name;
 
-    String cluster_Id;
+    public String cluster_Id;
     //the mapped port id to a specific HPC
-    String port_id;
+    public String port_id;
     public ArrayList<MachineConfigurations> machines;
 
     public String getCluster_name() {

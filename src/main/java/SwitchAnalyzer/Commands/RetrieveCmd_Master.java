@@ -62,7 +62,7 @@ public class RetrieveCmd_Master extends ICommandMaster{
     public void GenCmd(int machineID)
     {
         String json = JSONConverter.toJSON(new RetrieveCmd_Node(machineID));
-        json = GlobalVariable.CMD_IDX.RETRIEVE_CMD_IDX + json;
+        json = "1" + json;
         MainHandler_Master.cmdProducer.produce(json, Topics.cmdFromHpcMaster);
         MainHandler_Master.cmdProducer.flush();
     }

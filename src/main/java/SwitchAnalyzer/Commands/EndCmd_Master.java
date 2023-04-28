@@ -22,7 +22,7 @@ public class EndCmd_Master extends ICommandMaster
     public void GenCmd(int id)
     {
         String json = JSONConverter.toJSON(new EndRunCmd_Node(id));
-        json = GlobalVariable.CMD_IDX.ENDRUN_IDX + json;
+        json = "6" + json;
         MainHandler_MOM.cmdProducer.produce(json, Topics.cmdFromMOM);
         MainHandler_MOM.cmdProducer.flush();
     }

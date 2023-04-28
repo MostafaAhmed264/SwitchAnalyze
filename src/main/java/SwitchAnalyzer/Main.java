@@ -18,12 +18,12 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 
 public class Main
 {
-    static String consumerConfigurationGroup = "G";
-    public static void main(String[] args)
+    static String consumerConfigurationGroup = "Gfsasfa";
+    public static void start()
     {
         MachineNode myNode = new MachineNode();
         GenericConsumer MainConsumer = new GenericConsumer(IP.ConfigurationsIP + ":" + Ports.port1, consumerConfigurationGroup);
-        MainConsumer.selectTopic(Topics.configurations);
+        MainConsumer.selectTopic("FARES");
 
         while (true)
         {
@@ -69,5 +69,53 @@ public class Main
                 }
             }
         }
+    }
+
+    public static void start(String json)
+    {
+        MachineNode myNode = new MachineNode();
+        MoMConfigurations momConfigurations = JSONConverter.fromJSON(json, MoMConfigurations.class);
+        Thread HandlerThread;
+        if (momConfigurations.getMaster_Mac().equals(myNode.nodeMacAddress))
+        {
+            new EndRunCmd_MOM().processCmd();
+            MainHandler_MOM.end();
+            SystemInitializer.MoMinit(myNode, momConfigurations);
+            HandlerThread = new Thread(MainHandler_MOM::start);
+            HandlerThread.start();
+        }
+        else
+        {
+            for (ClusterConfiguartions clusterConfig : momConfigurations.cluster)
+            {
+                for (MachineConfigurations machineConfig : clusterConfig.machines)
+                {
+                    if (machineConfig.getMac().equals(myNode.nodeMacAddress))
+                    {
+                        if (machineConfig.Is_master())
+                        {
+                            new EndCmd_Master(0).processCmd();
+                            MainHandler_Master.working = false;
+                            SystemInitializer.MasterInit(myNode, machineConfig, clusterConfig);
+                            HandlerThread = new Thread(MainHandler_Master::start);
+                        }
+                        else
+                        {
+                            new EndRunCmd_Node(0).processCmd();
+                            MainHandler_Node.working = false;
+                            SystemInitializer.NodeInit(myNode, machineConfig);
+                            HandlerThread = new Thread(MainHandler_Node::start);
+                        }
+                        HandlerThread.start();
+                    }
+                }
+            }
+        }
+    }
+
+
+    public static void main(String[] args)
+    {
+        start();
     }
 }

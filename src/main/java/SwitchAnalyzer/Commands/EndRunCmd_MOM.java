@@ -30,7 +30,7 @@ public class EndRunCmd_MOM implements ICommandMOM
     public void genCmd(int switchPortId)
     {
         String json = JSONConverter.toJSON(new EndCmd_Master(switchPortId));
-        json = GlobalVariable.CMD_IDX.ENDRUN_IDX + json;
+        json = "6" + json;
         MainHandler_MOM.cmdProducer.produce(json, Topics.cmdFromMOM);
         MainHandler_MOM.cmdProducer.flush();
     }

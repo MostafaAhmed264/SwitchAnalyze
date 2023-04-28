@@ -52,8 +52,8 @@ public class StartRunCommand_MOM implements ICommandMOM
     {
         String startRunJSON = JSONConverter.toJSON(new StartRunCommand_Master(portPair, saveOption, GlobalVariable.switchName));
         String startRecJson = JSONConverter.toJSON(buildStartRecieveMaster(portPair));
-        startRunJSON = GlobalVariable.CMD_IDX.STARTRUN_IDX + startRunJSON;
-        startRecJson = GlobalVariable.CMD_IDX.STARTRECIEVE_IDX + startRecJson;
+        startRunJSON = "0" + startRunJSON;
+        startRecJson = "5" + startRecJson;
         MainHandler_MOM.cmdProducer.produce(startRunJSON,Topics.cmdFromMOM);
         MainHandler_MOM.cmdProducer.produce(startRecJson,Topics.cmdFromMOM);
         MainHandler_MOM.cmdProducer.flush();

@@ -3,10 +3,10 @@ package SwitchAnalyzer.ClusterConfigurations;
 import org.pcap4j.util.MacAddress;
 
 public class MachineConfigurations {
-    String machine_id;
-    String ip;
-    String mac;
-    String is_master;
+    public String machine_id;
+    public String ip;
+    public String mac;
+    public String is_master;
 
     public int getMachine_id() {
         return Integer.parseInt(machine_id);

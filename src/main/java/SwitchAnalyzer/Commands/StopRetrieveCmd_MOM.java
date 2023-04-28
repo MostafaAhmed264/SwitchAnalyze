@@ -25,7 +25,7 @@ public class StopRetrieveCmd_MOM implements ICommandMOM
     public void GenCmd(SwitchPort port)
     {
         String json = JSONConverter.toJSON(new StopRetrieveCmd_Master(port.ID));
-        json = GlobalVariable.CMD_IDX.STOPRETRIEVE_IDX + json;
+        json = "2" + json;
         MainHandler_MOM.cmdProducer.produce(json, Topics.cmdFromMOM);
         MainHandler_MOM.cmdProducer.flush();
     }

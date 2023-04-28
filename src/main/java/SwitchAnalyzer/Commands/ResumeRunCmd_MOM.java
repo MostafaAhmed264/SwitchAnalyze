@@ -20,7 +20,7 @@ public class ResumeRunCmd_MOM implements ICommandMOM
     public void GenCmd(SwitchPort port)
     {
         String json = JSONConverter.toJSON(new ResumeRunCmd_Master(port.ID));
-        json = GlobalVariable.CMD_IDX.RESUMESEND_IDX + json;
+        json = "4" + json;
         MainHandler_MOM.cmdProducer.produce(json, Topics.cmdFromMOM);
         MainHandler_MOM.cmdProducer.flush();
     }
