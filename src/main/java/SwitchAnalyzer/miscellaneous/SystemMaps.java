@@ -39,6 +39,11 @@ public class SystemMaps
         commandClasses.add(StopRetrieveCmd_MOM.class);
         commandClasses.add(StopRunCmd_MOM.class);
         commandClasses.add(ResumeRunCmd_MOM.class);
+        commandClasses.add(ResumeRunCmd_MOM.class);
+        commandClasses.add(EndRunCmd_MOM.class);
+        commandClasses.add(ShowHistoryCmd_MOM.class);
+        commandClasses.add(SaveSwitchCMD_MOM.class);
+        commandClasses.add(GetFramesForRun_MOM.class);
         initDefaultPortPair();
     }
 
@@ -63,6 +68,7 @@ public class SystemMaps
         commandClassesMaster.add(StopRunCmdMaster.class);
         commandClassesMaster.add(ResumeRunCmd_Master.class);
         commandClassesMaster.add(StartRecieve_Master.class);
+        commandClassesMaster.add(EndCmd_Master.class);
         collectors.put(NamingConventions.rates, new RatesCollectorMaster());
         collectors.put(NamingConventions.packetLoss, new PLossCollectorMaster());
     }
@@ -77,6 +83,7 @@ public class SystemMaps
         commandClassesNode.add(StopRunCmd_Node.class);
         commandClassesNode.add(ResumeRunCmd_Node.class);
         commandClassesNode.add(StartRecieve_Node.class);
+        commandClassesNode.add(EndRunCmd_Node.class);
     }
 
     public static void clear()
