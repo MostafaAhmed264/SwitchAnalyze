@@ -15,6 +15,11 @@ public class MOM {
         this.HPCs = new ArrayList<>();
 
     }
+
+    public MOM() {
+
+    }
+
     public void setHPCsInformation(ArrayList<ClusterConfiguartions>  clusterConfigs)
     {
         for(ClusterConfiguartions oneHPCconfig:clusterConfigs)

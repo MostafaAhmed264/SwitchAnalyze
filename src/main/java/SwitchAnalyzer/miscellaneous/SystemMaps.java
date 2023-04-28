@@ -50,8 +50,8 @@ public class SystemMaps
 
     public static void MOMinitStub()
     {
-        MasterOfHPC master1 = new MasterOfHPC(0);
-        MasterOfHPC master2 = new MasterOfHPC(1);
+        MasterOfHPC master1 = new MasterOfHPC(0,"Cluster1");
+        MasterOfHPC master2 = new MasterOfHPC(1,"Cluster2");
         GlobalVariable.portHpcMap.put(1, master1);
         GlobalVariable.portHpcMap.put(2, master2);
 
@@ -95,8 +95,8 @@ public class SystemMaps
 
     public static void MasterinitStub()
     {
-        MasterOfHPC master1 = new MasterOfHPC(0);
-        MasterOfHPC master2 = new MasterOfHPC(1);
+        MasterOfHPC master1 = new MasterOfHPC(0,"Master1");
+        MasterOfHPC master2 = new MasterOfHPC(1,"Cluster2");
         MachineNode machine1 = new MachineNode(0);
         //MachineNode machine2 = new MachineNode(1);
         MachineNode machine3 = new MachineNode(1);
@@ -150,8 +150,8 @@ public class SystemMaps
 
     public static void nodeInitStub()
     {
-        MasterOfHPC master1 = new MasterOfHPC(0);
-        MasterOfHPC master2 = new MasterOfHPC(1);
+        MasterOfHPC master1 = new MasterOfHPC(0 ,"Cluster 1");
+        MasterOfHPC master2 = new MasterOfHPC(1,"Cluster 2");
         MachineNode machine1 = new MachineNode(0);
         //MachineNode machine2 = new MachineNode(1);
         MachineNode machine3 = new MachineNode(0);

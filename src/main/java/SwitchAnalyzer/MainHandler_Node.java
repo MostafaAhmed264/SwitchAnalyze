@@ -26,6 +26,7 @@ public class MainHandler_Node
 
     public static void init()
     {
+        SystemMaps.nodeInitStub();
         SystemMaps.initMapsNode();
         consumer = new GenericConsumer(IP.ip1 + ":" + Ports.port1, consumerGroup);
         consumer.selectTopic(Topics.cmdFromHpcMaster);
@@ -60,4 +61,10 @@ public class MainHandler_Node
         }
         SystemMaps.clear();
     }
+    public static void main(String[] args)
+    {
+        init();
+        start();
+    }
+
 }
