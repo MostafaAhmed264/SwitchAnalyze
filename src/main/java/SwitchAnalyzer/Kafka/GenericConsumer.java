@@ -33,6 +33,7 @@ public class GenericConsumer {
         properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG,"latest");
         properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, groupId);
         this.byteArrayConsumer = new KafkaConsumer<String,byte[]>(properties);
+
     }
     public void  selectTopicByteArray(String topic)
     {

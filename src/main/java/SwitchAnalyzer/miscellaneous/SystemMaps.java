@@ -65,6 +65,7 @@ public class SystemMaps
         commandClassesMaster.add(StopRetrieveCmd_Master.class);
         commandClassesMaster.add(StopRunCmdMaster.class);
         commandClassesMaster.add(ResumeRunCmd_Master.class);
+        commandClassesMaster.add(StartRecieve_Master.class);
         collectors.put(NamingConventions.rates, new RatesCollectorMaster());
         collectors.put(NamingConventions.packetLoss, new PLossCollectorMaster());
 

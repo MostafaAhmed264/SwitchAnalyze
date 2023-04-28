@@ -26,7 +26,7 @@ import java.util.Arrays;
 
 public class MainHandler_Master
 {
-    public static String consumerGroup = "cgommdsandq-cosnsumer-gdhshdsffsdhbcxvncbmrouasdybbbbbbbbbbbbbbbbbbtuydtjuyp12";
+    public static String consumerGroup = "cgommdsandq-cosnsumer-ghjgvjdhshdsffsdhbcxvnchjbmrouasdybbbbbbbbbbbbbbbbbbtuydtjuyp12";
     public static Producer cmdProducer = new Producer(IP.ip1);
     public static Producer dataProducer = new Producer(IP.ip1);
     static GenericConsumer consumer;
@@ -54,7 +54,7 @@ public class MainHandler_Master
                 json = json.replaceFirst("[0-9]*",""); //removing the number indicating the command type using regex
                 ICommandMaster command = JSONConverter.fromJSON(json, SystemMaps.commandClassesMaster.get(commandTypeIndex));
                 System.out.println(command.portID);
-                if (GlobalVariable.portHpcMap.get(command.portID).getHPCID() == master.getHPCID())
+                if (command.portID == 0 || GlobalVariable.portHpcMap.get(command.portID).getHPCID() == master.getHPCID())
                 {
                     Thread t1 = new Thread(() -> ProcessCmd.processCmd(command));
                     t1.start();

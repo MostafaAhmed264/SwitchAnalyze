@@ -21,7 +21,7 @@ public class StartRunCommand_MOM implements ICommandMOM
     @Override
     public void processCmd()
     {
-        DBConnect.startRun(new DBSwitch("wafy", 10));
+        //DBConnect.startRun(new DBSwitch("wafy", 10));
         for (SwitchPortPair switchPort : pairs)
         {
            GenCmd(switchPort);
@@ -44,14 +44,14 @@ public class StartRunCommand_MOM implements ICommandMOM
     {
         String json = JSONConverter.toJSON(new StartRunCommand_Master(portPair));
         StartRecieve_Master startRecieve_master = new StartRecieve_Master();
-        startRecieve_master.packetInfo = new PacketInfo();
-        if (isCrc(portPair.fromPort.portConfig.packetInfos)) { startRecieve_master.packetInfo.errorDetectingAlgorithm = new CRC(); }
-        else { startRecieve_master.packetInfo.errorDetectingAlgorithm = new None(); }
+        startRecieve_master.errorDetectingAlgorithm = new None();
+        if (isCrc(portPair.fromPort.portConfig.packetInfos)) {startRecieve_master.errorDetectingAlgorithm = new CRC(); }
+        startRecieve_master.portID = 0;
         String json2 = JSONConverter.toJSON(startRecieve_master);
         System.out.println("the command is : " + json);
         System.out.println("Receive cmd is" + json2);
         json = "0"+json;
-        json2 = "6" + json2;
+        json2 = "5" + json2;
         MainHandler_MOM.cmdProducer.produce(json,Topics.cmdFromMOM);
         MainHandler_MOM.cmdProducer.produce(json2,Topics.cmdFromMOM);
         MainHandler_MOM.cmdProducer.flush();
