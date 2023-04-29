@@ -33,8 +33,6 @@ public class SendThreadsHandler
         }
         clearPacketInfos();
         clearThreads();
-        UtilityExecutor.clearUtils();
-
     }
 
     public static void openThreads(int toPort , MachineNode node, int rate, long duration)

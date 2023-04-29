@@ -57,18 +57,18 @@ public class SystemMaps
     public static void MOMinitStub()
     {
         MasterOfHPC master1 = new MasterOfHPC(0,"Cluster1");
-        MasterOfHPC master2 = new MasterOfHPC(1,"Cluster2");
+        //MasterOfHPC master2 = new MasterOfHPC(1,"Cluster2");
         GlobalVariable.portHpcMap.put(1, master1);
-        GlobalVariable.portHpcMap.put(2, master2);
+        //GlobalVariable.portHpcMap.put(2, master2);
 
         master1.childNodes.add(new MachineNode(0));
         //master1.childNodes.add(new MachineNode(1));
-        master2.childNodes.add(new MachineNode(0));
+        //master2.childNodes.add(new MachineNode(0));
         //master2.childNodes.add(new MachineNode(1));
 
         MainHandler_MOM.masterOfMasters = new MOM();
         MainHandler_MOM.masterOfMasters.HPCs.add(master1);
-        MainHandler_MOM.masterOfMasters.HPCs.add(master2);
+        //MainHandler_MOM.masterOfMasters.HPCs.add(master2);
     }
 
 
@@ -165,7 +165,6 @@ public class SystemMaps
         commandClassesNode.add(StopRunCmd_Node.class);
         commandClassesNode.add(ResumeRunCmd_Node.class);
         commandClassesNode.add(EndRunCmd_Node.class);
-        nodeInitStub();
     }
 
     public static void nodeInitStub()

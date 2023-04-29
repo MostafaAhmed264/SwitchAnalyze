@@ -19,7 +19,8 @@ public class StartRunAllNodes extends ICommandNode
     public void processCmd()
     {
         addUtils();
-        FrameReciever.startRec();
+        Thread t = new Thread(FrameReciever::startRec);
+        t.start();
         openProduceThread();
     }
 
