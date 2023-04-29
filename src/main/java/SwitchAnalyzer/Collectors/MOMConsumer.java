@@ -57,9 +57,7 @@ public class MOMConsumer {
             ConsumerRecords<String, String> records = consumer.consume(Time.waitTime);
             for (ConsumerRecord<String, String> record : records)
             {
-                // Convert the JSON string to a Command object
                 String json = record.value();
-                System.out.println(json);
                 HPC_INFO hpcInfo = JSONConverter.fromJSON(json, HPC_INFO.class);
                 masterOfMasters.HPCs.get(hpcInfo.HPCID).hpcInfo = hpcInfo;
             }

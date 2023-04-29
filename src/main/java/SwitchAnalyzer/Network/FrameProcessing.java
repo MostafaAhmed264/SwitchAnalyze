@@ -35,7 +35,6 @@ public class FrameProcessing
     {
         byte[] slicedArray = Arrays.copyOfRange(frameBytes, 0, frameBytes.length - 4);
         byte[] crc = Arrays.copyOfRange(frameBytes, frameBytes.length-4, frameBytes.length);
-        System.out.println(bytesToString(crc));
         map.put("CRC FIELD", bytesToString(crc));
         return Arrays.equals(BigInteger.valueOf(Integer.reverseBytes(calcCrc32Checksum(slicedArray))).toByteArray(), crc);
     }
@@ -49,14 +48,12 @@ public class FrameProcessing
         //count the packet
         long count = Integer.parseInt(countMap.get(NamingConventions.totalPacketCount)) + 1;
         countMap.put(NamingConventions.totalPacketCount, String.valueOf(count));
-        System.out.println(packet);
         //Extract Headers.
         Packet.Builder builder = packet.getBuilder();
         do
         {
             Packet p = builder.build();
             if(p.getHeader() == null) break;
-            System.out.println(p.getHeader());
             map.put(getType(p.getHeader()) ,(bytesToString(p.getHeader().getRawData())));
             builder = builder.getPayloadBuilder();
         }
@@ -77,8 +74,6 @@ public class FrameProcessing
         extractHeaders(frameBytes, frameDetails);
         frameResult.frameData = frameDetails;
 
-        System.out.println(frameResult.frameData);
-        System.out.println(countMap);
         return frameResult;
     }
 
@@ -111,7 +106,6 @@ public class FrameProcessing
         {
             DBFrame dbFrame = processFrames(frame.value());
             String json = JSONConverter.toJSON(dbFrame);
-            System.out.println(json);
             packetProducer.produce(json, Topics.ProcessedFramesFromHPC);
             //MainHandler_Master.storages.get(GlobalVariable.storageClass).store(dbFrame);
         }
@@ -149,7 +143,6 @@ public class FrameProcessing
         PacketListener listener =
                 pcapPacket ->
                 {
-                    System.out.println(pcapPacket);
                     processFrames(pcapPacket.getRawData());
                 };
         try { handle.loop(-1,listener); }

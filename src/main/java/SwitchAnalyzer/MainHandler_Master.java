@@ -53,11 +53,10 @@ public class MainHandler_Master
             {
 
                 String json = record.value();
+                System.out.println(json);
                 commandTypeIndex = Character.getNumericValue(json.charAt(0));
                 json = json.replaceFirst("[0-9]*",""); //removing the number indicating the command type using regex
-                System.out.println(json);
                 ICommandMaster command = JSONConverter.fromJSON(json, SystemMaps.commandClassesMaster.get(commandTypeIndex));
-                System.out.println(command.portID);
                 if (command.portID == 0 || GlobalVariable.portHpcMap.get(command.portID).getHPCID() == master.getHPCID())
                 {
                     Thread t1 = new Thread(() -> ProcessCmd.processCmd(command));

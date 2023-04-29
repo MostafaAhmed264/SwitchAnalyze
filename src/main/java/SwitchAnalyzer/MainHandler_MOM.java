@@ -39,7 +39,6 @@ public class MainHandler_MOM
         init();
         while(true)
         {
-            System.out.println("MainHandler");
             while (commands.peek() == null)
             {
                 x++;
