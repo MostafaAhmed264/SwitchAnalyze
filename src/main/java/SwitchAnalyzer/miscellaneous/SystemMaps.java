@@ -140,7 +140,7 @@ public class SystemMaps
         executorHashMap.put(NamingConventions.rates, new RateExecutor());
         executorHashMap.put(NamingConventions.packetLoss, new PacketLossExecutor());
         commandClassesNode.add(StartRunCommand_Node.class);
-        commandClassesNode.add(RetrieveCmd_Node.class);
+        commandClassesNode.add(StartRunCommand_Node.class);
         commandClassesNode.add(StopRetrieveCmd_Node.class);
         commandClassesNode.add(StopRunCmd_Node.class);
         commandClassesNode.add(ResumeRunCmd_Node.class);

@@ -59,11 +59,5 @@ public class RetrieveCmd_Master extends ICommandMaster{
     }
 
     @Override
-    public void GenCmd(int machineID)
-    {
-        String json = JSONConverter.toJSON(new RetrieveCmd_Node(machineID));
-        json = "1" + json;
-        MainHandler_Master.cmdProducer.produce(json, Topics.cmdFromHpcMaster);
-        MainHandler_Master.cmdProducer.flush();
-    }
+    public void GenCmd(int machineID){}
 }
