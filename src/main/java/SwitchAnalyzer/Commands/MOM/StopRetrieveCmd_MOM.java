@@ -7,6 +7,7 @@ import SwitchAnalyzer.MainHandler_MOM;
 import SwitchAnalyzer.Network.HardwareObjects.SwitchPort;
 import SwitchAnalyzer.miscellaneous.GlobalVariable;
 import SwitchAnalyzer.miscellaneous.JSONConverter;
+import SwitchAnalyzer.miscellaneous.SystemMaps;
 
 import java.util.ArrayList;
 
@@ -25,7 +26,7 @@ public class StopRetrieveCmd_MOM implements ICommandMOM
     public void GenCmd(SwitchPort port)
     {
         String json = JSONConverter.toJSON(new StopRetrieveCmd_Master(port.ID));
-        json = "2" + json;
+        json = SystemMaps.STOP_RETRIEVE_CMD_MASTER_IDX + json;
         MainHandler_MOM.cmdProducer.produce(json, Topics.cmdFromMOM);
         MainHandler_MOM.cmdProducer.flush();
     }

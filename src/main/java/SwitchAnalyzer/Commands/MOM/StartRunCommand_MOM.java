@@ -9,6 +9,7 @@ import SwitchAnalyzer.MainHandler_MOM;
 import SwitchAnalyzer.Network.HardwareObjects.SwitchPortPair;
 import SwitchAnalyzer.miscellaneous.GlobalVariable;
 import SwitchAnalyzer.miscellaneous.JSONConverter;
+import SwitchAnalyzer.miscellaneous.SystemMaps;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -45,8 +46,8 @@ public class StartRunCommand_MOM implements ICommandMOM
     {
         String startRunJSON = JSONConverter.toJSON(new StartRunCommand_Master(portPair, saveOption, GlobalVariable.switchName));
         String startRunAllJSON = JSONConverter.toJSON(new StartRunALL());
-        startRunAllJSON = "0" + startRunAllJSON;
-        startRunJSON = "0" + startRunJSON;
+        startRunAllJSON = SystemMaps.START_RUN_CMD_MASTER_IDX + startRunAllJSON;
+        startRunJSON = SystemMaps.START_RUN_ALL_CMD_MASTER_IDX + startRunJSON;
         MainHandler_MOM.cmdProducer.produce(startRunJSON,Topics.cmdFromMOM);
         MainHandler_MOM.cmdProducer.produce(startRunAllJSON,Topics.cmdFromMOM);
         MainHandler_MOM.cmdProducer.flush();

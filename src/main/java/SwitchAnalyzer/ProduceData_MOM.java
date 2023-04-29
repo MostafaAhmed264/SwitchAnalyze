@@ -23,7 +23,6 @@ public class ProduceData_MOM
     {
         if (ids.get(0) != 0)
             getFrames();
-        MOMConsumer.updateHpcInfo();
         String json;
         for (int id : ids)
         {

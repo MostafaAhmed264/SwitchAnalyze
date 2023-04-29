@@ -32,7 +32,7 @@ public class RetrieveCmd_MOM implements ICommandMOM
     public void GenCmd(SwitchPort port)
     {
         String json = JSONConverter.toJSON(new RetrieveCmd_Master(port.ID, this.retrievals));
-        json = "1" + json;
+        json = SystemMaps.RETRIEVE_CMD_MASTER_IDX + json;
         MainHandler_MOM.cmdProducer.produce(json, Topics.cmdFromMOM);
         MainHandler_MOM.cmdProducer.flush();
     }

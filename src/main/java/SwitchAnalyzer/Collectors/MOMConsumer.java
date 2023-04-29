@@ -25,7 +25,7 @@ import static SwitchAnalyzer.MainHandler_MOM.masterOfMasters;
  */
 
 public class MOMConsumer {
-    static String consumerGroup = "MOMColBHJJlector";
+    static String consumerGroup = "MOMColBHJJlectosdsr1";
     static GenericConsumer consumer = new GenericConsumer(IP.ip1 + ":" + Ports.port1, consumerGroup);
     //arraylist of collectors
     public static ArrayList<Collector> collectors = new ArrayList<>();

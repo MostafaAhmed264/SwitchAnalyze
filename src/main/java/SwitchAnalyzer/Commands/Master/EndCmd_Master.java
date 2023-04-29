@@ -7,6 +7,7 @@ import SwitchAnalyzer.Kafka.Topics;
 import SwitchAnalyzer.MainHandler_MOM;
 import SwitchAnalyzer.miscellaneous.GlobalVariable;
 import SwitchAnalyzer.miscellaneous.JSONConverter;
+import SwitchAnalyzer.miscellaneous.SystemMaps;
 
 public class EndCmd_Master extends ICommandMaster
 {
@@ -29,7 +30,7 @@ public class EndCmd_Master extends ICommandMaster
     public void GenCmd(int id)
     {
         String json = JSONConverter.toJSON(new EndRunCmd_Node(id));
-        json = "6" + json;
+        json = SystemMaps.END_RUN_CMD_NODE_IDX + json;
         MainHandler_MOM.cmdProducer.produce(json, Topics.cmdFromMOM);
         MainHandler_MOM.cmdProducer.flush();
     }

@@ -45,7 +45,6 @@ public class SystemMaps
         commandClasses.add(StopRetrieveCmd_MOM.class);
         commandClasses.add(StopRunCmd_MOM.class);
         commandClasses.add(ResumeRunCmd_MOM.class);
-        commandClasses.add(ResumeRunCmd_MOM.class);
         commandClasses.add(EndRunCmd_MOM.class);
         commandClasses.add(ShowHistoryCmd_MOM.class);
         commandClasses.add(SaveSwitchCMD_MOM.class);
@@ -86,6 +85,16 @@ public class SystemMaps
             }
         }
     }
+
+    public static final String START_RUN_CMD_MASTER_IDX = "0";
+    public static final String RETRIEVE_CMD_MASTER_IDX = "1";
+    public static final String STOP_RETRIEVE_CMD_MASTER_IDX = "2";
+    public static final String STOP_RUN_CMD_MASTER_IDX = "3";
+
+    public static final String RESUME_RUN_CMD_MASTER_IDX = "4";
+    public static final String START_RUN_ALL_CMD_MASTER_IDX = "5";
+    public static final String END_RUN_CMD_MASTER_IDX = "6";
+
     public static void initMapsMaster()
     {
         commandClassesMaster.add(StartRunCommand_Master.class);
@@ -93,7 +102,7 @@ public class SystemMaps
         commandClassesMaster.add(StopRetrieveCmd_Master.class);
         commandClassesMaster.add(StopRunCmdMaster.class);
         commandClassesMaster.add(ResumeRunCmd_Master.class);
-        commandClassesMaster.add(StartRunCommand_Master.class);
+        commandClassesMaster.add(StartRunALL.class);
         commandClassesMaster.add(EndCmd_Master.class);
         collectors.put(NamingConventions.rates, new RatesCollectorMaster());
         collectors.put(NamingConventions.packetLoss, new PLossCollectorMaster());
@@ -141,16 +150,20 @@ public class SystemMaps
 
         MainHandler_Master.master = master1;
     }
+
+    public static final String START_RUN_NODE_IDX = "0";
+    public static final String START_RUN_ALL_NODE_IDX = "1";
+    public static final String STOP_RUN_CMD_NODE_IDX = "2";
+    public static final String RESUME_RUN_CMD_NODE_IDX = "3";
+    public static final String END_RUN_CMD_NODE_IDX = "4";
     public static void initMapsNode()
     {
         executorHashMap.put(NamingConventions.rates, new RateExecutor());
         executorHashMap.put(NamingConventions.packetLoss, new PacketLossExecutor());
         commandClassesNode.add(StartRunCommand_Node.class);
-        commandClassesNode.add(StartRunCommand_Node.class);
-        commandClassesNode.add(StartRunCommand_Node.class);
+        commandClassesNode.add(StartRunAllNodes.class);
         commandClassesNode.add(StopRunCmd_Node.class);
         commandClassesNode.add(ResumeRunCmd_Node.class);
-        commandClassesNode.add(StopRunCmd_Node.class);
         commandClassesNode.add(EndRunCmd_Node.class);
         nodeInitStub();
     }

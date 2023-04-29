@@ -8,6 +8,7 @@ import SwitchAnalyzer.MainHandler_MOM;
 import SwitchAnalyzer.Sockets.JettyWebSocketServer;
 import SwitchAnalyzer.miscellaneous.GlobalVariable;
 import SwitchAnalyzer.miscellaneous.JSONConverter;
+import SwitchAnalyzer.miscellaneous.SystemMaps;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -35,7 +36,7 @@ public class EndRunCmd_MOM implements ICommandMOM
     public void genCmd(int switchPortId)
     {
         String json = JSONConverter.toJSON(new EndCmd_Master(switchPortId));
-        json = "6" + json;
+        json = SystemMaps.END_RUN_CMD_MASTER_IDX + json;
         MainHandler_MOM.cmdProducer.produce(json, Topics.cmdFromMOM);
         MainHandler_MOM.cmdProducer.flush();
     }

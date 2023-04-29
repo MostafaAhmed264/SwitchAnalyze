@@ -6,6 +6,7 @@ import SwitchAnalyzer.Kafka.Topics;
 import SwitchAnalyzer.Machines.MachineNode;
 import SwitchAnalyzer.MainHandler_Master;
 import SwitchAnalyzer.miscellaneous.JSONConverter;
+import SwitchAnalyzer.miscellaneous.SystemMaps;
 
 import static SwitchAnalyzer.MainHandler_Master.master;
 
@@ -26,7 +27,7 @@ public class ResumeRunCmd_Master extends ICommandMaster
     public void GenCmd(int id)
     {
         String json = JSONConverter.toJSON(new ResumeRunCmd_Node(id));
-        json = "4" + json;
+        json = SystemMaps.RESUME_RUN_CMD_NODE_IDX + json;
         MainHandler_Master.cmdProducer.produce(json, Topics.cmdFromHpcMaster);
         MainHandler_Master.cmdProducer.flush();
     }
