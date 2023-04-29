@@ -52,7 +52,7 @@ public class MainHandler_Node
                 ICommandNode command = JSONConverter.fromJSON(json, SystemMaps.commandClassesNode.get(commandTypeIndex));
                 System.out.println(command.machineID);
                 //we need to re check mapping ,how to make it global in all masters and MOM or what should we do ?
-                if (command.machineID == node.getMachineID())
+                if (command.machineID == 0 || command.machineID == node.getMachineID())
                 {
                     Thread t1 = new Thread(() -> ProcessCmd.processCmd(command));
                     t1.start();

@@ -1,12 +1,12 @@
-package SwitchAnalyzer.Commands;
+package SwitchAnalyzer.Commands.Master;
 
+import SwitchAnalyzer.Collectors.MasterConsumer;
+import SwitchAnalyzer.Commands.Node.EndRunCmd_Node;
+import SwitchAnalyzer.Commands.ICommandMaster;
 import SwitchAnalyzer.Kafka.Topics;
-import SwitchAnalyzer.Machines.MachineNode;
 import SwitchAnalyzer.MainHandler_MOM;
 import SwitchAnalyzer.miscellaneous.GlobalVariable;
 import SwitchAnalyzer.miscellaneous.JSONConverter;
-
-import static SwitchAnalyzer.MainHandler_Master.master;
 
 public class EndCmd_Master extends ICommandMaster
 {
@@ -15,8 +15,15 @@ public class EndCmd_Master extends ICommandMaster
     public void processCmd()
     {
         GlobalVariable.retrieveDataFromNode = false;
-        GlobalVariable.stopRecieving = false;
+        GlobalVariable.stopRecieving = false; //CLOSES RECIEVING AS A WHOLE
         GenCmd(0);
+        clearMasterConsumer(); //PREPARING FOR NEW RUN MASTER SHOULD CLEAR STATIC FILEDS
+    }
+
+    public void clearMasterConsumer()
+    {
+        MasterConsumer.clearResults();
+        MasterConsumer.clearCollectors();
     }
 
     public void GenCmd(int id)

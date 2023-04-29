@@ -2,6 +2,12 @@ package SwitchAnalyzer.miscellaneous;
 
 import SwitchAnalyzer.Collectors.*;
 import SwitchAnalyzer.Commands.*;
+import SwitchAnalyzer.Commands.MOM.*;
+import SwitchAnalyzer.Commands.MOM.OnlyMOM.GetFramesForRun_MOM;
+import SwitchAnalyzer.Commands.MOM.OnlyMOM.SaveSwitchCMD_MOM;
+import SwitchAnalyzer.Commands.MOM.OnlyMOM.ShowHistoryCmd_MOM;
+import SwitchAnalyzer.Commands.Master.*;
+import SwitchAnalyzer.Commands.Node.*;
 import SwitchAnalyzer.Machines.MOM;
 import SwitchAnalyzer.Machines.MachineNode;
 import SwitchAnalyzer.Machines.MasterOfHPC;
@@ -87,7 +93,7 @@ public class SystemMaps
         commandClassesMaster.add(StopRetrieveCmd_Master.class);
         commandClassesMaster.add(StopRunCmdMaster.class);
         commandClassesMaster.add(ResumeRunCmd_Master.class);
-        commandClassesMaster.add(StartRecieve_Master.class);
+        commandClassesMaster.add(StartRunCommand_Master.class);
         commandClassesMaster.add(EndCmd_Master.class);
         collectors.put(NamingConventions.rates, new RatesCollectorMaster());
         collectors.put(NamingConventions.packetLoss, new PLossCollectorMaster());
@@ -141,10 +147,10 @@ public class SystemMaps
         executorHashMap.put(NamingConventions.packetLoss, new PacketLossExecutor());
         commandClassesNode.add(StartRunCommand_Node.class);
         commandClassesNode.add(StartRunCommand_Node.class);
-        commandClassesNode.add(StopRetrieveCmd_Node.class);
+        commandClassesNode.add(StartRunCommand_Node.class);
         commandClassesNode.add(StopRunCmd_Node.class);
         commandClassesNode.add(ResumeRunCmd_Node.class);
-        commandClassesNode.add(StartRecieve_Node.class);
+        commandClassesNode.add(StopRunCmd_Node.class);
         commandClassesNode.add(EndRunCmd_Node.class);
         nodeInitStub();
     }

@@ -3,6 +3,7 @@ package SwitchAnalyzer.Collectors;
 import SwitchAnalyzer.Kafka.GenericConsumer;
 import SwitchAnalyzer.Kafka.Topics;
 import SwitchAnalyzer.Machines.MachineInfo;
+import SwitchAnalyzer.NamingConventions;
 import SwitchAnalyzer.Network.IP;
 import SwitchAnalyzer.Network.Ports;
 import SwitchAnalyzer.miscellaneous.JSONConverter;
@@ -83,6 +84,12 @@ public class MasterConsumer {
     }
     public static void clearResults() { results.clear(); }
     public static void addCollector(Collector collectorMaster){ collectors.add(collectorMaster); }
+    public static void initMasterCollectors()
+    {
+        collectors.add(new RatesCollectorMaster());
+        collectors.add(new PLossCollectorMaster());
+        collectors.add(new LatencyCollectorMaster());
+    }
     public static void removeCollector(Collector collectorMaster){ collectors.remove(collectorMaster); }
     public static void clearCollectors() { collectors.clear(); }
     public static Map<String, String> getResults() { return results; }

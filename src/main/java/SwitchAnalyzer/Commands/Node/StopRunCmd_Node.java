@@ -1,5 +1,6 @@
-package SwitchAnalyzer.Commands;
+package SwitchAnalyzer.Commands.Node;
 
+import SwitchAnalyzer.Commands.ICommandNode;
 import SwitchAnalyzer.Network.SendThreadsHandler;
 
 public class StopRunCmd_Node extends ICommandNode

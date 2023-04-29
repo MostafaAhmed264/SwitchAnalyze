@@ -1,5 +1,6 @@
-package SwitchAnalyzer.Commands;
+package SwitchAnalyzer.Commands.MOM.OnlyMOM;
 
+import SwitchAnalyzer.Commands.ICommandMOM;
 import SwitchAnalyzer.Database.DBSelect;
 import SwitchAnalyzer.Database.Run_Gui;
 

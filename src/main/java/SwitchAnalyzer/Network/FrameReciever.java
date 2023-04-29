@@ -20,13 +20,12 @@ public class FrameReciever
             PacketListener listener = pcapPacket ->
                 MainHandler_Node.packetProducer.send(Topics.FramesFromHPC, pcapPacket.getRawData());
             ExecutorService pool = Executors.newCachedThreadPool();
-            if (!GlobalVariable.stopRecieving)
-                handle.loop(-1, listener, pool);
-            else
-                handle.breakLoop();
+            handle.loop(-1, listener, pool);
         }
         catch(Exception e){ System.out.println("Couldn't set Filter"); e.printStackTrace(); }
         try { handle.close(); }
         catch (Exception ignored){}
     }
+
+    public static void endRec() { try { handle.breakLoop(); handle.close(); } catch (Exception e) {}}
 }

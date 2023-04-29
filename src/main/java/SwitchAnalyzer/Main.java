@@ -3,9 +3,9 @@
 //import SwitchAnalyzer.ClusterConfigurations.ClusterConfiguartions;
 //import SwitchAnalyzer.ClusterConfigurations.MachineConfigurations;
 //import SwitchAnalyzer.ClusterConfigurations.MoMConfigurations;
-//import SwitchAnalyzer.Commands.EndCmd_Master;
-//import SwitchAnalyzer.Commands.EndRunCmd_MOM;
-//import SwitchAnalyzer.Commands.EndRunCmd_Node;
+//import SwitchAnalyzer.Commands.Master.EndCmd_Master;
+//import SwitchAnalyzer.Commands.MOM.EndRunCmd_MOM;
+//import SwitchAnalyzer.Commands.Node.EndRunCmd_Node;
 //import SwitchAnalyzer.Kafka.GenericConsumer;
 //import SwitchAnalyzer.Kafka.Topics;
 //import SwitchAnalyzer.Machines.MachineNode;

@@ -1,6 +1,7 @@
-package SwitchAnalyzer.Commands;
+package SwitchAnalyzer.Commands.MOM;
 
-import SwitchAnalyzer.Collectors.MOMConsumer;
+import SwitchAnalyzer.Commands.ICommandMOM;
+import SwitchAnalyzer.Commands.Master.StopRetrieveCmd_Master;
 import SwitchAnalyzer.Kafka.Topics;
 import SwitchAnalyzer.MainHandler_MOM;
 import SwitchAnalyzer.Network.HardwareObjects.SwitchPort;
@@ -19,7 +20,6 @@ public class StopRetrieveCmd_MOM implements ICommandMOM
         {
             GenCmd(new SwitchPort(i));
         }
-        clearMomConsumer();
     }
 
     public void GenCmd(SwitchPort port)
@@ -30,9 +30,4 @@ public class StopRetrieveCmd_MOM implements ICommandMOM
         MainHandler_MOM.cmdProducer.flush();
     }
 
-    public void clearMomConsumer()
-    {
-        MOMConsumer.clearResults();
-        MOMConsumer.clearCollectors();
-    }
 }

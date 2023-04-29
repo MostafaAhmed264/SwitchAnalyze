@@ -1,5 +1,6 @@
-package SwitchAnalyzer.Commands;
+package SwitchAnalyzer.Commands.MOM.OnlyMOM;
 
+import SwitchAnalyzer.Commands.ICommand;
 import SwitchAnalyzer.Database.DBConnect;
 import SwitchAnalyzer.Database.DBSwitch;
 import SwitchAnalyzer.miscellaneous.GlobalVariable;

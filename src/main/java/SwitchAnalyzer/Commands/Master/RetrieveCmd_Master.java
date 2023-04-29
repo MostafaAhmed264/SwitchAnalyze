@@ -1,8 +1,9 @@
-package SwitchAnalyzer.Commands;
+package SwitchAnalyzer.Commands.Master;
 
 import SwitchAnalyzer.Collectors.MOMConsumer;
 
 import SwitchAnalyzer.Collectors.MasterConsumer;
+import SwitchAnalyzer.Commands.ICommandMaster;
 import SwitchAnalyzer.Kafka.Topics;
 import SwitchAnalyzer.Machines.MachineNode;
 import SwitchAnalyzer.MainHandler_Master;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 
 import static SwitchAnalyzer.MainHandler_Master.master;
 
-public class RetrieveCmd_Master extends ICommandMaster{
+public class RetrieveCmd_Master extends ICommandMaster {
 
     public ArrayList<String> retrievals;
 
@@ -27,35 +28,13 @@ public class RetrieveCmd_Master extends ICommandMaster{
         this.retrievals = retrievals;
     }
 
+    /*
+        STARTS RETRIEVING PROCESSED FRAMES IN REALTIME THROUGH KAFKA
+     */
     @Override
     public void processCmd()
     {
-        GlobalVariable.retrieveDataFromNode = true;
-        for (MachineNode node : master.childNodes)
-        {
-            GenCmd(node.getMachineID());
-        }
-        addCollectors();
-        openConsumeAndProduceThread();
-    }
-
-
-
-    private void addCollectors()
-    {
-        for (String key : retrievals) { MasterConsumer.addCollector(SystemMaps.collectors.get(key)); }
-    }
-
-    private void openConsumeAndProduceThread()
-    {
-        Thread dataConsumeAndProduceThread = new Thread (() ->
-        {
-            while(GlobalVariable.retrieveDataFromNode)
-            {
-                ProduceData_Master.produceData();
-            }
-        });
-        dataConsumeAndProduceThread.start();
+        GlobalVariable.retreiveProcessedFramesFromHPC = true;
     }
 
     @Override

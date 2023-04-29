@@ -1,19 +1,21 @@
-package SwitchAnalyzer.Commands;
+package SwitchAnalyzer.Commands.Master;
 
+import SwitchAnalyzer.Commands.ICommandMaster;
+import SwitchAnalyzer.Commands.Node.ResumeRunCmd_Node;
 import SwitchAnalyzer.Kafka.Topics;
 import SwitchAnalyzer.Machines.MachineNode;
 import SwitchAnalyzer.MainHandler_Master;
 import SwitchAnalyzer.miscellaneous.JSONConverter;
 
-import java.util.ArrayList;
-
 import static SwitchAnalyzer.MainHandler_Master.master;
 
-public class StopRunCmdMaster extends ICommandMaster
+public class ResumeRunCmd_Master extends ICommandMaster
 {
+    public ResumeRunCmd_Master(int portID) { this.portID = portID; }
 
-    public StopRunCmdMaster(int portID) { this.portID = portID; }
-
+    /*
+        JUST PROPAGATES THE CMD DOWN
+     */
     @Override
     public void processCmd()
     {
@@ -23,8 +25,8 @@ public class StopRunCmdMaster extends ICommandMaster
     @Override
     public void GenCmd(int id)
     {
-        String json = JSONConverter.toJSON(new StopRunCmd_Node(id));
-        json = "3"+json;
+        String json = JSONConverter.toJSON(new ResumeRunCmd_Node(id));
+        json = "4" + json;
         MainHandler_Master.cmdProducer.produce(json, Topics.cmdFromHpcMaster);
         MainHandler_Master.cmdProducer.flush();
     }

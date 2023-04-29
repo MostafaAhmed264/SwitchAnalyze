@@ -1,7 +1,8 @@
-package SwitchAnalyzer.Commands;
+package SwitchAnalyzer.Commands.MOM;
 
 import SwitchAnalyzer.Collectors.MOMConsumer;
-import SwitchAnalyzer.Kafka.GenericProducer;
+import SwitchAnalyzer.Commands.ICommandMOM;
+import SwitchAnalyzer.Commands.Master.RetrieveCmd_Master;
 import SwitchAnalyzer.Kafka.Topics;
 import SwitchAnalyzer.MainHandler_MOM;
 import SwitchAnalyzer.Network.HardwareObjects.SwitchPort;
@@ -25,7 +26,6 @@ public class RetrieveCmd_MOM implements ICommandMOM
         {
             GenCmd(new SwitchPort(i));
         }
-        addCollectors();
         openConsumeAndProduceThread();
     }
 
@@ -35,14 +35,6 @@ public class RetrieveCmd_MOM implements ICommandMOM
         json = "1" + json;
         MainHandler_MOM.cmdProducer.produce(json, Topics.cmdFromMOM);
         MainHandler_MOM.cmdProducer.flush();
-    }
-
-    private void addCollectors()
-    {
-        for (String key : retrievals)
-        {
-            MOMConsumer.addCollector(SystemMaps.collectors.get(key));
-        }
     }
 
     private void openConsumeAndProduceThread()

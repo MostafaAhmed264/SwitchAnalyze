@@ -15,15 +15,12 @@ public class ProduceData_Node
     {
         UtilityExecutor.executeUtils();
         MainHandler_Node.node.machineInfo.map = UtilityExecutor.result;
-        if(GlobalVariable.retrieveDataFromNode)
+        try
         {
-            try
-            {
-                String json = JSONConverter.toJSON(MainHandler_Node.node.machineInfo);
-                MainHandler_Node.dataProducer.produce(json, Topics.ratesFromMachines);
-                MainHandler_Node.dataProducer.flush();
-            }
-            catch (Exception e) { e.printStackTrace(); }
+            String json = JSONConverter.toJSON(MainHandler_Node.node.machineInfo);
+            MainHandler_Node.dataProducer.produce(json, Topics.ratesFromMachines);
+            MainHandler_Node.dataProducer.flush();
         }
+        catch (Exception e) { e.printStackTrace(); }
     }
 }

@@ -18,10 +18,11 @@ import java.util.ArrayList;
 
 public class ProduceData_MOM
 {
-    static GenericConsumer consumer = new GenericConsumer(IP.ip1 + ":" + Ports.port1, "frame_Consumer32", true);
+    static GenericConsumer consumer = new GenericConsumer(IP.ip1 + ":" + Ports.port1, "frame_Consumer32");
     public static void produceData(ArrayList<Integer> ids)
     {
-        getFrames();
+        if (ids.get(0) != 0)
+            getFrames();
         MOMConsumer.updateHpcInfo();
         String json;
         for (int id : ids)
@@ -40,19 +41,11 @@ public class ProduceData_MOM
 
     public static void getFrames()
     {
-        consumer.selectTopicByteArray(Topics.FramesFromHPC);
-        ConsumerRecords<String, byte[]> records = consumer.consumeByteArray(Time.waitTime);
-        for (ConsumerRecord<String, byte[]> record : records)
+        consumer.selectTopic(Topics.ProcessedFramesFromHPC);
+        ConsumerRecords<String, String> records = consumer.consume(Time.waitTime);
+        for (ConsumerRecord<String, String> record : records)
         {
-            StringBuilder sb =new StringBuilder();
-            for (int i = 0; i < record.value().length; i++)
-            {
-                sb.append(String.format("%02X", record.value()[i])).append(" ");
-            }
-            FrameResult frameResult = new FrameResult();
-            frameResult.ID = 2;
-            frameResult.s = sb.toString();
-            String json = JSONConverter.toJSON(frameResult);
+            String json = JSONConverter.toJSON(record.value());
             System.out.println(json);
             JettyWebSocketServer.writeMessage(json);
         }

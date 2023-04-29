@@ -1,7 +1,9 @@
-package SwitchAnalyzer.Commands;
+package SwitchAnalyzer.Commands.Node;
 
+import SwitchAnalyzer.Commands.ICommandNode;
 import SwitchAnalyzer.MainHandler_Master;
 import SwitchAnalyzer.MapPacketInfo;
+import SwitchAnalyzer.Network.FrameReciever;
 import SwitchAnalyzer.Network.HardwareObjects.SwitchPortConfig;
 import SwitchAnalyzer.Network.PacketInfo;
 import SwitchAnalyzer.Network.SendThreadsHandler;
@@ -10,12 +12,17 @@ import SwitchAnalyzer.Sockets.PacketInfoGui;
 import SwitchAnalyzer.UtilityExecution.UtilityExecutor;
 import SwitchAnalyzer.miscellaneous.SystemMaps;
 
+
+/*
+    OPENS SENDING THREADS
+ */
 public class StartRunCommand_Node extends ICommandNode
 {
     SwitchPortConfig config;
     public int toPortID;
 
-    StartRunCommand_Node (SwitchPortConfig config, int ID, int toPortID)
+    public StartRunCommand_Node(int ID) { this.machineID = ID; }
+    public StartRunCommand_Node(SwitchPortConfig config, int ID, int toPortID)
     {
         this.machineID = ID;
         this.config = config;
@@ -35,31 +42,12 @@ public class StartRunCommand_Node extends ICommandNode
     }
 
     @Override
+    /*
+        OPENS SENDING THREADS IF ANY
+     */
     public void processCmd()
     {
-        addUtils();
-        openProduceThread();
         openSendThreads();
-    }
-
-    public void addUtils()
-    {
-        for (String key : config.utilities)
-        {
-            UtilityExecutor.executors.add(SystemMaps.executorHashMap.get(key));
-        }
-    }
-
-    public void openProduceThread()
-    {
-        Thread executeUtilitiesThread = new Thread (() ->
-        {
-            while(!UtilityExecutor.executors.isEmpty())
-            {
-                ProduceData_Node.produceData();
-            }
-        });
-        if(!UtilityExecutor.executors.isEmpty()) { executeUtilitiesThread.start(); }
     }
 
     public void openSendThreads()
