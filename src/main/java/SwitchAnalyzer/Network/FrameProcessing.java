@@ -2,10 +2,8 @@ package SwitchAnalyzer.Network;
 
 import SwitchAnalyzer.Database.DBFrame;
 import SwitchAnalyzer.Kafka.GenericConsumer;
-import SwitchAnalyzer.Kafka.GenericProducer;
 import SwitchAnalyzer.Kafka.Producer;
 import SwitchAnalyzer.Kafka.Topics;
-import SwitchAnalyzer.MainHandler_Master;
 import SwitchAnalyzer.NamingConventions;
 import SwitchAnalyzer.Network.ErrorDetection.CRC;
 import SwitchAnalyzer.Network.ErrorDetection.ErrorDetectingAlgorithms;
@@ -19,59 +17,82 @@ import org.pcap4j.core.PcapHandle;
 import org.pcap4j.packet.EthernetPacket;
 import org.pcap4j.packet.Packet;
 
-import java.util.HashMap;
+import java.math.BigInteger;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+
+import static org.pcap4j.util.ByteArrays.calcCrc32Checksum;
 
 
 public class FrameProcessing
 {
-    static GenericConsumer consumer = new GenericConsumer(IP.ip1 + ":" + Ports.port1, "frameProcessing_1", true);
-    public static GenericProducer packetProducer = new GenericProducer(IP.ip1, true);
+    static GenericConsumer consumer = new GenericConsumer(IP.ip1 + ":" + Ports.port1, "framePxrocessing_1111", true);
+    public static Producer packetProducer = new Producer(IP.ip1);
     public static ErrorDetectingAlgorithms errorDetectingAlgorithms = null;
-    public static Producer cmdProducer = new Producer(IP.ip1);
-    public static HashMap<String, String> countMap = new HashMap<>();
+    public static ConcurrentHashMap<String, String> countMap = new ConcurrentHashMap<>();
 
-    public static DBFrame processFrames(byte[] frameBytes) {
-        DBFrame frameResult = new DBFrame();
-        frameResult.setCrcChecker(new CRC().isAlgorithmCorrect(frameBytes));
-        if (frameResult.errorInCrcCheckerExists())
-        {
-            long count = Integer.getInteger(countMap.get(NamingConventions.crcError)) + 1;
-            countMap.put(NamingConventions.crcError, String.valueOf(count));
-        }
+    static Boolean  checkCRC(byte[] frameBytes, HashMap<String , String > map)
+    {
+        byte[] slicedArray = Arrays.copyOfRange(frameBytes, 0, frameBytes.length - 4);
+        byte[] crc = Arrays.copyOfRange(frameBytes, frameBytes.length-4, frameBytes.length);
+        System.out.println(bytesToString(crc));
+        map.put("CRC FIELD", bytesToString(crc));
+        return Arrays.equals(BigInteger.valueOf(Integer.reverseBytes(calcCrc32Checksum(slicedArray))).toByteArray(), crc);
+    }
+
+    static void extractHeaders(byte[] frameBytes, HashMap<String , String > map)
+    {
         EthernetPacket packet = null;
+        //create Pacekt
         try { packet = EthernetPacket.newPacket(frameBytes, 0, frameBytes.length); }
         catch (Exception e) { e.printStackTrace(); }
+        //count the packet
+        long count = Integer.parseInt(countMap.get(NamingConventions.totalPacketCount)) + 1;
+        countMap.put(NamingConventions.totalPacketCount, String.valueOf(count));
         System.out.println(packet);
-        HashMap<String, String> map = new HashMap<>();
+        //Extract Headers.
         Packet.Builder builder = packet.getBuilder();
         do
         {
             Packet p = builder.build();
             if(p.getHeader() == null) break;
-            map.put(getType(p.getHeader()), bytesToString(p.getRawData()));
+            System.out.println(p.getHeader());
+            map.put(getType(p.getHeader()) ,(bytesToString(p.getHeader().getRawData())));
             builder = builder.getPayloadBuilder();
         }
         while(builder != null);
-        if(builder != null)
-            map.put("Payload", bytesToString(builder.build().getRawData()));
-        frameResult.frameData = map;
+        //Extract Payload
+        if (builder != null) { map.put("Payload", bytesToString(builder.build().getRawData())); }
+    }
+    public static DBFrame processFrames(byte[] frameBytes)
+    {
+        HashMap<String , String > frameDetails = new HashMap<>();
+        DBFrame frameResult = new DBFrame();
+        frameResult.setCrcChecker(!checkCRC(frameBytes, frameDetails));
+        if(frameResult.errorInCrcCheckerExists()) {
+            long count = Integer.parseInt(countMap.get(NamingConventions.crcError)) + 1;
+            countMap.put(NamingConventions.crcError, String.valueOf(count)) ;
+        }
+
+        extractHeaders(frameBytes, frameDetails);
+        frameResult.frameData = frameDetails;
+
+        System.out.println(frameResult.frameData);
+        System.out.println(countMap);
         return frameResult;
     }
 
     private static String bytesToString (byte[] networkHeaderBytes)
     {
         StringBuilder sb = new StringBuilder();
-        for (byte networkHeaderByte : networkHeaderBytes) {
-            sb.append(String.format("%02X", networkHeaderByte)).append(" ");
-        }
+        for (byte networkHeaderByte : networkHeaderBytes) { sb.append(String.format("%02X", networkHeaderByte)).append(" "); }
         return sb.toString();
     }
 
     public static void startProcessFrames()
     {
-        if (errorDetectingAlgorithms instanceof CRC)
-            countMap.put(NamingConventions.crcError, "0");
-        countMap.put(NamingConventions.totalPacketCount, "0");
+        countMap.putIfAbsent(NamingConventions.crcError, "0");
+        countMap.putIfAbsent(NamingConventions.totalPacketCount, "0");
         consumer.selectTopicByteArray(Topics.FramesFromHPC);
         while (!GlobalVariable.stopRecieving) { consumeFrames(); }
         clear();
@@ -90,9 +111,9 @@ public class FrameProcessing
         {
             DBFrame dbFrame = processFrames(frame.value());
             String json = JSONConverter.toJSON(dbFrame);
-            packetProducer.send(Topics.ProcessedFramesFromHPC, json);
-            MainHandler_Master.storages.get(GlobalVariable.storageClass).store(dbFrame);
-            countMap.put(NamingConventions.totalPacketCount, String.valueOf(Long.parseLong(countMap.get("TotalCount"))+1));
+            System.out.println(json);
+            packetProducer.produce(json, Topics.ProcessedFramesFromHPC);
+            //MainHandler_Master.storages.get(GlobalVariable.storageClass).store(dbFrame);
         }
     }
 
@@ -112,7 +133,7 @@ public class FrameProcessing
                 result.append(c);
             }
             countMap.putIfAbsent("XXX" + result, "0");
-            long count = Integer.getInteger(countMap.get("XXX" + result)) + 1;
+            long count = Long.parseLong(countMap.get("XXX" + result)) + 1;
             countMap.put("XXX" + result, String.valueOf(count));
             return result.toString();
         }
@@ -123,13 +144,15 @@ public class FrameProcessing
     {
         PCAP.initialize();
         PcapHandle handle = PCAP.createHandle();
+        try { handle.setDirection(PcapHandle.PcapDirection.IN); }
+        catch (Exception ignored) {}
         PacketListener listener =
                 pcapPacket ->
                 {
                     System.out.println(pcapPacket);
                     processFrames(pcapPacket.getRawData());
                 };
-        try { handle.loop(1,listener); }
+        try { handle.loop(-1,listener); }
         catch (Exception e) { e.printStackTrace(); }
     }
 }

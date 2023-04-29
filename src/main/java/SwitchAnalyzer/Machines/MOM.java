@@ -7,7 +7,7 @@ import SwitchAnalyzer.miscellaneous.GlobalVariable;
 import java.util.ArrayList;
 
 public class MOM {
-    public ArrayList<MasterOfHPC> HPCs;
+    public ArrayList<MasterOfHPC> HPCs = new ArrayList<>();
     public MachineNode machineNode;
     public MOM(MachineNode machineNode)
     {

@@ -33,12 +33,13 @@ public class MainHandler_MOM
 
     public static void end() { working = false; }
 
-    public static void start()
+    public static void main(String[] args)
     {
         working  = true;
         init();
-        while(working)
+        while(true)
         {
+            System.out.println("MainHandler");
             while (commands.peek() == null)
             {
                 x++;
@@ -46,7 +47,5 @@ public class MainHandler_MOM
             ICommand c = commands.poll();
             ProcessCmd.processCmd(c);
         }
-        DBConnect.closeConnectionToDB();
-        SystemMaps.clear();
     }
 }

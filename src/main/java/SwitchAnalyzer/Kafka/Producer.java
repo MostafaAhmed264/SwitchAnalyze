@@ -7,10 +7,10 @@ public class Producer
 {
     GenericProducer producer;
     public Producer(String ip) {  producer = new GenericProducer(ip + ":" + Ports.port1); }
-    public void produce(String o, String topic)
+    public void produce(String json, String topic)
     {
-        System.out.println(o);
-        producer.send(topic,o);
+        System.out.println(json);
+        producer.send(topic,json);
     }
     public void flush() { producer.flush(); }
     public void close() { producer.close(); }

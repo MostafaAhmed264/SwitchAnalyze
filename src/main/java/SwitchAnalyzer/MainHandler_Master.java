@@ -25,7 +25,7 @@ import java.util.Arrays;
 public class MainHandler_Master
 {
     public static boolean working = false;
-    public static String consumerGroup = "Master_Cons1";
+    public static String consumerGroup = "Master_ConczsvbfddvcmbjkDDSs1251lkjjklm,mjkk";
     public static Producer cmdProducer = new Producer(IP.ip1);
     public static Producer dataProducer = new Producer(IP.ip1);
     static GenericConsumer consumer;
@@ -41,16 +41,17 @@ public class MainHandler_Master
 
     public static void end() { working = false; }
 
-    public static void start()
+    public static void main(String[] args)
     {
         working = true;
         init();
         int commandTypeIndex;
-        while (working)
+        while (true)
         {
             ConsumerRecords<String, String> records = consumer.consume(Time.waitTime);
             for (ConsumerRecord<String, String> record : records)
             {
+
                 String json = record.value();
                 commandTypeIndex = Character.getNumericValue(json.charAt(0));
                 json = json.replaceFirst("[0-9]*",""); //removing the number indicating the command type using regex
@@ -64,7 +65,6 @@ public class MainHandler_Master
                 }
             }
         }
-        SystemMaps.clear();
     }
 }
 

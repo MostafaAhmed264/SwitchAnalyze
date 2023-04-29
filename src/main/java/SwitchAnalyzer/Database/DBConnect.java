@@ -84,7 +84,7 @@ public class DBConnect {
     public static void connectToDB_Node(String switchName)
     {
         DBConnect.connect();
-        KeySpace.useKeyspace_Node(switchName);
+        KeySpace.useKeyspace_Node("wafy");
         lastRun = DBSelect.getLastRun()+1;
         DBInsert.setKeyspaceName(switchName);
     }

@@ -4,7 +4,7 @@ import SwitchAnalyzer.Network.Header;
 
 public abstract class ErrorDetectingAlgorithms extends Header {
    String AlgorithmName;
-
+    public boolean injectError = false ;
     public ErrorDetectingAlgorithms()
     {
 

@@ -33,7 +33,7 @@ public class StartRunCommand_Master extends ICommandMaster
     @Override
     public void processCmd()
     {
-        DBConnect.connectToDB_Node(switchName);
+        //DBConnect.connectToDB_Node(switchName);
         for (MachineNode node : master.childNodes)
         {
             GenCmd(node.getMachineID());

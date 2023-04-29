@@ -18,4 +18,8 @@ public class HPC_INFO {
         this.clusterName=clusterName;
         map =new ConcurrentHashMap<>();
     }
+
+    public HPC_INFO(int i) {
+        this.HPCID = i;
+    }
 }

@@ -28,6 +28,10 @@ public class MasterOfHPC {
 
     }
 
+    public MasterOfHPC(int i) {
+        hpcInfo = new HPC_INFO(i);
+    }
+
     public String getClusterName(){
         return hpcInfo.clusterName;
     }

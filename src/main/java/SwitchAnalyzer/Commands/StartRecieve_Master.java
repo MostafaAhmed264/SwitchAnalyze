@@ -11,8 +11,8 @@ import static SwitchAnalyzer.MainHandler_Master.master;
 
 public class StartRecieve_Master  extends ICommandMaster
 {
-    public ErrorDetectingAlgorithms errorDetectingAlgorithm;
-    StartRecieve_Master(){ errorDetectingAlgorithm = null; this.portID = 0; }
+    public static ErrorDetectingAlgorithms errorDetectingAlgorithm;
+    StartRecieve_Master(){errorDetectingAlgorithm = null;  this.portID = 0; }
     public void processCmd()
     {
         openProcessThread();

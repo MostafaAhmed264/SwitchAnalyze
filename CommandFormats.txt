@@ -3,10 +3,10 @@
  "DefRun" : true
 }
 0{
-  "defRun" : false
-  "pairs": [
+   "defRun" : false
+   "saveOption" : 2
+   "pairs": [
     {
-      "saveOption" : 0,1,2  => (Save Headers and bytes/ Save Headers / No Save) For Database
       "toPort": 1,
       "fromPort": {
         "portConfig": {
@@ -26,7 +26,7 @@
           "rate": 5000,
           "mode": "sender"
         },
-        "ID": 2
+        "ID": 1
       }
     }
   ]

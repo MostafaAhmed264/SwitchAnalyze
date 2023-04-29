@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.zip.CRC32;
 
 public class CRC extends ErrorDetectingAlgorithms {
-    public boolean injectError = false;
     public CRC(boolean injectError) { this.injectError = injectError ; }
     public CRC(){}
 
