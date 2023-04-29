@@ -49,6 +49,8 @@ public class SystemMaps
         commandClasses.add(ShowHistoryCmd_MOM.class);
         commandClasses.add(SaveSwitchCMD_MOM.class);
         commandClasses.add(GetFramesForRun_MOM.class);
+
+
         MOMinitStub();
         initDefaultPortPair();
 

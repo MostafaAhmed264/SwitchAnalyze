@@ -21,7 +21,7 @@ public class LatencyCollectorMOM implements Collector
         for (int i = 0; i < masterOfMasters.HPCs.size(); i++)
         {
             avgLatencyString = masterOfMasters.HPCs.get(i).hpcInfo.map.get(NamingConventions.latency);
-           avgLatencyHpc += Double.parseDouble(avgLatencyString);
+            avgLatencyHpc += Double.parseDouble(avgLatencyString);
             if (Double.parseDouble(avgLatencyString) > max) { max = Double.parseDouble(avgLatencyString);}
             if (Double.parseDouble(avgLatencyString) < min) { min = Double.parseDouble(avgLatencyString);}
         }

@@ -57,7 +57,7 @@ public class StartRunCommand_Master extends ICommandMaster
     public void GenCmd(int id)
     {
         String json = JSONConverter.toJSON(new StartRunCommand_Node(portPair.fromPort.portConfig, id ,portPair.toPort));
-        json = SystemMaps.STOP_RUN_CMD_NODE_IDX +json;
+        json = SystemMaps.START_RUN_NODE_IDX +json;
         MainHandler_Master.cmdProducer.produce(json,Topics.cmdFromHpcMaster);
         MainHandler_Master.cmdProducer.flush();
     }

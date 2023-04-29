@@ -6,6 +6,7 @@ import SwitchAnalyzer.Machines.HPC_INFO;
 import SwitchAnalyzer.NamingConventions;
 import SwitchAnalyzer.Network.IP;
 import SwitchAnalyzer.Network.Ports;
+import SwitchAnalyzer.ProduceData_MOM;
 import SwitchAnalyzer.miscellaneous.GlobalVariable;
 import SwitchAnalyzer.miscellaneous.JSONConverter;
 import SwitchAnalyzer.miscellaneous.Time;
@@ -25,7 +26,8 @@ import static SwitchAnalyzer.MainHandler_MOM.masterOfMasters;
  */
 
 public class MOMConsumer {
-    static String consumerGroup = "MOMColBHJJlectosdsr1";
+    public static ArrayList<Integer> ids = new ArrayList<>();
+    static String consumerGroup = "MOMColBHJJldfgrbenctosdysr1";
     static GenericConsumer consumer = new GenericConsumer(IP.ip1 + ":" + Ports.port1, consumerGroup);
     //arraylist of collectors
     public static ArrayList<Collector> collectors = new ArrayList<>();
@@ -38,17 +40,43 @@ public class MOMConsumer {
 
     public static void prepareStats()
     {
+        initResultMap();
         while (!GlobalVariable.endRun)
         {
             updateHpcInfo();
             reduce();
+            System.out.println(results);
+            if (GlobalVariable.retrieveDataFromNode)
+            {
+                ProduceData_MOM.produceData(ids);
+            }
+
         }
         results.put(NamingConventions.overAllRates, String.valueOf(Double.parseDouble(results.get(NamingConventions.overAllRates))/RatesCollectorMOM.count));
         results.put(NamingConventions.overAllAvgPacketLoss, String.valueOf(Double.parseDouble(results.get(NamingConventions.overAllAvgPacketLoss))/PLossCollectorMOM.count));
         results.put(NamingConventions.overAllAvgLatency, String.valueOf(Double.parseDouble(results.get(NamingConventions.overAllAvgLatency))/LatencyCollectorMOM.count));
+
     }
 
-    public static void clear() { RatesCollectorMOM.count = 0; PLossCollectorMOM.count = 0; LatencyCollectorMOM.count = 0;}
+    public static void clear()
+    {
+        RatesCollectorMOM.count = 0; PLossCollectorMOM.count = 0; LatencyCollectorMOM.count = 0;
+    }
+
+    public static void initResultMap()
+    {
+        MOMConsumer.results.put(NamingConventions.overAllAvgLatency, "0");
+        MOMConsumer.results.put(NamingConventions.maxLatency, "0");
+        MOMConsumer.results.put(NamingConventions.minLatency, "0");
+        MOMConsumer.results.put(NamingConventions.totalPacketCount, "0");
+        MOMConsumer.results.put(NamingConventions.maxRate, "0");
+        MOMConsumer.results.put(NamingConventions.minRate, "0");
+        MOMConsumer.results.put(NamingConventions.overAllRates, "0");
+        MOMConsumer.results.put(NamingConventions.maxPacketLoss, "0");
+        MOMConsumer.results.put(NamingConventions.minPacketLoss, "0");
+        MOMConsumer.results.put(NamingConventions.overAllAvgPacketLoss, "0");
+        MOMConsumer.results.put(NamingConventions.crcError, "0");
+    }
     public static void updateHpcInfo()
     {
         consumer.selectTopic(Topics.ratesFromHPCs);

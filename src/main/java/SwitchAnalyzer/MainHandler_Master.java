@@ -25,7 +25,7 @@ import java.util.Arrays;
 public class MainHandler_Master
 {
     public static boolean working = false;
-    public static String consumerGroup = "Master_ConczsvbfddvcxcfdvmbjkDDSs1251lkjjklm,mjkk";
+    public static String consumerGroup = "Master_ConczsvbfddvcxcfdvgggfmbjkDDSs1251lkjjklm,mjkk";
     public static Producer cmdProducer = new Producer(IP.ip1);
     public static Producer dataProducer = new Producer(IP.ip1);
     static GenericConsumer consumer;

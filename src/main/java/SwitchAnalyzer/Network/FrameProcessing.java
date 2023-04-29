@@ -26,7 +26,7 @@ import static org.pcap4j.util.ByteArrays.calcCrc32Checksum;
 
 public class FrameProcessing
 {
-    static GenericConsumer consumer = new GenericConsumer(IP.ip1 + ":" + Ports.port1, "framePxrocessing_1111", true);
+    static GenericConsumer consumer = new GenericConsumer(IP.ip1 + ":" + Ports.port1, "framePtxrogvvceffssing_11111", true);
     public static Producer packetProducer = new Producer(IP.ip1);
     public static ErrorDetectingAlgorithms errorDetectingAlgorithms = null;
     public static ConcurrentHashMap<String, String> countMap = new ConcurrentHashMap<>();
