@@ -8,7 +8,7 @@ import java.util.Arrays;
  * later this will be taken from a configuration file
  */
 public class IP {
-    public static String ip1 = "192.168.1.35";
+    public static String ip1 = "192.168.1.107";
 
 
     // this ip was used to consume from the broker that contains cmdFromHpcMaster
@@ -17,7 +17,7 @@ public class IP {
     public static String receiverOfPackets ="192.168.1.2";
 
 
-        public static String ConfigurationsIP="192.168.1.60";
+        public static String ConfigurationsIP="192.168.1.107";
     /*
         This section of Ips is for the packet generating
      */

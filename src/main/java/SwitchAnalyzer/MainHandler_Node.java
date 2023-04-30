@@ -18,7 +18,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 public class MainHandler_Node
 {
     public static boolean working = false;
-    public static String consumerGroup = "Node_Cons1";
+    public static String consumerGroup = "Node_cons1";
     static GenericConsumer consumer;
     public static MachineNode node;
     public static Producer dataProducer = new Producer(IP.ip1);
@@ -30,13 +30,14 @@ public class MainHandler_Node
         SystemMaps.initMapsNode();
         consumer = new GenericConsumer(IP.ip1 + ":" + Ports.port1, consumerGroup);
         consumer.selectTopic(Topics.cmdFromHpcMaster);
-        PCAP.initialize();
+//        PCAP.initialize();
     }
 
     public static void end() { working = false; }
 
     public static void start()
     {
+        System.out.println("In node main handler");
         working = true;
         init();
         int commandTypeIndex;

@@ -18,19 +18,20 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 
 public class Main
 {
-    static String consumerConfigurationGroup = "fdsfdsfdsfsasdd";
+    static String consumerConfigurationGroup = "foihsfihifh";
     public static void start()
     {
         MachineNode myNode = new MachineNode();
         GenericConsumer MainConsumer = new GenericConsumer(IP.ConfigurationsIP + ":" + Ports.port1, consumerConfigurationGroup);
         MainConsumer.selectTopic("FARES");
-
+        System.out.println("before while in main");
         while (true)
 
         {
             ConsumerRecords<String, String> records = MainConsumer.consume(100);
             for (ConsumerRecord<String, String> record : records)
             {
+                System.out.println("in for");
                 MoMConfigurations momConfigurations = JSONConverter.fromJSON(record.value(), MoMConfigurations.class);
                 Thread HandlerThread;
                 if (momConfigurations.getMaster_Mac().equals(myNode.nodeMacAddress))
@@ -59,8 +60,9 @@ public class Main
                                 }
                                 else
                                 {
-                                    new EndRunCmd_Node(0).processCmd();
+                                   // new EndRunCmd_Node(0).processCmd();
                                     MainHandler_Node.working = false;
+                                    System.out.println("Node in main");
                                     SystemInitializer.NodeInit(myNode, machineConfig,momConfigurations);
                                     HandlerThread = new Thread(MainHandler_Node::start);
                                 }
