@@ -3,6 +3,7 @@ package SwitchAnalyzer.Commands.Master;
 import SwitchAnalyzer.Collectors.MasterConsumer;
 import SwitchAnalyzer.Commands.ICommandMaster;
 import SwitchAnalyzer.Commands.Node.StartRunAllNodes;
+import SwitchAnalyzer.Database.DBConnect;
 import SwitchAnalyzer.Kafka.Topics;
 import SwitchAnalyzer.MainHandler_Master;
 import SwitchAnalyzer.Network.ErrorDetection.CRC;
@@ -14,6 +15,14 @@ import SwitchAnalyzer.miscellaneous.SystemMaps;
 
 public class StartRunALL extends ICommandMaster
 {
+    int saveOption;
+    String switchName;
+    public StartRunALL(int saveOption, String switchName)
+    {
+        this.saveOption = saveOption;
+        this.switchName = switchName;
+    }
+    public StartRunALL(){}
     @Override
     /*
         Propagates the BROADCAST TO CHILDREN
@@ -23,8 +32,10 @@ public class StartRunALL extends ICommandMaster
      */
     public void processCmd()
     {
+        DBConnect.connectToDB_Node(switchName);
         GenCmd(0);
         GlobalVariable.retrieveDataFromNode = true;
+        GlobalVariable.storageClass = 2;
         addCollectors();
         openProcessFramesAndProduceDataThreads();
     }

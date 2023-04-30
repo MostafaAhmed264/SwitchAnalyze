@@ -1,5 +1,6 @@
 package SwitchAnalyzer.Collectors;
 
+import SwitchAnalyzer.EndCmdUI;
 import SwitchAnalyzer.Kafka.GenericConsumer;
 import SwitchAnalyzer.Kafka.Topics;
 import SwitchAnalyzer.Machines.HPC_INFO;
@@ -28,7 +29,7 @@ import static SwitchAnalyzer.MainHandler_MOM.masterOfMasters;
 
 public class MOMConsumer {
     public static ArrayList<Integer> ids = new ArrayList<>();
-    static String consumerGroup = "MOMColBHJJghhglhyydfgfjjssdasdafrbevdskfdsofnctosddsadasysr1";
+    static String consumerGroup = "Mfnctosddsadasysr1";
     static GenericConsumer consumer = new GenericConsumer(IP.ip1 + ":" + Ports.port1, consumerGroup);
     //arraylist of collectors
     public static ArrayList<Collector> collectors = new ArrayList<>();
@@ -46,7 +47,6 @@ public class MOMConsumer {
         {
             updateHpcInfo();
             reduce();
-            System.out.println(results);
             if (GlobalVariable.retrieveDataFromNode)
             {
                 ProduceData_MOM.produceData(ids);
@@ -54,11 +54,12 @@ public class MOMConsumer {
         }
 
         String s = String.valueOf(Double.parseDouble(results.get(NamingConventions.overAllRates))/RatesCollectorMOM.count);
-        System.out.println(s);
         results.put(NamingConventions.overAllRates, s);
         results.put(NamingConventions.overAllAvgPacketLoss, String.valueOf(Double.parseDouble(results.get(NamingConventions.overAllAvgPacketLoss))/PLossCollectorMOM.count));
         results.put(NamingConventions.overAllAvgLatency, String.valueOf(Double.parseDouble(results.get(NamingConventions.overAllAvgLatency))/LatencyCollectorMOM.count));
-        String json = JSONConverter.toJSON(MOMConsumer.results);
+        EndCmdUI endcmdUi=new EndCmdUI();
+        endcmdUi.mapResultToObj(results);
+        String json = JSONConverter.toJSON(endcmdUi);
         System.out.println(json);
         try { JettyWebSocketServer.writeMessage(json); }
         catch (Exception e) { throw new RuntimeException(e); }

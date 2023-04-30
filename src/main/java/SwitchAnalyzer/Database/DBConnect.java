@@ -84,7 +84,7 @@ public class DBConnect {
     public static void connectToDB_Node(String switchName)
     {
         DBConnect.connect();
-        KeySpace.useKeyspace_Node("wafy");
+        KeySpace.useKeyspace_Node(switchName);
         lastRun = DBSelect.getLastRun()+1;
         DBInsert.setKeyspaceName(switchName);
     }
@@ -106,6 +106,7 @@ public class DBConnect {
             /* choose the node or nodes to connect with */
             connector.connect(IP.DBIps,null,metadata);
             session = connector.getSession();
+            System.out.println("connected");
         } catch (Exception e) {
             System.out.println("Cant connect to DB server ");
             e.printStackTrace();

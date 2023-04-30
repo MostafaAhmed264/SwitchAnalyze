@@ -22,8 +22,7 @@ public class RetrieveCmd_Master extends ICommandMaster {
 
     public ArrayList<String> retrievals;
 
-    public RetrieveCmd_Master(int portID, ArrayList<String> retrievals)
-    {
+    public RetrieveCmd_Master(int portID, ArrayList<String> retrievals) {
         this.portID = portID;
         this.retrievals = retrievals;
     }
@@ -34,7 +33,8 @@ public class RetrieveCmd_Master extends ICommandMaster {
     @Override
     public void processCmd()
     {
-        GlobalVariable.retreiveProcessedFramesFromHPC = true;
+        System.out.println("R TRUE");
+       GlobalVariable.retreiveProcessedFramesFromHPC = true;
     }
 
     @Override

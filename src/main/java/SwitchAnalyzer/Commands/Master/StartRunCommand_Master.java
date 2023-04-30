@@ -3,6 +3,7 @@ package SwitchAnalyzer.Commands.Master;
 import SwitchAnalyzer.Collectors.MasterConsumer;
 import SwitchAnalyzer.Commands.ICommandMaster;
 import SwitchAnalyzer.Commands.Node.StartRunCommand_Node;
+import SwitchAnalyzer.Database.DBConnect;
 import SwitchAnalyzer.Kafka.Topics;
 import SwitchAnalyzer.Machines.MachineNode;
 import SwitchAnalyzer.MainHandler_Master;
@@ -28,14 +29,6 @@ public class StartRunCommand_Master extends ICommandMaster
         this.portID = portPair.fromPort.ID;
     }
 
-    public StartRunCommand_Master(SwitchPortPair portPair, int saveOption, String switchName)
-    {
-        this.portPair = portPair ;
-        this.portID = portPair.fromPort.ID;
-        GlobalVariable.storageClass = saveOption;
-        this.switchName = switchName;
-    }
-
     /*
         Propagates The Sending CONFIG TO THE NODES SO THEY CAN START SENDING
         SO MACHINES OPEN SENDING THREADS
@@ -43,7 +36,7 @@ public class StartRunCommand_Master extends ICommandMaster
     @Override
     public void processCmd()
     {
-        //DBConnect.connectToDB_Node(switchName);
+        System.out.println(DBConnect.getSession());
         for (MachineNode node : master.childNodes)
         {
             GenCmd(node.getMachineID());
