@@ -234,7 +234,10 @@ public class DBSelect {
         {
             String jsonString = row.getString("[json]");
             DBRun run = JSONConverter.fromJSON(jsonString,DBRun.class);
-            runs.add(run);
+            DBRun run_gui = null;
+            run_gui.runNo = run.getRunNo();
+            run_gui.runDetails = run.rundetails;
+            runs.add(run_gui);
         }
         return runs;
     }
@@ -250,7 +253,7 @@ public class DBSelect {
             String frame_json = row.getString("[json]");
             long runno = runNo;
             String switchname = switchName;
-            dataProducer.produce(JSONConverter.toJSON(new DBFrame(frame_json,switchName)), Topics.ProcessedFramesFromHPC);
+            dataProducer.produce(JSONConverter.toJSON(new DBFrame(frame_json,runNo,switchName)), Topics.ProcessedFramesFromHPC);
             System.out.println("produced frame in kafka");
             dataProducer.flush();
         }
@@ -294,7 +297,7 @@ public class DBSelect {
     public static String showHistory()
     {
         KeySpace.useKeyspace_Node("history");
-        return JSONConverter.toJSON(selectSwitches());
+        return JSONConverter.toJSON(selectSwitches().dbSwitches);
     }
     private static DBSwitches selectSwitches()
     {
@@ -310,7 +313,7 @@ public class DBSelect {
             KeySpace.useKeyspace_Node(dbSwitches.get(i).getSwitchName());
             setJSON(true);
             beginSelectRuns();
-            dbSwitches.get(i).setSwitchRuns(executeSelect());
+            dbSwitches.get(i).stats = executeSelect();
         }
         return new DBSwitches(dbSwitches);
     }

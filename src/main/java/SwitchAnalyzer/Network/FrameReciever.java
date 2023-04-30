@@ -28,4 +28,10 @@ public class FrameReciever
     }
 
     public static void endRec() { try { handle.breakLoop(); handle.close(); } catch (Exception e) {}}
+
+    public static void main(String[] args)
+    {
+        while(true)
+            startRec();
+    }
 }

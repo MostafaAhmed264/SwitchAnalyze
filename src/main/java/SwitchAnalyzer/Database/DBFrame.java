@@ -24,10 +24,10 @@ public class DBFrame {
     // Member variables for producing in kafka
     public String frame_json;
     public String bytes;
-
+    public Long runNo;
     public String switchName;
     public DBFrame() { id = UUIDs.timeBased(); }
-    public DBFrame(String frame_json, String switchName) {
+    public DBFrame(String frame_json,Long runNo, String switchName) {
         this.frame_json = frame_json;
         this.switchName = switchName;
     }

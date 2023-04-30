@@ -5,17 +5,18 @@ import java.util.ArrayList;
 public class DBSwitch
 {
     private String switchName ="";
-    private long totalNoOfPorts = -1;
+    private Long totalNoOfPorts;
     private ArrayList<DBRun> switchruns;
-    public DBSwitch(String switchName, long totalNoOfPorts) {
+    public ArrayList<DBRun> stats;
+    public DBSwitch(String switchName, Long totalNoOfPorts) {
         this.switchName = switchName;
         this.totalNoOfPorts = totalNoOfPorts;
         switchruns = new ArrayList<DBRun>();
     }
     public String getSwitchName() { return switchName; }
     public void setSwitchName(String switchName) { this.switchName = switchName; }
-    public long getTotalNoOfPorts() {return totalNoOfPorts; }
-    public void setTotalNoOfPorts(long totalNoOfPorts) { this.totalNoOfPorts = totalNoOfPorts; }
+    public Long getTotalNoOfPorts() {return totalNoOfPorts; }
+    public void setTotalNoOfPorts(Long totalNoOfPorts) { this.totalNoOfPorts = totalNoOfPorts; }
 
     public void setSwitchRuns(ArrayList<DBRun> switchRuns) {
         this.switchruns = switchRuns;
