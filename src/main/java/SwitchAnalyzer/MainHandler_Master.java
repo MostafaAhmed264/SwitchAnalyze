@@ -40,8 +40,7 @@ public class MainHandler_Master
     }
 
     public static void end() { working = false; }
-
-    public static void main(String[] args)
+    public static void start()
     {
         working = true;
         init();
@@ -66,6 +65,31 @@ public class MainHandler_Master
             }
         }
     }
+    /*public static void main(String[] args)
+    {
+        working = true;
+        init();
+        int commandTypeIndex;
+        while (true)
+        {
+            ConsumerRecords<String, String> records = consumer.consume(Time.waitTime);
+            for (ConsumerRecord<String, String> record : records)
+            {
+
+                String json = record.value();
+                System.out.println(json);
+                System.out.println("A7A");
+                commandTypeIndex = Character.getNumericValue(json.charAt(0));
+                json = json.replaceFirst("[0-9]*",""); //removing the number indicating the command type using regex
+                ICommandMaster command = JSONConverter.fromJSON(json, SystemMaps.commandClassesMaster.get(commandTypeIndex));
+                if (command.portID == 0 || GlobalVariable.portHpcMap.get(command.portID).getHPCID() == master.getHPCID())
+                {
+                    Thread t1 = new Thread(() -> ProcessCmd.processCmd(command));
+                    t1.start();
+                }
+            }
+        }
+    }*/
 }
 
 
