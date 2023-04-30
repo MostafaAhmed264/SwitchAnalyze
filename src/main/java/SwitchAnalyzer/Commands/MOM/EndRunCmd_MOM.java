@@ -26,7 +26,7 @@ public class EndRunCmd_MOM implements ICommandMOM
 
 
         //Add Insert Here for DB RUN
-        DBInsert.insertRun(JSONConverter.toJSON(MOMConsumer.results));
+        DBInsert.insertRun(MOMConsumer.results);
 
         GlobalVariable.retrieveDataFromNode = false;
         GlobalVariable.endRun = true;

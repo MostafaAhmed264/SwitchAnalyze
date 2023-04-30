@@ -1,6 +1,8 @@
 package SwitchAnalyzer.Database;
 
 import java.util.HashMap;
+import java.util.Map;
+
 public class DBRun {
     private long runno;
     public Long runNo;

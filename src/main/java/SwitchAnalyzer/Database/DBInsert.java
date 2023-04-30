@@ -4,6 +4,8 @@ import SwitchAnalyzer.miscellaneous.JSONConverter;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.utils.UUIDs;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class DBInsert
@@ -21,9 +23,10 @@ public class DBInsert
         System.out.println(frameJson);
         DBConnect.getSession().execute(query);
     }
-    public static void insertRun(String frameJson)
+    public static void insertRun(Map<String,String> runDetails)
     {
-        DBRun run = JSONConverter.fromJSON(frameJson,DBRun.class);
+        DBRun run=new DBRun();
+        run.rundetails=runDetails;
         run.setRunno_DBInsert();
         StringBuilder sb = new StringBuilder("INSERT INTO runs JSON '"+JSONConverter.toJSON(run)+"';");
         final String query = sb.toString();
