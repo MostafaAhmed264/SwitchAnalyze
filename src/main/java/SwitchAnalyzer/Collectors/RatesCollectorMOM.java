@@ -18,7 +18,7 @@ public class RatesCollectorMOM implements Collector
     public static long count = 0;
     public static MasterOfHPC myHPC ;
     //the name of the collector is used to identify the collector in the results map
-    private String name = "Rates";
+    private String name = NamingConventions.overAllRates;
     public String getName() { return name; }
     @Override
     public String collect()
@@ -28,9 +28,13 @@ public class RatesCollectorMOM implements Collector
         double max = Long.MIN_VALUE ;
         double min = Long.MAX_VALUE ;
         String avgHpcRateString;
+        System.out.println("Before for count is :"+count);
 
         for (int i = 0; i < masterOfMasters.HPCs.size(); i++)
         {
+            System.out.println(masterOfMasters.HPCs.get(i).hpcInfo.map);
+            if(!masterOfMasters.HPCs.get(i).hpcInfo.map.containsKey(NamingConventions.rates))
+                break;
             avgHpcRateString = masterOfMasters.HPCs.get(i).hpcInfo.map.get(NamingConventions.rates);
             avgHpcRate += Double.parseDouble(avgHpcRateString);
             if (Double.parseDouble(avgHpcRateString) > max) { max = Double.parseDouble(avgHpcRateString);}
@@ -43,6 +47,7 @@ public class RatesCollectorMOM implements Collector
         avgHpcRate = avgHpcRate/masterOfMasters.HPCs.size();
         OverallRate = Double.parseDouble(MOMConsumer.results.get(NamingConventions.overAllRates)) + avgHpcRate;
         count++;
+        System.out.println("Count is : " +count);
         return String.valueOf(OverallRate);
     }
 

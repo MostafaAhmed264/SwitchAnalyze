@@ -14,15 +14,17 @@ import java.util.UUID;
 public class DBFrame {
     private UUID id ;
 
-    public int port;
+    public String port = "1";
     public enum Direction {INBOUND,OUTBOUND}
     public Direction directionEnum;
-    public String direction;
-    public HashMap<String, String> frameData;
+    public String Direction;
+    public HashMap<String, String> frameDetails;
     private boolean errorInRouting;
     private boolean crcChecker;
     // Member variables for producing in kafka
     public String frame_json;
+    public String bytes;
+
     public long runNo;
     public String switchName;
     public DBFrame() { id = UUIDs.timeBased(); }

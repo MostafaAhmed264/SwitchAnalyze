@@ -18,25 +18,25 @@ public class EndRunCmd_MOM implements ICommandMOM
 {
     public void processCmd()
     {
+        System.out.println("END");
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Calendar cal = Calendar.getInstance();
         MOMConsumer.results.put("EndTime", dateFormat.format(cal.getTime()));
 
-        String json = JSONConverter.toJSON(MOMConsumer.results);
-        try { JettyWebSocketServer.writeMessage(json); }
-        catch (Exception e) { throw new RuntimeException(e); }
+
         //Add Insert Here for DB RUN
 
         GlobalVariable.retrieveDataFromNode = false;
         GlobalVariable.endRun = true;
+
         genCmd(0);
-        MOMConsumer.clear();
     }
 
     public void genCmd(int switchPortId)
     {
         String json = JSONConverter.toJSON(new EndCmd_Master(switchPortId));
-        json = SystemMaps.END_RUN_CMD_MASTER_IDX + json;
+        json = "6" + json;
+        System.out.println(json + "PRODUCEDDDD FROM END");
         MainHandler_MOM.cmdProducer.produce(json, Topics.cmdFromMOM);
         MainHandler_MOM.cmdProducer.flush();
     }

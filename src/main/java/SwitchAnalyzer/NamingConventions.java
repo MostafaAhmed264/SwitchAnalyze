@@ -15,9 +15,9 @@ public class NamingConventions
     public static String minPacketLoss = "minPL";
     public static String maxRate = "maxRate";
     public static String minRate = "minRate";
-    public static String overAllAvgLatency = "avgOverAllPacketLoss";
-    public static String maxLatency = "maxPL";
-    public static String minLatency = "minPL";
+    public static String overAllAvgLatency = "avgOverAllLatency";
+    public static String maxLatency = "maxLatency";
+    public static String minLatency = "minLatency";
     public static String totalPacketCount = "TotalCount";
     public static String countTypeAmount = "countTypeAmount";
 }

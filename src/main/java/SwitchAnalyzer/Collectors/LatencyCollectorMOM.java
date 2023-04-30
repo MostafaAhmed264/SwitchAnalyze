@@ -8,7 +8,7 @@ public class LatencyCollectorMOM implements Collector
 {
     public static long count;
 
-    public String getName() { return "Latency"; }
+    public String getName() { return NamingConventions.overAllAvgLatency; }
     @Override
     public String collect()
     {
@@ -20,7 +20,9 @@ public class LatencyCollectorMOM implements Collector
 
         for (int i = 0; i < masterOfMasters.HPCs.size(); i++)
         {
-            avgLatencyString = masterOfMasters.HPCs.get(i).hpcInfo.map.get(NamingConventions.latency);
+            if (!masterOfMasters.HPCs.get(i).hpcInfo.map.containsKey(NamingConventions.latency))
+                break;
+                avgLatencyString = masterOfMasters.HPCs.get(i).hpcInfo.map.get(NamingConventions.latency);
             avgLatencyHpc += Double.parseDouble(avgLatencyString);
             if (Double.parseDouble(avgLatencyString) > max) { max = Double.parseDouble(avgLatencyString);}
             if (Double.parseDouble(avgLatencyString) < min) { min = Double.parseDouble(avgLatencyString);}

@@ -12,7 +12,7 @@ import static SwitchAnalyzer.MainHandler_MOM.masterOfMasters;
 public class PLossCollectorMOM implements Collector {
     public static long count;
 
-    public String getName() { return "PacketLoss"; }
+    public String getName() { return NamingConventions.overAllAvgPacketLoss; }
     @Override
     public String collect()
     {
@@ -25,6 +25,8 @@ public class PLossCollectorMOM implements Collector {
         for (int i = 0; i < masterOfMasters.HPCs.size(); i++)
         {
             System.out.println(masterOfMasters.HPCs.get(0).hpcInfo.map);
+            if (!masterOfMasters.HPCs.get(i).hpcInfo.map.containsKey(NamingConventions.packetLoss))
+                break;
             avgPlString = masterOfMasters.HPCs.get(i).hpcInfo.map.get(NamingConventions.packetLoss);
             avgPlHpc += Double.parseDouble(avgPlString);
             if (Double.parseDouble(avgPlString) > max) { max = Double.parseDouble(avgPlString);}

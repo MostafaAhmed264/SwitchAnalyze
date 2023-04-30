@@ -21,11 +21,11 @@ import static SwitchAnalyzer.MainHandler_Master.master;
 /**
  * this class will consume the overall info (for now rates+packet loss) information coming from the machines through kafka
  * then it will call all the  collectors available in the list to process the data
- * the collectors can be added using the addCollector method
+ * the collectors can be added using the addCollector methodw
  */
 
 public class MasterConsumer {
-    static String consumerGroup = "Collectors";
+    static String consumerGroup = "Collecscsdsaasfctorsf12";
     static GenericConsumer consumer = new GenericConsumer(IP.ip1 + ":" + Ports.port1, consumerGroup);;
 
     //arraylist of collectors

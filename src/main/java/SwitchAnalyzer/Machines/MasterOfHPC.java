@@ -58,5 +58,5 @@ public class MasterOfHPC {
         }
     }
     public int getNoOfChilNodes() { return childNodes.size(); }
-    public int getHPCID() { return hpcInfo.HPCID; }
+    public int getHPCID() { return hpcInfo.id; }
 }

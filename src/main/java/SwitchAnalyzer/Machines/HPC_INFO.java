@@ -9,17 +9,19 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 
 public class HPC_INFO {
-    public int HPCID;
+    public int id;
+    public String ID;
     public String clusterName;
     public Map<String,String> map;
     public HPC_INFO(int id ,String clusterName)
     {
-        this.HPCID = id;
+        this.id = id;
+        this.ID = String.valueOf(id);
         this.clusterName=clusterName;
         map =new ConcurrentHashMap<>();
     }
 
     public HPC_INFO(int i) {
-        this.HPCID = i;
+        this.id = i;
     }
 }
