@@ -65,7 +65,7 @@ public class DBCreate {
                 .append("id timeuuid,")
                 .append("port int,")
                 .append("direction text,")
-                .append("frameData map<text, text>,")
+                .append("frameDetails map<text, text>,")
                 .append("errorInRouting boolean,")
                 .append("crcChecker boolean,")
                 .append("PRIMARY KEY(id)" )

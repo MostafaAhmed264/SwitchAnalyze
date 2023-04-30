@@ -44,8 +44,8 @@ public class StartRunCommand_MOM implements ICommandMOM
     }
     public void GenCmd(SwitchPortPair portPair)
     {
-        String startRunJSON = JSONConverter.toJSON(new StartRunCommand_Master(portPair, saveOption, GlobalVariable.switchName));
-        String startRunAllJSON = JSONConverter.toJSON(new StartRunALL());
+        String startRunJSON = JSONConverter.toJSON(new StartRunCommand_Master(portPair));
+        String startRunAllJSON = JSONConverter.toJSON(new StartRunALL(saveOption, GlobalVariable.switchName));
         startRunAllJSON = SystemMaps.START_RUN_ALL_CMD_MASTER_IDX + startRunAllJSON;
         startRunJSON = SystemMaps.START_RUN_CMD_MASTER_IDX + startRunJSON;
         MainHandler_MOM.cmdProducer.produce(startRunJSON,Topics.cmdFromMOM);

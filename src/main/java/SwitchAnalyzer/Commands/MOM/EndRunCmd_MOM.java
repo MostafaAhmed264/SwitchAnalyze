@@ -3,6 +3,7 @@ package SwitchAnalyzer.Commands.MOM;
 import SwitchAnalyzer.Collectors.MOMConsumer;
 import SwitchAnalyzer.Commands.ICommandMOM;
 import SwitchAnalyzer.Commands.Master.EndCmd_Master;
+import SwitchAnalyzer.Database.DBInsert;
 import SwitchAnalyzer.Kafka.Topics;
 import SwitchAnalyzer.MainHandler_MOM;
 import SwitchAnalyzer.Sockets.JettyWebSocketServer;
@@ -25,6 +26,7 @@ public class EndRunCmd_MOM implements ICommandMOM
 
 
         //Add Insert Here for DB RUN
+        DBInsert.insertRun(JSONConverter.toJSON(MOMConsumer.results));
 
         GlobalVariable.retrieveDataFromNode = false;
         GlobalVariable.endRun = true;

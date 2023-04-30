@@ -130,7 +130,7 @@ public class DBSelect {
     /*********************** Frame condition and view ******************************************/
     public static void viewPort() { selectedAttributes.append("port "); }
     public static void viewDirection() { selectedAttributes.append("direction "); }
-    public static void viewFrameData() { selectedAttributes.append("frameData "); }
+    public static void viewFrameData() { selectedAttributes.append("frameDetails "); }
     public static void viewCrcChecker() { selectedAttributes.append("crcChecker "); }
     public static void viewErrorInRouting() { selectedAttributes.append("errorInRouting "); }
     public static void conditionID(long id) {
@@ -144,7 +144,7 @@ public class DBSelect {
     }
     public static void conditionFrameData(String headerName)
     {
-        whereCondition.append("frameData CONTAINS KEY '").append(headerName).append("'");
+        whereCondition.append("frameDetails CONTAINS KEY '").append(headerName).append("'");
         ALLOWFILTERING = true;
     }
     public static void conditionCrcChecker(boolean crcChecker) {
@@ -250,7 +250,7 @@ public class DBSelect {
             String frame_json = row.getString("[json]");
             long runno = runNo;
             String switchname = switchName;
-            dataProducer.produce(JSONConverter.toJSON(new DBFrame(frame_json,runNo,switchName)), Topics.ProcessedFramesFromHPC);
+            dataProducer.produce(JSONConverter.toJSON(new DBFrame(frame_json,switchName)), Topics.ProcessedFramesFromHPC);
             System.out.println("produced frame in kafka");
             dataProducer.flush();
         }

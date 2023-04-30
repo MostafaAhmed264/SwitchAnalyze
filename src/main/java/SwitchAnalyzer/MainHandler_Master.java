@@ -2,10 +2,7 @@ package SwitchAnalyzer;
 
 import SwitchAnalyzer.Commands.ICommandMaster;
 import SwitchAnalyzer.Commands.ProcessCmd;
-import SwitchAnalyzer.Database.HeadersOnly;
-import SwitchAnalyzer.Database.Headers_Data;
-import SwitchAnalyzer.Database.IStorage;
-import SwitchAnalyzer.Database.NoStore;
+import SwitchAnalyzer.Database.*;
 import SwitchAnalyzer.Kafka.GenericConsumer;
 import SwitchAnalyzer.Kafka.Producer;
 import SwitchAnalyzer.Kafka.Topics;
@@ -25,7 +22,7 @@ import java.util.Arrays;
 public class MainHandler_Master
 {
     public static boolean working = false;
-    public static String consumerGroup = "Master_ConczsvbfddxcxzcvcxcfdvgggfmadssadijjijbjkDDSs1251lghfhfghkjjklm,mjkk";
+    public static String consumerGroup = "Master_ConczsvbffefhjffddxcxzcvcxcfdvgggfmadssadijjijbjkDDSs1251lghfhfghkjjklm,mjkk";
     public static Producer cmdProducer = new Producer(IP.ip1);
     public static Producer dataProducer = new Producer(IP.ip1);
     static GenericConsumer consumer;
@@ -37,6 +34,7 @@ public class MainHandler_Master
         SystemMaps.initMapsMaster();
         consumer = new GenericConsumer(IP.ip1 + ":" + Ports.port1, consumerGroup);
         consumer.selectTopic(Topics.cmdFromMOM);
+
     }
 
     public static void end() { working = false; }

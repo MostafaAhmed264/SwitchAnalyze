@@ -52,6 +52,7 @@ public class MainHandler_MOM
     {
         working  = true;
         init();
+
         while(true)
         {
             while (commands.peek() == null)
