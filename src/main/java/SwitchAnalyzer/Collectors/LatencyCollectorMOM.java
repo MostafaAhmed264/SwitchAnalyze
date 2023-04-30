@@ -8,7 +8,7 @@ public class LatencyCollectorMOM implements Collector
 {
     public static long count;
 
-    public String getName() { return "Latency"; }
+    public String getName() { return NamingConventions.overAllAvgLatency; }
     @Override
     public String collect()
     {

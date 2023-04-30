@@ -45,6 +45,7 @@ public class JettyWebSocketServer
     {
         String jsonStr = new String(command);
         int commandTypeIndex = Character.getNumericValue(jsonStr.charAt(0));
+        System.out.println(commandTypeIndex);
         jsonStr = jsonStr.replaceFirst("[0-9]*","");
         System.out.println("UserRequestHandler: "+ jsonStr);
         ICommand c= JSONConverter.fromJSON(jsonStr, SystemMaps.commandClasses.get(commandTypeIndex));

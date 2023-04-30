@@ -12,7 +12,7 @@ import static SwitchAnalyzer.MainHandler_MOM.masterOfMasters;
 public class PLossCollectorMOM implements Collector {
     public static long count;
 
-    public String getName() { return "PacketLoss"; }
+    public String getName() { return NamingConventions.overAllAvgPacketLoss; }
     @Override
     public String collect()
     {

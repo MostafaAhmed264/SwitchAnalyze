@@ -29,6 +29,7 @@ public class RatesCollectorMaster implements Collector {
             for (int i = 0; i < master.childNodes.size(); i++)
             {
                 //convert the string to a float
+                System.out.println(master.childNodes.get(i).machineInfo.map);
                 overAllRateString = master.childNodes.get(i).machineInfo.map.get(NamingConventions.rates);
                 OverallRate += Float.parseFloat(overAllRateString);
             }

@@ -10,6 +10,7 @@ import SwitchAnalyzer.Sockets.JettyWebSocketServer;
 import SwitchAnalyzer.Network.FrameResult;
 import SwitchAnalyzer.miscellaneous.GlobalVariable;
 import SwitchAnalyzer.miscellaneous.JSONConverter;
+import SwitchAnalyzer.miscellaneous.SystemMaps;
 import SwitchAnalyzer.miscellaneous.Time;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -19,7 +20,7 @@ import java.util.ArrayList;
 
 public class ProduceData_MOM
 {
-    static GenericConsumer consumer = new GenericConsumer(IP.ip1 + ":" + Ports.port1, "frame_Consumer3v2");
+    static GenericConsumer consumer = new GenericConsumer(IP.ip1 + ":" + Ports.port1, "frame_Consumer3v2e32");
     public static void produceData(ArrayList<Integer> ids)
     {
         String json;
@@ -53,9 +54,8 @@ public class ProduceData_MOM
         ConsumerRecords<String, String> records = consumer.consume(Time.waitTime);
         for (ConsumerRecord<String, String> record : records)
         {
-            String json = JSONConverter.toJSON(record.value());
-            System.out.println(json);
-            JettyWebSocketServer.writeMessage(json);
+            System.out.println(record.value());
+            JettyWebSocketServer.writeMessage(record.value().toString());
         }
     }
 }

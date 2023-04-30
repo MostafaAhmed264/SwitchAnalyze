@@ -10,11 +10,11 @@ public class HeadersOnly implements IStorage{
     {
         HeadersFrame frameHeader = new HeadersFrame();
         frameHeader.port = frame.port;
-        frameHeader.direction = frame.direction;
+        frameHeader.direction = frame.Direction;
         frameHeader.errorInRouting = frame.errorInRoutingExists();
         frameHeader.crcChecker = frame.errorInCrcCheckerExists();
         frameHeader.id = frame.getID();
-        frameHeader.headers.addAll(frame.frameData.keySet());
+        frameHeader.headers.addAll(frame.frameDetails.keySet());
         String json = JSONConverter.toJSON(frameHeader);
         DBInsert.insertFrame(json);
     }
@@ -23,7 +23,7 @@ public class HeadersOnly implements IStorage{
     {
         ArrayList<String> headers = new ArrayList<>();
         public UUID id ;
-        public int port;
+        public String port;
         public String direction;
         public boolean errorInRouting;
         public boolean crcChecker;

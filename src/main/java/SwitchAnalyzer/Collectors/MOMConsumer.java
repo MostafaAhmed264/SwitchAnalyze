@@ -27,7 +27,7 @@ import static SwitchAnalyzer.MainHandler_MOM.masterOfMasters;
 
 public class MOMConsumer {
     public static ArrayList<Integer> ids = new ArrayList<>();
-    static String consumerGroup = "MOMColBHJJldfgrbenctosdysr1";
+    static String consumerGroup = "MOMColBHJJghhglhyydfgfjjssdasdafrbenctosdysr1";
     static GenericConsumer consumer = new GenericConsumer(IP.ip1 + ":" + Ports.port1, consumerGroup);
     //arraylist of collectors
     public static ArrayList<Collector> collectors = new ArrayList<>();
@@ -87,7 +87,7 @@ public class MOMConsumer {
             {
                 String json = record.value();
                 HPC_INFO hpcInfo = JSONConverter.fromJSON(json, HPC_INFO.class);
-                masterOfMasters.HPCs.get(hpcInfo.HPCID).hpcInfo = hpcInfo;
+                masterOfMasters.HPCs.get(0).hpcInfo = hpcInfo;
             }
             if(records.count() > 0)
                 break;

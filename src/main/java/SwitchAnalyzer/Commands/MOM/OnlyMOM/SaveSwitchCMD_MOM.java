@@ -11,7 +11,7 @@ public class SaveSwitchCMD_MOM implements ICommand
     public int portNum;
     public void processCmd()
     {
-        DBConnect.startRun(new DBSwitch(switchName, portNum));
+        //DBConnect.startRun(new DBSwitch(switchName, portNum));
         GlobalVariable.switchName = switchName;
     }
 }

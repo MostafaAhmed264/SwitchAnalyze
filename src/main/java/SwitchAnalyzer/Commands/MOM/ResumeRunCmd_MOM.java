@@ -16,7 +16,7 @@ public class ResumeRunCmd_MOM implements ICommandMOM
 
     public void processCmd()
     {
-        for (int i : ids) { GenCmd(new SwitchPort(i)); }
+        System.out.println("RESUME"); for (int i : ids) { GenCmd(new SwitchPort(i)); }
     }
 
     public void GenCmd(SwitchPort port)
