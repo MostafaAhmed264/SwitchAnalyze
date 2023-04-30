@@ -234,7 +234,7 @@ public class DBSelect {
         {
             String jsonString = row.getString("[json]");
             DBRun run = JSONConverter.fromJSON(jsonString,DBRun.class);
-            DBRun run_gui = null;
+            DBRun run_gui = new DBRun();
             run_gui.runNo = run.getRunNo();
             run_gui.runDetails = run.rundetails;
             runs.add(run_gui);
