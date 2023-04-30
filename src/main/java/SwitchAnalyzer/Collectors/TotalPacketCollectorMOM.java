@@ -11,6 +11,8 @@ public class TotalPacketCollectorMOM implements Collector
         long totalCount = 0;
         for (int i = 0; i < masterOfMasters.HPCs.size(); i++)
         {
+            if(!masterOfMasters.HPCs.get(i).hpcInfo.map.containsKey(NamingConventions.totalPacketCount))
+                break;
             totalCount += Long.parseLong(masterOfMasters.HPCs.get(i).hpcInfo.map.get(NamingConventions.totalPacketCount));
         }
         totalCount += Long.parseLong( MOMConsumer.results.get(NamingConventions.totalPacketCount));

@@ -7,6 +7,7 @@ import SwitchAnalyzer.NamingConventions;
 import SwitchAnalyzer.Network.IP;
 import SwitchAnalyzer.Network.Ports;
 import SwitchAnalyzer.ProduceData_MOM;
+import SwitchAnalyzer.Sockets.JettyWebSocketServer;
 import SwitchAnalyzer.miscellaneous.GlobalVariable;
 import SwitchAnalyzer.miscellaneous.JSONConverter;
 import SwitchAnalyzer.miscellaneous.Time;
@@ -27,7 +28,7 @@ import static SwitchAnalyzer.MainHandler_MOM.masterOfMasters;
 
 public class MOMConsumer {
     public static ArrayList<Integer> ids = new ArrayList<>();
-    static String consumerGroup = "MOMColBHJJghhglhyydfgfjjssdasdafrbenctosdysr1";
+    static String consumerGroup = "MOMColBHJJghhglhyydfgfjjssdasdafrbevdskfdsofnctosddsadasysr1";
     static GenericConsumer consumer = new GenericConsumer(IP.ip1 + ":" + Ports.port1, consumerGroup);
     //arraylist of collectors
     public static ArrayList<Collector> collectors = new ArrayList<>();
@@ -50,12 +51,18 @@ public class MOMConsumer {
             {
                 ProduceData_MOM.produceData(ids);
             }
-
         }
-        results.put(NamingConventions.overAllRates, String.valueOf(Double.parseDouble(results.get(NamingConventions.overAllRates))/RatesCollectorMOM.count));
+
+        String s = String.valueOf(Double.parseDouble(results.get(NamingConventions.overAllRates))/RatesCollectorMOM.count);
+        System.out.println(s);
+        results.put(NamingConventions.overAllRates, s);
         results.put(NamingConventions.overAllAvgPacketLoss, String.valueOf(Double.parseDouble(results.get(NamingConventions.overAllAvgPacketLoss))/PLossCollectorMOM.count));
         results.put(NamingConventions.overAllAvgLatency, String.valueOf(Double.parseDouble(results.get(NamingConventions.overAllAvgLatency))/LatencyCollectorMOM.count));
-
+        String json = JSONConverter.toJSON(MOMConsumer.results);
+        System.out.println(json);
+        try { JettyWebSocketServer.writeMessage(json); }
+        catch (Exception e) { throw new RuntimeException(e); }
+        clear();
     }
 
     public static void clear()

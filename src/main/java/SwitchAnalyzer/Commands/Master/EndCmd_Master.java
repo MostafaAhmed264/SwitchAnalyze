@@ -31,7 +31,7 @@ public class EndCmd_Master extends ICommandMaster
     {
         String json = JSONConverter.toJSON(new EndRunCmd_Node(id));
         json = SystemMaps.END_RUN_CMD_NODE_IDX + json;
-        MainHandler_MOM.cmdProducer.produce(json, Topics.cmdFromMOM);
+        MainHandler_MOM.cmdProducer.produce(json, Topics.cmdFromHpcMaster);
         MainHandler_MOM.cmdProducer.flush();
     }
 }

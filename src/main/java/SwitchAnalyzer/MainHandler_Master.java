@@ -25,7 +25,7 @@ import java.util.Arrays;
 public class MainHandler_Master
 {
     public static boolean working = false;
-    public static String consumerGroup = "Master_ConczsvbfddxcxzcvcxcfdvgggfmbjkDDSs1251lkjjklm,mjkk";
+    public static String consumerGroup = "Master_ConczsvbfddxcxzcvcxcfdvgggfmadssadijjijbjkDDSs1251lghfhfghkjjklm,mjkk";
     public static Producer cmdProducer = new Producer(IP.ip1);
     public static Producer dataProducer = new Producer(IP.ip1);
     static GenericConsumer consumer;
@@ -54,6 +54,7 @@ public class MainHandler_Master
 
                 String json = record.value();
                 System.out.println(json);
+                System.out.println("A7A");
                 commandTypeIndex = Character.getNumericValue(json.charAt(0));
                 json = json.replaceFirst("[0-9]*",""); //removing the number indicating the command type using regex
                 ICommandMaster command = JSONConverter.fromJSON(json, SystemMaps.commandClassesMaster.get(commandTypeIndex));
