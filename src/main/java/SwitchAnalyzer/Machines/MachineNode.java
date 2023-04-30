@@ -1,8 +1,11 @@
 package SwitchAnalyzer.Machines;
 
+import SwitchAnalyzer.ClusterConfigurations.ClusterConfiguartions;
+import SwitchAnalyzer.miscellaneous.GlobalVariable;
 import org.pcap4j.util.MacAddress;
 
 import java.net.*;
+import java.util.ArrayList;
 
 /**
  * any information thats not needed to be put into kafka but is related to the machine node should be here
@@ -79,6 +82,16 @@ public class MachineNode
             this.nodeIp = (Inet4Address) Inet4Address.getByName(nodeIp);
         } catch (UnknownHostException e) {
             throw new RuntimeException(e);
+        }
+    }
+    public void setHPCmap(ArrayList<ClusterConfiguartions> clusterConfigs)
+    {
+        for(ClusterConfiguartions oneHPCconfig:clusterConfigs)
+        {
+            MasterOfHPC master = new MasterOfHPC(oneHPCconfig.getPort_id(),oneHPCconfig.getCluster_name(),MOM.getMasterNode(oneHPCconfig.machines));
+            master.setChildNodes(oneHPCconfig.machines);
+            GlobalVariable.portHpcMap.put(oneHPCconfig.getPort_id(),master);
+
         }
     }
 

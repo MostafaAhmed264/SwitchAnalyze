@@ -51,7 +51,7 @@ public class SystemMaps
         commandClasses.add(GetFramesForRun_MOM.class);
 
 
-        MOMinitStub();
+        //MOMinitStub();
         initDefaultPortPair();
 
     }
@@ -108,7 +108,7 @@ public class SystemMaps
         commandClassesMaster.add(EndCmd_Master.class);
         collectors.put(NamingConventions.rates, new RatesCollectorMaster());
         collectors.put(NamingConventions.packetLoss, new PLossCollectorMaster());
-        MasterinitStub();
+        //MasterinitStub();
     }
 
     public static void MasterinitStub()

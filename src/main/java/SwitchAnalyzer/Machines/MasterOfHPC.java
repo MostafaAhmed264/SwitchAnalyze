@@ -1,5 +1,7 @@
 package SwitchAnalyzer.Machines;
 
+import SwitchAnalyzer.ClusterConfigurations.ClusterConfiguartions;
+import SwitchAnalyzer.miscellaneous.GlobalVariable;
 import org.pcap4j.util.MacAddress;
 import SwitchAnalyzer.ClusterConfigurations.MachineConfigurations;
 
@@ -39,7 +41,20 @@ public class MasterOfHPC {
     {
         for(MachineConfigurations machineConfig :machineConfigs){
             if(!(machineConfig.Is_master()))
+            {
             childNodes.add(new MachineNode(machineConfig.getMachine_id(), machineConfig.getIp(),machineConfig.getMac()));
+            }
+            }
+    }
+    public void setHPCmap(ArrayList<ClusterConfiguartions>  clusterConfigs)
+    {
+        for(ClusterConfiguartions oneHPCconfig:clusterConfigs)
+        {
+            MasterOfHPC master = new MasterOfHPC(oneHPCconfig.getPort_id(),oneHPCconfig.getCluster_name(),MOM.getMasterNode(oneHPCconfig.machines));
+            master.setChildNodes(oneHPCconfig.machines);
+            GlobalVariable.portHpcMap.put(oneHPCconfig.getPort_id(),master);
+
+
         }
     }
     public int getNoOfChilNodes() { return childNodes.size(); }

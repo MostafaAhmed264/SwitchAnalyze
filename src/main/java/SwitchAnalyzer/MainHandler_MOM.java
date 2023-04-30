@@ -26,13 +26,28 @@ public class MainHandler_MOM
 
     public static void init()
     {
-        DBConnect.connect();
+      //  DBConnect.connect();
         SystemMaps.initMapsMOM();
         JettyWebSocketServer.startServer(Ports.webSocketPort);
     }
 
     public static void end() { working = false; }
-
+    public static void start()
+    {
+        System.out.println("here in MOM start");
+        working  = true;
+        init();
+        while(true)
+        {
+            while (commands.peek() == null)
+            {
+                x++;
+            }
+            ICommand c = commands.poll();
+            ProcessCmd.processCmd(c);
+        }
+    }
+/*
     public static void main(String[] args)
     {
         working  = true;
@@ -47,4 +62,6 @@ public class MainHandler_MOM
             ProcessCmd.processCmd(c);
         }
     }
+
+ */
 }

@@ -39,8 +39,42 @@ public class MainHandler_Master
         consumer.selectTopic(Topics.cmdFromMOM);
     }
 
-    public static void end() { working = false; }
+    public static void end()
+    {
+        System.out.println("here in Master end ");
+        working = false;
+    }
 
+    public static void start(){
+        working = true;
+        init();
+        int commandTypeIndex;
+        while (true)
+        {
+            System.out.println("here in the start of the master");
+            ConsumerRecords<String, String> records = consumer.consume(Time.waitTime);
+            System.out.println("master hpcid "+master.getHPCID()+" hpc map for port "+GlobalVariable.portHpcMap.get(1).getHPCID() );
+            System.out.println("master id "+ master.getHPCID());
+            for (ConsumerRecord<String, String> record : records)
+            {
+
+                String json = record.value();
+                System.out.println("the json "+json);
+                commandTypeIndex = Character.getNumericValue(json.charAt(0));
+                json = json.replaceFirst("[0-9]*",""); //removing the number indicating the command type using regex
+                ICommandMaster command = JSONConverter.fromJSON(json, SystemMaps.commandClassesMaster.get(commandTypeIndex));
+
+                if (command.portID == 0 || GlobalVariable.portHpcMap.get(command.portID).getHPCID() == master.getHPCID())
+                {
+                    System.out.println("master hpcid "+master.getHPCID()+" hpc map for port "+GlobalVariable.portHpcMap.get(1).getHPCID() );
+                    System.out.println("master id "+ master.getHPCID());
+                    Thread t1 = new Thread(() -> ProcessCmd.processCmd(command));
+                    t1.start();
+                }
+            }
+        }
+    }
+    /*
     public static void main(String[] args)
     {
         working = true;
@@ -65,6 +99,8 @@ public class MainHandler_Master
             }
         }
     }
+
+     */
 }
 
 

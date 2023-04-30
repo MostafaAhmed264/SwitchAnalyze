@@ -30,7 +30,7 @@ public class MOM {
             GlobalVariable.portHpcMap.put(oneHPCconfig.getPort_id(),master);
         }
     }
-    public MachineNode getMasterNode(ArrayList<MachineConfigurations> machineConfigs){
+    public static MachineNode getMasterNode(ArrayList<MachineConfigurations> machineConfigs){
         for(MachineConfigurations machineConfig :machineConfigs)
         {
             if(machineConfig.Is_master())

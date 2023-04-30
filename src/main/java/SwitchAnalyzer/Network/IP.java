@@ -17,7 +17,7 @@ public class IP {
     public static String receiverOfPackets ="192.168.1.2";
 
 
-        public static String ConfigurationsIP="192.168.1.35";
+        public static String ConfigurationsIP="192.168.1.60";
     /*
         This section of Ips is for the packet generating
      */
