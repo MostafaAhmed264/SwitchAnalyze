@@ -4,15 +4,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DBRun {
-    private long runno;
-    public Long runNo;
-    public HashMap<String,String> rundetails;
-    public HashMap<String,String> runDetails;
+    private Long runno;
+    public String runNo;
+    public Map<String,String> rundetails;
+    public Map<String,String> runDetails;
     public DBRun() {runno = DBConnect.getLastRun();}
-    public void setRunNo(long runNo) {
-        this.runno = runNo;
+
+    public DBRun(String runNo, Map<String, String> runDetails) {
+        this.runNo = runNo;
+        this.runDetails = runDetails;
     }
-    public long getRunNo() {
+
+    public Long getRunNo() {
         return runno;
     }
     public void setRunno_DBInsert(){ runno = DBConnect.getLastRun(); }

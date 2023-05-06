@@ -17,11 +17,9 @@ public class CassandraClient {
 //        DBConnect.connect();
 //        DBStorage.remainingStorage();
 //        System.out.println(DBStorage.getRemainingDiskSpace());
-        ArrayList<String> s = new ArrayList<>();
-        s.add("asdads");
-        s.add("SDadskja");
-        s.add("ASDADS") ;
-        System.out.println(JSONConverter.toJSON(s));
+        DBConnect.connect();
+        System.out.println(DBSelect.showHistory());
+        DBConnect.closeConnectionToDB();
 
 //        ArrayList<String> switchNames = new ArrayList<>();
 //        switchNames.add("wafy");

@@ -6,6 +6,7 @@ import SwitchAnalyzer.Network.IP;
 import SwitchAnalyzer.miscellaneous.JSONConverter;
 import com.datastax.driver.core.*;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class DBSelect {
     //session is used in order to execute the query
@@ -234,9 +235,9 @@ public class DBSelect {
         {
             String jsonString = row.getString("[json]");
             DBRun run = JSONConverter.fromJSON(jsonString,DBRun.class);
-            DBRun run_gui = new DBRun();
-            run_gui.runNo = run.getRunNo();
-            run_gui.runDetails = run.rundetails;
+            String runNo = "" + run.getRunNo();
+            Map<String, String> runDetails = run.rundetails;
+            DBRun run_gui = new DBRun(runNo,runDetails);
             runs.add(run_gui);
         }
         return runs;
@@ -328,7 +329,12 @@ public class DBSelect {
         for (Row row : historyResult)
         {
             String switchName = row.getString("switchName");
-            long totalNoOfPorts = row.getLong("totalNoOfPorts");
+            Long noOfPorts = row.getLong("totalNoOfPorts");
+            String totalNoOfPorts;
+            if(noOfPorts == 0)
+                totalNoOfPorts = "Undefined";
+            else
+                totalNoOfPorts = "" + noOfPorts;
             DBSwitch dbswitch = new DBSwitch(switchName,totalNoOfPorts);
             switches.add(dbswitch);
         }
