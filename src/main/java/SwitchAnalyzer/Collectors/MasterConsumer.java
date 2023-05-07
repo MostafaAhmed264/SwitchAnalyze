@@ -6,6 +6,7 @@ import SwitchAnalyzer.Machines.MachineInfo;
 import SwitchAnalyzer.NamingConventions;
 import SwitchAnalyzer.Network.IP;
 import SwitchAnalyzer.Network.Ports;
+import SwitchAnalyzer.miscellaneous.GlobalVariable;
 import SwitchAnalyzer.miscellaneous.JSONConverter;
 import SwitchAnalyzer.miscellaneous.Time;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -25,7 +26,7 @@ import static SwitchAnalyzer.MainHandler_Master.master;
  */
 
 public class MasterConsumer {
-    static String consumerGroup = "Collecscsdsaasfctorsf12";
+    static String consumerGroup = GlobalVariable.consumer6;
     static GenericConsumer consumer = new GenericConsumer(IP.ip1 + ":" + Ports.port1, consumerGroup);;
 
     //arraylist of collectors

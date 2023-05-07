@@ -26,7 +26,7 @@ public class DBInsert
     public static void insertRun(Map<String,String> runDetails)
     {
         DBRun run=new DBRun();
-        run.rundetails=runDetails;
+        run.rundetails = runDetails;
         run.setRunno_DBInsert();
         StringBuilder sb = new StringBuilder("INSERT INTO runs JSON '"+JSONConverter.toJSON(run)+"';");
         final String query = sb.toString();

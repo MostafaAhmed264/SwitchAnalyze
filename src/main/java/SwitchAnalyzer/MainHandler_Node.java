@@ -8,6 +8,7 @@ import SwitchAnalyzer.Kafka.Producer;
 import SwitchAnalyzer.Kafka.Topics;
 import SwitchAnalyzer.Machines.MachineNode;
 import SwitchAnalyzer.Network.*;
+import SwitchAnalyzer.miscellaneous.GlobalVariable;
 import SwitchAnalyzer.miscellaneous.JSONConverter;
 import SwitchAnalyzer.miscellaneous.SystemMaps;
 import SwitchAnalyzer.miscellaneous.Time;
@@ -18,7 +19,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 public class MainHandler_Node
 {
     public static boolean working = false;
-    public static String consumerGroup = "Node_Cons1";
+    public static String consumerGroup = GlobalVariable.consumer2;
     static GenericConsumer consumer;
     public static MachineNode node;
     public static Producer dataProducer = new Producer(IP.ip1);

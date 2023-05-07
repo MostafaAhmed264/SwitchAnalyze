@@ -1,6 +1,3 @@
-package SwitchAnalyzer.Database;
-
-import java.util.HashMap;
 import java.util.Map;
 
 public class DBRun {

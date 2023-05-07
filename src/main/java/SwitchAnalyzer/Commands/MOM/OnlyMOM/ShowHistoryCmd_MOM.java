@@ -11,7 +11,9 @@ public class ShowHistoryCmd_MOM implements ICommandMOM
     public void processCmd()
     {
         try {
-            JettyWebSocketServer.writeMessage(DBSelect.showHistory());
+            String json = DBSelect.showHistory();
+            System.out.println(json);
+            JettyWebSocketServer.writeMessage(json);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
