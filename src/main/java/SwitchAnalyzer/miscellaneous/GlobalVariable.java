@@ -16,7 +16,7 @@ public class GlobalVariable
     }
     public static int storageClass = 0;
     public static Map<Integer, MasterOfHPC> portHpcMap = new HashMap<Integer,MasterOfHPC>();
-    public static String interfaceName = "enp3s0";
+    public static String interfaceName;
     public static int webSocketPort = 9099;
     public static int webSocketMaxMessages = 100000;
     public static boolean stopRunSignal = false; //FOR NODE ONLY PAUSES THE RUN USING WAIT AND NOTIFY
