@@ -61,13 +61,13 @@ public class DBConnect {
      * 7. It calls for the getLastRun to get the number of the last run made in this switch
      * 9. It creates a table for frames_Run that is specific to the new run that will begin now
      */
-    public static void startRun(DBSwitch dbSwitch)
+    public static void startRun(Switch_DB dbSwitch)
     {
         KeySpace.useKeyspace_MOM("history");
         DBCreate.createSwitchesTable("history");
         DBInsert.insertSwitch(dbSwitch);
-        KeySpace.useKeyspace_MOM(dbSwitch.getSwitchName());
-        DBCreate.createRunsTable(dbSwitch.getSwitchName());
+        KeySpace.useKeyspace_MOM(dbSwitch.switchName);
+        DBCreate.createRunsTable(dbSwitch.switchName);
         lastRun = DBSelect.getLastRun()+1;
         DBCreate.createFrames_RunTable(lastRun);
     }

@@ -1,12 +1,11 @@
 package SwitchAnalyzer.Network;
 
-import SwitchAnalyzer.Database.DBFrame;
+import SwitchAnalyzer.Database.Frame_DB;
 import SwitchAnalyzer.Kafka.GenericConsumer;
 import SwitchAnalyzer.Kafka.Producer;
 import SwitchAnalyzer.Kafka.Topics;
 import SwitchAnalyzer.MainHandler_Master;
 import SwitchAnalyzer.NamingConventions;
-import SwitchAnalyzer.Network.ErrorDetection.CRC;
 import SwitchAnalyzer.Network.ErrorDetection.ErrorDetectingAlgorithms;
 import SwitchAnalyzer.miscellaneous.GlobalVariable;
 import SwitchAnalyzer.miscellaneous.JSONConverter;
@@ -62,10 +61,10 @@ public class FrameProcessing
         //Extract Payload
         if (builder != null) { map.put("Payload", bytesToString(builder.build().getRawData())); }
     }
-    public static DBFrame processFrames(byte[] frameBytes)
+    public static Frame_DB processFrames(byte[] frameBytes)
     {
         HashMap<String , String > frameDetails = new HashMap<>();
-        DBFrame frameResult = new DBFrame();
+        Frame_DB frameResult = new Frame_DB();
         frameResult.setCrcChecker(!checkCRC(frameBytes, frameDetails));
         if(frameResult.errorInCrcCheckerExists()) {
             long count = Integer.parseInt(countMap.get(NamingConventions.crcError)) + 1;
@@ -105,7 +104,7 @@ public class FrameProcessing
         ConsumerRecords<String, byte[]> frames = consumer.consumeByteArray(Time.waitTime);
         for (ConsumerRecord<String, byte[]> frame : frames)
         {
-            DBFrame dbFrame = processFrames(frame.value());
+            Frame_DB dbFrame = processFrames(frame.value());
             MainHandler_Master.storages.get(GlobalVariable.storageClass).store(dbFrame);
             if(GlobalVariable.retreiveProcessedFramesFromHPC)
             {

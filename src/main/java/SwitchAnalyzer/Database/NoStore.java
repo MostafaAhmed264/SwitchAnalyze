@@ -2,5 +2,5 @@ package SwitchAnalyzer.Database;
 
 public class NoStore implements IStorage
 {
-    public void store(DBFrame frame) { }
+    public void store(Frame_DB frame) { }
 }

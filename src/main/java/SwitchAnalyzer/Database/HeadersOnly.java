@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class HeadersOnly implements IStorage{
-    public void store(DBFrame frame)
+    public void store(Frame_DB frame)
     {
         HeadersFrame frameHeader = new HeadersFrame();
         frameHeader.port = frame.port;

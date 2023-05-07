@@ -65,7 +65,7 @@ public class DBSelect {
         tableName = "switches";
         begin();
     }
-    public static void beginSelectFrames(long runNo)
+    public static void beginSelectFrames(String runNo)
     {
         fromTableName = new StringBuilder("FROM frames_run").append(runNo);
         tableName = "frames";
@@ -211,7 +211,7 @@ public class DBSelect {
      *          build the string builder called wholeSelectQuery depending on different scenarios
      *          and set attributes for DBFrame and produce the frame in kafka
      */
-    public static void executeSelect(String switchName,long runNo)
+    public static void executeSelect(String switchName,String runNo)
     {
         ResultSet rs = beginExecuteSelect();
         if(JSON)
@@ -228,16 +228,16 @@ public class DBSelect {
      *          it iterates on the rows of resultSet and convert the result into DBRun object and
      *          returns arraylist of DBRun
      */
-    private static ArrayList<DBRun> selectJSON_runs(ResultSet rs)
+    private static ArrayList<Run_GUI> selectJSON_runs(ResultSet rs)
     {
-        ArrayList<DBRun> runs=new ArrayList<>();
+        ArrayList<Run_GUI> runs=new ArrayList<>();
         for (Row row : rs)
         {
             String jsonString = row.getString("[json]");
-            DBRun run = JSONConverter.fromJSON(jsonString,DBRun.class);
-            String runNo = "" + run.getRunNo();
+            Run_DB run = JSONConverter.fromJSON(jsonString,Run_DB.class);
+            String runNo = "" + run.runno;
             Map<String, String> runDetails = run.rundetails;
-            DBRun run_gui = new DBRun(runNo,runDetails);
+            Run_GUI run_gui = new Run_GUI(runNo,runDetails);
             runs.add(run_gui);
         }
         return runs;
@@ -246,15 +246,15 @@ public class DBSelect {
      * Description :
      *          it iterates on the rows of resultSet and produce the frame in kafka
      */
-    private static void selectJSON_frames_kafka(ResultSet rs,String switchName,long runNo)
+    private static void selectJSON_frames_kafka(ResultSet rs,String switchName,String runNo)
     {
         Producer dataProducer = new Producer(IP.ip1);
         for (Row row : rs)
         {
             String frame_json = row.getString("[json]");
-            long runno = runNo;
+            String runno = runNo;
             String switchname = switchName;
-            dataProducer.produce(JSONConverter.toJSON(new DBFrame(frame_json,runNo,switchName)), Topics.ProcessedFramesFromHPC);
+            dataProducer.produce(JSONConverter.toJSON(new Frame_Kafka(frame_json,runNo,switchName)), Topics.ProcessedFramesFromHPC);
             System.out.println("produced frame in kafka");
             dataProducer.flush();
         }
@@ -263,14 +263,14 @@ public class DBSelect {
     public static String selectSpecificFrameDataHeader(String headerName)
     {
         setConditions_SpecificFrameDataHeader();
-        beginSelectFrames(DBConnect.getLastRun());
+        beginSelectFrames(""+DBConnect.getLastRun());
         conditionFrameData(headerName);
         return executeSelect();
     }
     public static String selectSpecificFrameDataHeader(long runNo,String headerName)
     {
         setConditions_SpecificFrameDataHeader();
-        beginSelectFrames(runNo);
+        beginSelectFrames(""+runNo);
         conditionFrameData(headerName);
         return executeSelect();
     }
@@ -278,7 +278,7 @@ public class DBSelect {
     {
         KeySpace.useKeyspace_Node(switchName);
         setConditions_SpecificFrameDataHeader();
-        beginSelectFrames(runNo);
+        beginSelectFrames(""+runNo);
         conditionFrameData(headerName);
         return executeSelect();
     }
@@ -308,10 +308,10 @@ public class DBSelect {
         setALLOWFILTERING(false);
         beginSelectSwitches();
         ResultSet historyResult = executeSelect();
-        ArrayList<DBSwitch> dbSwitches = convertResultSetHistory(historyResult);
+        ArrayList<Switch_GUI> dbSwitches = convertResultSetHistory(historyResult);
         for (int i = 0; i < dbSwitches.size(); i++)
         {
-            KeySpace.useKeyspace_Node(dbSwitches.get(i).getSwitchName());
+            KeySpace.useKeyspace_Node(dbSwitches.get(i).switchName);
             setJSON(true);
             beginSelectRuns();
             dbSwitches.get(i).stats = executeSelect();
@@ -323,9 +323,9 @@ public class DBSelect {
      *          it iterates on the rows of resultSet and handles the attributes of DBSwitch by
      *          setting them and returns arraylist of DBSwitch
      */
-    private static ArrayList<DBSwitch> convertResultSetHistory(ResultSet historyResult)
+    private static ArrayList<Switch_GUI> convertResultSetHistory(ResultSet historyResult)
     {
-        ArrayList<DBSwitch> switches = new ArrayList<>();
+        ArrayList<Switch_GUI> switches = new ArrayList<>();
         for (Row row : historyResult)
         {
             String switchName = row.getString("switchName");
@@ -335,25 +335,25 @@ public class DBSelect {
                 totalNoOfPorts = "Undefined";
             else
                 totalNoOfPorts = "" + noOfPorts;
-            DBSwitch dbswitch = new DBSwitch(switchName,totalNoOfPorts);
+            Switch_GUI dbswitch = new Switch_GUI(switchName,totalNoOfPorts);
             switches.add(dbswitch);
         }
         return switches;
     }
     /************************************ Compare runs ******************************************/
-    public static void compareRuns(ArrayList<Run_Gui> run_guis)
+    public static void compareRuns(ArrayList<Run_GUI> run_guis)
     {
         for (int i = 0; i < run_guis.size(); i++)
         {
             showSpecificRun(run_guis.get(i).switchName,run_guis.get(i).runNo);
         }
     }
-    public static void showSpecificRun(String switchName, long runNo)
+    public static void showSpecificRun(String switchName, String runNo)
     {
         KeySpace.useKeyspace_Node(switchName);
         selectRunDetails(switchName, runNo);
     }
-    private static void selectRunDetails(String switchName ,long runNo)
+    private static void selectRunDetails(String switchName ,String runNo)
     {
         setSelectAll(true);
         setJSON(true);

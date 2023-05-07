@@ -179,7 +179,7 @@ public class DBTcp extends DBTransportHeader
      * and then sets every part of the header of the tcp in the DBTcp
      * and also it sets the sending and receiving ports of the DBFrame object
      */
-    public void getTransportHeaderDetails(Packet packet,DBFrame frame)
+    public void getTransportHeaderDetails(Packet packet,Frame_DB frame)
     {
         TcpPacket tcpPacket = packet.get(TcpPacket.class);
         TcpPacket.TcpHeader tcpHeader = tcpPacket.getHeader();

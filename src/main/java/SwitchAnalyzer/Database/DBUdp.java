@@ -73,7 +73,7 @@ public class DBUdp extends DBTransportHeader
      * and also it sets the sending and receiving ports of the DBFrame object
      */
 
-    public void getTransportHeaderDetails(Packet packet,DBFrame frame)
+    public void getTransportHeaderDetails(Packet packet,Frame_DB frame)
     {
         UdpPacket udpPacket = packet.get(UdpPacket.class);
         UdpPacket.UdpHeader udpHeader = udpPacket.getHeader();

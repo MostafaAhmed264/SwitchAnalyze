@@ -3,33 +3,24 @@ package SwitchAnalyzer.Database;
 import SwitchAnalyzer.miscellaneous.JSONConverter;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.utils.UUIDs;
-
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 public class DBInsert
 {
-    private static String keyspaceName;
-    public static String getKeyspaceName() {
-        return keyspaceName;
-    }
+    public static String keyspaceName;
     public static void setKeyspaceName(String keyspaceName) { DBInsert.keyspaceName = keyspaceName; }
     public static void insertFrame(String frameJson)
     {
-        StringBuilder sb = new StringBuilder(
-                "INSERT INTO frames_run"+DBConnect.getLastRun()+" JSON '"+frameJson+"';");
-        final String query = sb.toString();
+        final String query = "INSERT INTO frames_run" + DBConnect.getLastRun() + " JSON '" + frameJson + "';";
         System.out.println(frameJson);
         DBConnect.getSession().execute(query);
     }
     public static void insertRun(Map<String,String> runDetails)
     {
-        DBRun run=new DBRun();
+        Run_DB run=new Run_DB();
         run.rundetails=runDetails;
-        run.setRunno_DBInsert();
-        StringBuilder sb = new StringBuilder("INSERT INTO runs JSON '"+JSONConverter.toJSON(run)+"';");
-        final String query = sb.toString();
+        final String query = "INSERT INTO runs JSON '" + JSONConverter.toJSON(run) + "';";
         DBConnect.getSession().execute(query);
     }
     /**
@@ -40,16 +31,16 @@ public class DBInsert
      * If it already exists then it will not insert it
      * else it will insert a row including the name of switch and the total number of ports
      */
-    public static void insertSwitch(DBSwitch dbSwitch)
+    public static void insertSwitch(Switch_DB dbSwitch)
     {
-        if(!isSwitchNameAlreadyExists(dbSwitch.getSwitchName()))
+        if(!isSwitchNameAlreadyExists(dbSwitch.switchName))
         {
             UUID timeUuid = UUIDs.timeBased();
             StringBuilder sb = new StringBuilder("INSERT INTO ").append("switches")
                     .append("(id,switchName,totalNoOfPorts) ").append("VALUES (")
                     .append(timeUuid.toString()).append(", '")
-                    .append(dbSwitch.getSwitchName()).append("', ")
-                    .append(String.valueOf(dbSwitch.getTotalNoOfPorts())).append(");");
+                    .append(dbSwitch.switchName).append("', ")
+                    .append(dbSwitch.totalnoofports).append(");");
             final String query = sb.toString();
             DBConnect.getSession().execute(query);
         }
