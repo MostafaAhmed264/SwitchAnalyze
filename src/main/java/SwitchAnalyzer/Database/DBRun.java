@@ -1,3 +1,5 @@
+package SwitchAnalyzer.Database;
+
 import java.util.Map;
 
 public class DBRun {
