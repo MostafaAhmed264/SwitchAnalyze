@@ -65,7 +65,7 @@ public class DBSelect {
         tableName = "switches";
         begin();
     }
-    public static void beginSelectFrames(long runNo)
+    public static void beginSelectFrames(String runNo)
     {
         fromTableName = new StringBuilder("FROM frames_run").append(runNo);
         tableName = "frames";
@@ -211,7 +211,7 @@ public class DBSelect {
      *          build the string builder called wholeSelectQuery depending on different scenarios
      *          and set attributes for DBFrame and produce the frame in kafka
      */
-    public static void executeSelect(String switchName,long runNo)
+    public static void executeSelect(String switchName,String runNo)
     {
         ResultSet rs = beginExecuteSelect();
         if(JSON)
@@ -246,14 +246,12 @@ public class DBSelect {
      * Description :
      *          it iterates on the rows of resultSet and produce the frame in kafka
      */
-    private static void selectJSON_frames_kafka(ResultSet rs,String switchName,long runNo)
+    private static void selectJSON_frames_kafka(ResultSet rs,String switchName,String runNo)
     {
         Producer dataProducer = new Producer(IP.ip1);
         for (Row row : rs)
         {
             String frame_json = row.getString("[json]");
-            long runno = runNo;
-            String switchname = switchName;
             dataProducer.produce(JSONConverter.toJSON(new DBFrame(frame_json,runNo,switchName)), Topics.ProcessedFramesFromHPC);
             System.out.println("produced frame in kafka");
             dataProducer.flush();
@@ -263,14 +261,14 @@ public class DBSelect {
     public static String selectSpecificFrameDataHeader(String headerName)
     {
         setConditions_SpecificFrameDataHeader();
-        beginSelectFrames(DBConnect.getLastRun());
+        beginSelectFrames(""+DBConnect.getLastRun());
         conditionFrameData(headerName);
         return executeSelect();
     }
     public static String selectSpecificFrameDataHeader(long runNo,String headerName)
     {
         setConditions_SpecificFrameDataHeader();
-        beginSelectFrames(runNo);
+        beginSelectFrames(""+runNo);
         conditionFrameData(headerName);
         return executeSelect();
     }
@@ -278,7 +276,7 @@ public class DBSelect {
     {
         KeySpace.useKeyspace_Node(switchName);
         setConditions_SpecificFrameDataHeader();
-        beginSelectFrames(runNo);
+        beginSelectFrames(""+runNo);
         conditionFrameData(headerName);
         return executeSelect();
     }
@@ -348,12 +346,12 @@ public class DBSelect {
             showSpecificRun(run_guis.get(i).switchName,run_guis.get(i).runNo);
         }
     }
-    public static void showSpecificRun(String switchName, long runNo)
+    public static void showSpecificRun(String switchName, String runNo)
     {
         KeySpace.useKeyspace_Node(switchName);
         selectRunDetails(switchName, runNo);
     }
-    private static void selectRunDetails(String switchName ,long runNo)
+    private static void selectRunDetails(String switchName ,String runNo)
     {
         setSelectAll(true);
         setJSON(true);
