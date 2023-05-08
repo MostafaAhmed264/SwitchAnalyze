@@ -12,13 +12,18 @@ import java.util.concurrent.Executors;
 public class FrameReciever
 {
     private static final PcapHandle handle = PCAP.createHandle();
+    public static int counter = 0;
 
     public static void startRec()
     {
         try
         {
-            PacketListener listener = pcapPacket ->
-                MainHandler_Node.packetProducer.send(Topics.FramesFromHPC, pcapPacket.getRawData());
+            PacketListener listener = pcapPacket -> {
+                counter++;
+                if (counter % 10 == 0) {
+                    MainHandler_Node.packetProducer.send(Topics.FramesFromHPC, pcapPacket.getRawData());
+                }
+            };
             ExecutorService pool = Executors.newCachedThreadPool();
             handle.loop(-1, listener, pool);
         }
