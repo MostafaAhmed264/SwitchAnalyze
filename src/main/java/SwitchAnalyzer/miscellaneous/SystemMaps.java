@@ -168,7 +168,7 @@ public class SystemMaps
         }
         catch (Exception ignored){}
 
-        MainHandler_Master.master = master2;
+        MainHandler_Master.master = master3;
     }
 
     public static final String START_RUN_NODE_IDX = "0";
@@ -232,7 +232,7 @@ public class SystemMaps
         }
         catch (Exception ignored){}
 
-        MainHandler_Node.node = machine2;
+        MainHandler_Node.node = machine3;
     }
 
     public static void clear()
