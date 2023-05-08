@@ -16,8 +16,9 @@ public class EndCmd_Master extends ICommandMaster
     public void processCmd()
     {
         GlobalVariable.retrieveDataFromNode = false;
-        GlobalVariable.stopRecieving = false; //CLOSES RECIEVING AS A WHOLE
+        GlobalVariable.stopRecieving = true; //CLOSES RECIEVING AS A WHOLE
         GenCmd(0);
+        System.out.println("End cmd proccessing in master");
         clearMasterConsumer(); //PREPARING FOR NEW RUN MASTER SHOULD CLEAR STATIC FILEDS
     }
 

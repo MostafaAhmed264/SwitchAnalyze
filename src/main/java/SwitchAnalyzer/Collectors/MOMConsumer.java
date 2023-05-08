@@ -29,7 +29,7 @@ import static SwitchAnalyzer.MainHandler_MOM.masterOfMasters;
 
 public class MOMConsumer {
     public static ArrayList<Integer> ids = new ArrayList<>();
-    static String consumerGroup = "Mfnctosddsadasysr1";
+    static String consumerGroup = GlobalVariable.consumer5;
     static GenericConsumer consumer = new GenericConsumer(IP.ip1 + ":" + Ports.port1, consumerGroup);
     //arraylist of collectors
     public static ArrayList<Collector> collectors = new ArrayList<>();

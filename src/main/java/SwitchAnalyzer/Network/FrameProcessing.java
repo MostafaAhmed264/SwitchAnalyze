@@ -18,6 +18,7 @@ import org.pcap4j.packet.EthernetPacket;
 import org.pcap4j.packet.Packet;
 
 import java.math.BigInteger;
+import java.sql.SQLOutput;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -26,7 +27,7 @@ import static org.pcap4j.util.ByteArrays.calcCrc32Checksum;
 
 public class FrameProcessing
 {
-    static GenericConsumer consumer = new GenericConsumer(IP.ip1 + ":" + Ports.port1, "framePtxryugfggfugodsddasdaijisgvffvxzzvceffssdsfsing_11111", true);
+    static GenericConsumer consumer = new GenericConsumer(IP.ip1 + ":" + Ports.port1, GlobalVariable.consumer3, true);
     public static Producer packetProducer = new Producer(IP.ip1);
     public static ErrorDetectingAlgorithms errorDetectingAlgorithms = null;
     public static ConcurrentHashMap<String, String> countMap = new ConcurrentHashMap<>();
@@ -52,21 +53,28 @@ public class FrameProcessing
         Packet.Builder builder = packet.getBuilder();
         do
         {
-            Packet p = builder.build();
-            if(p.getHeader() == null) break;
-            map.put(getType(p.getHeader()) ,(bytesToString(p.getHeader().getRawData())));
-            builder = builder.getPayloadBuilder();
+            try {
+                Packet p = builder.build();
+                if (p.getHeader() == null) break;
+                map.put(getType(p.getHeader()), (bytesToString(p.getHeader().getRawData())));
+                builder = builder.getPayloadBuilder();
+            }catch (Exception e) {break;}
         }
         while(builder != null);
         //Extract Payload
-        if (builder != null) { map.put("Payload", bytesToString(builder.build().getRawData())); }
+        try {
+            if (builder != null) {
+                map.put("Payload", bytesToString(builder.build().getRawData()));
+            }
+        }catch (Exception e) {}
     }
     public static Frame_DB processFrames(byte[] frameBytes)
     {
         HashMap<String , String > frameDetails = new HashMap<>();
         Frame_DB frameResult = new Frame_DB();
         frameResult.setCrcChecker(!checkCRC(frameBytes, frameDetails));
-        if(frameResult.errorInCrcCheckerExists()) {
+        if(frameResult.errorInCrcCheckerExists())
+        {
             long count = Integer.parseInt(countMap.get(NamingConventions.crcError)) + 1;
             countMap.put(NamingConventions.crcError, String.valueOf(count)) ;
         }
@@ -74,6 +82,7 @@ public class FrameProcessing
         extractHeaders(frameBytes, frameDetails);
         frameResult.frameDetails = frameDetails;
 
+        System.out.println(frameDetails);
         return frameResult;
     }
 
@@ -89,7 +98,9 @@ public class FrameProcessing
         countMap.putIfAbsent(NamingConventions.crcError, "0");
         countMap.putIfAbsent(NamingConventions.totalPacketCount, "0");
         consumer.selectTopicByteArray(Topics.FramesFromHPC);
-        while (!GlobalVariable.stopRecieving) { consumeFrames(); }
+        while (!GlobalVariable.stopRecieving) { consumeFrames();
+            System.out.println("checking flag in while");}
+
         clear();
     }
 
