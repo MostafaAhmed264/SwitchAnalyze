@@ -151,11 +151,11 @@ public class SystemMaps
             master3.HPCMacAddr = Builder.buildMacAddress("34:e6:d7:5e:01:ce");
             master3.HPCIp = Builder.buildIpV4Address("192.168.1.60");
 
-            machine1.nodeMacAddress = Builder.buildMacAddress("68:f7:28:26:8b:19");
-            machine1.nodeIp = Builder.buildIpV4Address("192.168.1.35");
+            machine1.nodeMacAddress = Builder.buildMacAddress("B8:88:E3:83:BE:73");
+            machine1.nodeIp = Builder.buildIpV4Address("192.168.1.107");
 
-            machine2.nodeMacAddress = Builder.buildMacAddress("3C:2C:30:9B:3B:90");
-            machine2.nodeIp = Builder.buildIpV4Address("192.168.1.101");
+            machine2.nodeMacAddress = Builder.buildMacAddress("54:EE:75:DF:82:C4");
+            machine2.nodeIp = Builder.buildIpV4Address("192.168.1.100");
 
             machine3.nodeMacAddress = Builder.buildMacAddress("34:e6:d7:5e:01:ce");
             machine3.nodeIp = Builder.buildIpV4Address("192.168.1.60");
