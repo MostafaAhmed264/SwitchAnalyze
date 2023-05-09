@@ -95,7 +95,7 @@ public class MOMConsumer {
             {
                 String json = record.value();
                 HPC_INFO hpcInfo = JSONConverter.fromJSON(json, HPC_INFO.class);
-                masterOfMasters.HPCs.get(0).hpcInfo = hpcInfo;
+                masterOfMasters.HPCs.get(hpcInfo.id-1).hpcInfo = hpcInfo;
             }
             if(records.count() > 0)
                 break;
