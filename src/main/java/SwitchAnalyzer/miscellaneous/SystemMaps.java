@@ -142,11 +142,11 @@ public class SystemMaps
         try
         {
             //aymona
-            master1.HPCMacAddr = Builder.buildMacAddress("68:f7:28:26:8b:19");
-            master1.HPCIp = Builder.buildIpV4Address("192.168.1.35");
+            master1.HPCMacAddr = Builder.buildMacAddress("B8:88:E3:83:BE:73");
+            master1.HPCIp = Builder.buildIpV4Address("192.168.1.107");
             //fadyola
-            master2.HPCMacAddr = Builder.buildMacAddress("3C:2C:30:9B:3B:90");
-            master2.HPCIp = Builder.buildIpV4Address("192.168.1.101");
+            master2.HPCMacAddr = Builder.buildMacAddress("54:EE:75:DF:82:C4");
+            master2.HPCIp = Builder.buildIpV4Address("192.168.1.100");
             //abasola
             master3.HPCMacAddr = Builder.buildMacAddress("34:e6:d7:5e:01:ce");
             master3.HPCIp = Builder.buildIpV4Address("192.168.1.60");
@@ -210,11 +210,11 @@ public class SystemMaps
 
         try
         {
-            master1.HPCMacAddr = Builder.buildMacAddress("68:f7:28:26:8b:19");
-            master1.HPCIp = Builder.buildIpV4Address("192.168.1.35");
+            master1.HPCMacAddr = Builder.buildMacAddress("B8:88:E3:83:BE:73");
+            master1.HPCIp = Builder.buildIpV4Address("192.168.1.107");
             //fadyola
-            master2.HPCMacAddr = Builder.buildMacAddress("3C:2C:30:9B:3B:90");
-            master2.HPCIp = Builder.buildIpV4Address("192.168.1.101");
+            master2.HPCMacAddr = Builder.buildMacAddress("54:EE:75:DF:82:C4");
+            master2.HPCIp = Builder.buildIpV4Address("192.168.1.100");
             //abasola
             master3.HPCMacAddr = Builder.buildMacAddress("34:e6:d7:5e:01:ce");
             master3.HPCIp = Builder.buildIpV4Address("192.168.1.60");
