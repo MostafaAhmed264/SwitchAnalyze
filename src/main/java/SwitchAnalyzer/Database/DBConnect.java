@@ -66,6 +66,9 @@ public class DBConnect {
         KeySpace.useKeyspace_MOM("history");
         DBCreate.createSwitchesTable("history");
         DBInsert.insertSwitch(dbSwitch);
+        if (dbSwitch.getSwitchName().contains(" ")) {
+            dbSwitch.setSwitchName(dbSwitch.getSwitchName().replace(" ", "_"));
+        }
         KeySpace.useKeyspace_MOM(dbSwitch.getSwitchName());
         DBCreate.createRunsTable(dbSwitch.getSwitchName());
         lastRun = DBSelect.getLastRun()+1;
@@ -84,6 +87,9 @@ public class DBConnect {
     public static void connectToDB_Node(String switchName)
     {
         DBConnect.connect();
+        if (switchName.contains(" ")) {
+            switchName = switchName.replace(" ", "_");
+        }
         KeySpace.useKeyspace_Node(switchName);
         lastRun = DBSelect.getLastRun()+1;
         DBInsert.setKeyspaceName(switchName);

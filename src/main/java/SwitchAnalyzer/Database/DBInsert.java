@@ -51,6 +51,7 @@ public class DBInsert
                     .append(dbSwitch.getSwitchName()).append("', ")
                     .append(String.valueOf(dbSwitch.getTotalNoOfPorts())).append(");");
             final String query = sb.toString();
+            System.out.println(query);
             DBConnect.getSession().execute(query);
         }
     }

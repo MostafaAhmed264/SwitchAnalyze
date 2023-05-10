@@ -312,7 +312,13 @@ public class DBSelect {
             KeySpace.useKeyspace_Node(dbSwitches.get(i).getSwitchName());
             setJSON(true);
             beginSelectRuns();
-            dbSwitches.get(i).stats = executeSelect();
+            try {
+                dbSwitches.get(i).stats = executeSelect();
+            }
+            catch (Exception e)
+            {
+                dbSwitches.get(i).stats = new ArrayList<>();
+            }
         }
         return new DBSwitches(dbSwitches);
     }
@@ -327,6 +333,9 @@ public class DBSelect {
         for (Row row : historyResult)
         {
             String switchName = row.getString("switchName");
+            if (switchName.contains(" ")) {
+                switchName = switchName.replace(" ", "_");
+            }
             Long noOfPorts = row.getLong("totalNoOfPorts");
             String totalNoOfPorts;
             if(noOfPorts == 0)
