@@ -42,6 +42,7 @@ public class DBCreate {
                     .append("(")
                     .append("runNo bigint,")
                     .append("runDetails map<text, text>,")
+                    .append("additional map<text, text>,")
                     .append("PRIMARY KEY(runNo)" )
                     .append(");");
             final String query = sb.toString();

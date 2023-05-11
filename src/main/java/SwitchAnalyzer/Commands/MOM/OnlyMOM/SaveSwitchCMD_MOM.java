@@ -8,10 +8,10 @@ import SwitchAnalyzer.miscellaneous.GlobalVariable;
 public class SaveSwitchCMD_MOM implements ICommand
 {
     public String switchName;
-    public Long portNum;
+    public String switchPorts;
     public void processCmd()
     {
-        DBConnect.startRun(new DBSwitch(switchName, portNum));
+        DBConnect.startRun(new DBSwitch(switchName, Long.parseLong(switchPorts)));
         GlobalVariable.switchName = switchName;
     }
 }

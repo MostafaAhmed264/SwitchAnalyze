@@ -1,6 +1,7 @@
 package SwitchAnalyzer;
 
 import SwitchAnalyzer.Collectors.MOMConsumer;
+import SwitchAnalyzer.Database.DBFrame;
 import SwitchAnalyzer.Kafka.GenericConsumer;
 import SwitchAnalyzer.Kafka.Topics;
 import SwitchAnalyzer.Machines.MasterOfHPC;
@@ -20,7 +21,7 @@ import java.util.ArrayList;
 
 public class ProduceData_MOM
 {
-    static GenericConsumer consumer = new GenericConsumer(IP.ip1 + ":" + Ports.port1, "frame_Consumer3v2e32");
+    static GenericConsumer consumer = new GenericConsumer(IP.ip1 + ":" + Ports.port1, "frame_Consumer3v2e3342");
     public static void produceData(ArrayList<Integer> ids)
     {
         String json;
@@ -54,8 +55,11 @@ public class ProduceData_MOM
         ConsumerRecords<String, String> records = consumer.consume(Time.waitTime);
         for (ConsumerRecord<String, String> record : records)
         {
-            System.out.println(record.value());
-            JettyWebSocketServer.writeMessage(record.value().toString());
+            DBFrame f = JSONConverter.fromJSON(record.value(), DBFrame.class);
+            f.json = "inspect";
+            String json = JSONConverter.toJSON(f);
+            System.out.println(json);
+            JettyWebSocketServer.writeMessage(json);
         }
     }
 }

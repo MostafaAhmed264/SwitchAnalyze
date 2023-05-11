@@ -33,12 +33,12 @@ public class GlobalVariable
      */
     public static volatile boolean retrieveDataFromNode;
 
-    public static String consumer1 = "cons1@#11111";
-    public static String consumer2 = "cons2@#22222";
-    public static String consumer3 = "cons3@#33333";
-    public static String consumer4 = "cons4@#44444";
-    public static String consumer5 = "cons5@#55555";
-    public static String consumer6 = "cons6@#66666";
+    public static String consumer1 = "cons1@#11111ADSAD";
+    public static String consumer2 = "cons2@#22222ASD";
+    public static String consumer3 = "cons3@#33333ASD";
+    public static String consumer4 = "cons4@#44444ASD";
+    public static String consumer5 = "cons5@#55555ASD";
+    public static String consumer6 = "cons6@#66666ASD";
 
     public static boolean retreiveProcessedFramesFromHPC;
 

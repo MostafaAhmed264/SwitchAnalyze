@@ -23,11 +23,11 @@ public class DBInsert
         System.out.println(frameJson);
         DBConnect.getSession().execute(query);
     }
-    public static void insertRun(Map<String,String> runDetails)
+    public static void insertRun(Map<String,String> runDetails,Map<String,String> additional)
     {
         DBRun run=new DBRun();
         run.rundetails = runDetails;
-        run.setRunno_DBInsert();
+        run.additional = additional;
         StringBuilder sb = new StringBuilder("INSERT INTO runs JSON '"+JSONConverter.toJSON(run)+"';");
         final String query = sb.toString();
         DBConnect.getSession().execute(query);

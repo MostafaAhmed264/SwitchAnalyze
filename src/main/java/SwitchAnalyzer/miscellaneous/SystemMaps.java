@@ -143,7 +143,7 @@ public class SystemMaps
         {
             //aymona
             master1.HPCMacAddr = Builder.buildMacAddress("B8:88:E3:83:BE:73");
-            master1.HPCIp = Builder.buildIpV4Address("192.168.1.107");
+            master1.HPCIp = Builder.buildIpV4Address("192.168.1.35");
             //fadyola
             master2.HPCMacAddr = Builder.buildMacAddress("54:EE:75:DF:82:C4");
             master2.HPCIp = Builder.buildIpV4Address("192.168.1.100");
@@ -152,7 +152,7 @@ public class SystemMaps
             master3.HPCIp = Builder.buildIpV4Address("192.168.1.60");
 
             machine1.nodeMacAddress = Builder.buildMacAddress("B8:88:E3:83:BE:73");
-            machine1.nodeIp = Builder.buildIpV4Address("192.168.1.107");
+            machine1.nodeIp = Builder.buildIpV4Address("192.168.1.35");
 
             machine2.nodeMacAddress = Builder.buildMacAddress("54:EE:75:DF:82:C4");
             machine2.nodeIp = Builder.buildIpV4Address("192.168.1.100");
@@ -211,7 +211,7 @@ public class SystemMaps
         try
         {
             master1.HPCMacAddr = Builder.buildMacAddress("B8:88:E3:83:BE:73");
-            master1.HPCIp = Builder.buildIpV4Address("192.168.1.107");
+            master1.HPCIp = Builder.buildIpV4Address("192.168.1.35");
             //fadyola
             master2.HPCMacAddr = Builder.buildMacAddress("54:EE:75:DF:82:C4");
             master2.HPCIp = Builder.buildIpV4Address("192.168.1.100");

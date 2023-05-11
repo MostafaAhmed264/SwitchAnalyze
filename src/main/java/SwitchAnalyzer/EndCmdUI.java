@@ -1,5 +1,7 @@
 package SwitchAnalyzer;
 
+import org.apache.kafka.common.protocol.types.Field;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -10,7 +12,7 @@ public class EndCmdUI {
     public String avgOverAllRate;
     public String avgOverAllPacketLoss;
     public String maxPL;
-    public String minPl;
+    public String minPL;
 
     public String maxRate;
     public String minRate;
@@ -44,7 +46,7 @@ public class EndCmdUI {
                 case "maxPL": maxPL= map.get(key);
                     map.remove(key);
                     break;
-                case "minPL": minPl= map.get(key);
+                case "minPL": minPL= map.get(key);
                     map.remove(key);
                     break;
                 case "maxRate": maxRate= map.get(key);
@@ -73,7 +75,21 @@ public class EndCmdUI {
         }
 
     }
-
-
+    public Map<String, String> objToMap()
+    {
+        Map<String,String> map = new HashMap<>();
+        map.put("CRC_COUNT",CRC_COUNT);
+        map.put("avgOverAllRate",avgOverAllRate);
+        map.put("avgOverAllPacketLoss",avgOverAllPacketLoss);
+        map.put("maxPL",maxPL);
+        map.put("minPL",minPL);
+        map.put("maxRate",maxRate);
+        map.put("minRate",minRate);
+        map.put("avgOverAllLatency",avgOverAllLatency);
+        map.put("maxLatency",maxLatency);
+        map.put("minLatency",minLatency);
+        map.put("TotalCount",TotalCount);
+        return map;
+    }
 
 }

@@ -122,6 +122,7 @@ public class FrameProcessing
             {
                 dbFrame.bytes = bytesToString(frame.value());
                 dbFrame.Direction = "In";
+                dbFrame.port = String.valueOf(MainHandler_Master.master.getHPCID());
                 String json = JSONConverter.toJSON(dbFrame);
                 packetProducer.produce(json, Topics.ProcessedFramesFromHPC);
             }

@@ -37,9 +37,9 @@ public class StartRunCommand_MOM implements ICommandMOM
             }
         }
         System.out.println(JSONConverter.toJSON(this));
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        Calendar cal = Calendar.getInstance();
-        MOMConsumer.results.put("StartTime", dateFormat.format(cal.getTime()));
+//        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+//        Calendar cal = Calendar.getInstance();
+//        MOMConsumer.results.put("StartTime", dateFormat.format(cal.getTime()));
         genStartRunALL();
         if (DefRun) { for (SwitchPortPair switchPortPair : GlobalVariable.defPairs) { GenCmd(switchPortPair); } }
         else { for (SwitchPortPair switchPort : pairs) { GenCmd(switchPort); } }

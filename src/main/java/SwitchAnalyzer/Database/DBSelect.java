@@ -3,6 +3,7 @@ package SwitchAnalyzer.Database;
 import SwitchAnalyzer.Kafka.Producer;
 import SwitchAnalyzer.Kafka.Topics;
 import SwitchAnalyzer.Network.IP;
+import SwitchAnalyzer.Sockets.JettyWebSocketServer;
 import SwitchAnalyzer.miscellaneous.JSONConverter;
 import com.datastax.driver.core.*;
 import java.util.ArrayList;
@@ -211,12 +212,12 @@ public class DBSelect {
      *          build the string builder called wholeSelectQuery depending on different scenarios
      *          and set attributes for DBFrame and produce the frame in kafka
      */
-    public static void executeSelect(String switchName,String runNo)
+    public static void executeSelect(String switchName,String runNo,int table)
     {
         ResultSet rs = beginExecuteSelect();
         if(JSON)
         {
-            selectJSON_frames_kafka(rs,switchName,runNo);
+            selectJSON_frames_kafka(rs,switchName,runNo,table);
         }
         else
         {
@@ -237,7 +238,8 @@ public class DBSelect {
             DBRun run = JSONConverter.fromJSON(jsonString,DBRun.class);
             String runNo = "" + run.getRunNo();
             Map<String, String> runDetails = run.rundetails;
-            DBRun run_gui = new DBRun(runNo,runDetails);
+            Map<String, String> additonal = run.additional;
+            DBRun run_gui = new DBRun(runNo,runDetails,additonal);
             runs.add(run_gui);
         }
         return runs;
@@ -246,15 +248,16 @@ public class DBSelect {
      * Description :
      *          it iterates on the rows of resultSet and produce the frame in kafka
      */
-    private static void selectJSON_frames_kafka(ResultSet rs,String switchName,String runNo)
+    private static void selectJSON_frames_kafka(ResultSet rs,String switchName,String runNo,int table)
     {
-        Producer dataProducer = new Producer(IP.ip1);
+//        Producer dataProducer = new Producer(IP.ip1);
         for (Row row : rs)
         {
             String frame_json = row.getString("[json]");
-            dataProducer.produce(JSONConverter.toJSON(new DBFrame(frame_json,runNo,switchName)), Topics.ProcessedFramesFromHPC);
-            System.out.println("produced frame in kafka");
-            dataProducer.flush();
+            JettyWebSocketServer.writeMessage(JSONConverter.toJSON(new DBFrame(frame_json,runNo,switchName,table));
+//            dataProducer.produce(JSONConverter.toJSON(new DBFrame(frame_json,runNo,switchName,table)), Topics.CompareRuns);
+//            System.out.println("produced frame in kafka");
+//            dataProducer.flush();
         }
     }
     /************************ selectAll based on specific frame data header **********************/
@@ -317,7 +320,13 @@ public class DBSelect {
             }
             catch (Exception e)
             {
-                dbSwitches.get(i).stats = new ArrayList<>();
+                dbSwitches.remove(i);
+                i--;
+            }
+            if(dbSwitches.get(i).stats.isEmpty())
+            {
+                dbSwitches.remove(i);
+                i--;
             }
         }
         return new DBSwitches(dbSwitches);
@@ -352,21 +361,24 @@ public class DBSelect {
     {
         for (int i = 0; i < run_guis.size(); i++)
         {
-            showSpecificRun(run_guis.get(i).switchName,run_guis.get(i).runNo);
+            showSpecificRun(run_guis.get(i).switchName,run_guis.get(i).runNo,i+1);
         }
     }
-    public static void showSpecificRun(String switchName, String runNo)
+    public static void showSpecificRun(String switchName, String runNo,int table)
     {
+        if (switchName.contains(" ")) {
+            switchName = switchName.replace(" ", "_");
+        }
         KeySpace.useKeyspace_Node(switchName);
-        selectRunDetails(switchName, runNo);
+        selectRunDetails(switchName, runNo,table);
     }
-    private static void selectRunDetails(String switchName ,String runNo)
+    private static void selectRunDetails(String switchName ,String runNo,int table)
     {
         setSelectAll(true);
         setJSON(true);
         setCondition(false);
         setALLOWFILTERING(false);
         beginSelectFrames(runNo);
-        executeSelect(switchName,runNo);
+        executeSelect(switchName,runNo,table);
     }
 }

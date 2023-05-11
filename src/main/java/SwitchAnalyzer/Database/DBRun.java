@@ -7,11 +7,13 @@ public class DBRun {
     public String runNo;
     public Map<String,String> rundetails;
     public Map<String,String> runDetails;
+    public Map<String,String> additional;
     public DBRun() {runno = DBConnect.getLastRun();}
 
-    public DBRun(String runNo, Map<String, String> runDetails) {
+    public DBRun(String runNo, Map<String, String> runDetails ,Map<String, String> additional) {
         this.runNo = runNo;
         this.runDetails = runDetails;
+        this.additional = additional;
     }
 
     public Long getRunNo() {
