@@ -52,7 +52,7 @@ public class MainHandler_Master
 
                 String json = record.value();
                 System.out.println(json);
-                System.out.println("A7A");
+                //System.out.println("A7A");
                 commandTypeIndex = Character.getNumericValue(json.charAt(0));
                 json = json.replaceFirst("[0-9]*",""); //removing the number indicating the command type using regex
                 ICommandMaster command = JSONConverter.fromJSON(json, SystemMaps.commandClassesMaster.get(commandTypeIndex));

@@ -1,4 +1,6 @@
 
+
+
 package SwitchAnalyzer;
 
 import SwitchAnalyzer.ClusterConfigurations.ClusterConfiguartions;
@@ -23,8 +25,10 @@ public class Main
     public static void start()
     {
         MachineNode myNode = new MachineNode();
+        SystemInitializer.setConsumerGroups(myNode);
+
         GenericConsumer MainConsumer = new GenericConsumer(IP.ConfigurationsIP + ":" + Ports.port1, GlobalVariable.consumer0);
-        MainConsumer.selectTopic("FARES");
+        MainConsumer.selectTopic(Topics.configurationsTopic);
         System.out.println("before while in main");
         while (true)
 

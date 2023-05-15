@@ -42,7 +42,7 @@ public class MainHandler_Node
         SystemMaps.initMapsNode();
         consumer = new GenericConsumer(IP.ip1 + ":" + Ports.port1, consumerGroup);
         consumer.selectTopic(Topics.cmdFromHpcMaster);
-//        PCAP.initialize();
+        PCAP.initialize();
     }
 
     public static void end() { working = false; }

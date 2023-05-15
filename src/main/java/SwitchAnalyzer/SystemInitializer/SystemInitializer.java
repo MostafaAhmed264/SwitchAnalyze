@@ -13,6 +13,8 @@ import SwitchAnalyzer.miscellaneous.GlobalVariable;
 
 import java.util.ArrayList;
 
+import static SwitchAnalyzer.miscellaneous.GlobalVariable.consumer0;
+
 public class SystemInitializer {
     public static void MoMinit(MachineNode myNode, MoMConfigurations momConfigurations) {
         myNode.setNodeIp(momConfigurations.getMaster_Ip());
@@ -54,5 +56,16 @@ public class SystemInitializer {
             hpc.childNodes=nodes;
             GlobalVariable.portHpcMap.put(config.getPort_id(),hpc);
         }
+    }
+    public static void setConsumerGroups(MachineNode myNode){
+
+        consumer0=myNode.nodeMacAddress.toString()+System.currentTimeMillis();
+        GlobalVariable.consumer1=consumer0;
+        GlobalVariable.consumer2=consumer0;
+        GlobalVariable.consumer3=consumer0;
+        GlobalVariable.consumer4=consumer0;
+        GlobalVariable.consumer5=consumer0;
+        GlobalVariable.consumer6=consumer0;
+
     }
 }

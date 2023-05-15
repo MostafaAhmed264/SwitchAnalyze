@@ -1,5 +1,6 @@
 package SwitchAnalyzer.miscellaneous;
 
+import SwitchAnalyzer.Machines.MachineNode;
 import SwitchAnalyzer.Machines.MasterOfHPC;
 import SwitchAnalyzer.Network.HardwareObjects.SwitchPortPair;
 import SwitchAnalyzer.Sockets.PacketInfoGui;
@@ -32,13 +33,14 @@ public class GlobalVariable
         5 - USED  in ENDRUN MASTER & MOM TO STOP PRODUCING IN KAFKA
      */
     public static volatile boolean retrieveDataFromNode;
-    public static String consumer0 ="cons0@#11111ADSAD";
-    public static String consumer1 = "cons1@#11111ADSAD";
-    public static String consumer2 = "cons2@#22222ASD";
-    public static String consumer3 = "cons3@#33333ASD";
-    public static String consumer4 = "cons4@#44444ASD";
-    public static String consumer5 = "cons5@#55555ASD";
-    public static String consumer6 = "cons6@#66666ASD";
+    public static String consumer0 ;
+    public static String consumer1 ;
+    public static String consumer2 ;
+
+    public static String consumer3 ;
+    public static String consumer4 ;
+    public static String consumer5 ;
+    public static String consumer6 ;
 
     public static boolean retreiveProcessedFramesFromHPC;
 

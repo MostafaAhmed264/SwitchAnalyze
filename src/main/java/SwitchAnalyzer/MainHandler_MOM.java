@@ -26,7 +26,7 @@ public class MainHandler_MOM
 
     public static void init()
     {
-      //  DBConnect.connect();
+         DBConnect.connect();
         SystemMaps.initMapsMOM();
         JettyWebSocketServer.startServer(Ports.webSocketPort);
     }
