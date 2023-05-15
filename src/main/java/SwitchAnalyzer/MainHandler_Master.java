@@ -22,7 +22,7 @@ import java.util.Arrays;
 public class MainHandler_Master
 {
     public static boolean working = false;
-    public static String consumerGroup = "Master_ConczsvbffefhjffddxcxzcvcxcfdvgggfmadssadijjijbjkDDSs1251lghfhfghkjjklm,mjkk";
+    public static String consumerGroup = GlobalVariable.consumer1;
     public static Producer cmdProducer = new Producer(IP.ip1);
     public static Producer dataProducer = new Producer(IP.ip1);
     static GenericConsumer consumer;

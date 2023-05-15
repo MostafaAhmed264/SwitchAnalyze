@@ -1,5 +1,6 @@
 package SwitchAnalyzer.Database;
 
+import SwitchAnalyzer.miscellaneous.JSONConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +18,6 @@ public class CassandraClient {
 //        DBStorage.remainingStorage();
 //        System.out.println(DBStorage.getRemainingDiskSpace());
         DBConnect.connect();
-        DBConnect.startRun(new DBSwitch("abbas",34));
         System.out.println(DBSelect.showHistory());
         DBConnect.closeConnectionToDB();
 

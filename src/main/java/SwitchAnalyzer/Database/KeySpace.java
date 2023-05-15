@@ -20,7 +20,10 @@ public class KeySpace {
      */
     private static void createKeyspace (String keyspaceName , String replicationStrategy , int numberOfReplicas )
     {
-        StringBuilder sb = new StringBuilder("CREATE KEYSPACE IF NOT EXISTS ")
+        if (keyspaceName.contains(" ")) {
+            keyspaceName = keyspaceName.replace(" ", "_");
+        }
+        StringBuilder sb = new StringBuilder("CREATE KEYSPACE ")
                 .append(keyspaceName)
                 .append(" WITH replication = {")
                 .append("'class':'")
@@ -29,7 +32,7 @@ public class KeySpace {
                 .append(numberOfReplicas).append("};");
 
         final String query = sb.toString();
-
+        System.out.println(query);
         session.execute(query);
     }
     /**
@@ -45,8 +48,10 @@ public class KeySpace {
     public static void useKeyspace_MOM(String keyspaceName){
         if(keyspaceName.toLowerCase() == "history" && historyKeyspaceCreated == false)
         {
+            if(!isKeyspaceExists(keyspaceName.toLowerCase())){
                 createKeyspace(keyspaceName.toLowerCase() , replicationStrategy , numberOfReplicas);
-                historyKeyspaceCreated =true;
+            }
+            historyKeyspaceCreated =true;
         }
         else
         {
@@ -57,7 +62,7 @@ public class KeySpace {
         useKeyspace_Node(keyspaceName);
     }
     public static void useKeyspace_Node(String keyspaceName ) {
-        session.execute("USE " + keyspaceName.toLowerCase());
+        session.execute("USE \"" + keyspaceName.toLowerCase()+"\"");
     }
     /**
      * Input: name of keyspace

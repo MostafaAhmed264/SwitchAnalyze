@@ -13,23 +13,32 @@ import java.util.UUID;
  */
 public class DBFrame {
     private UUID id ;
-
-    public String port = "1";
+    public String json;
+    public String port;
     public enum Direction {INBOUND,OUTBOUND}
     public Direction directionEnum;
     public String Direction;
+    public String direction;
     public HashMap<String, String> frameDetails;
+    public HashMap<String, String> framedetails;
     private boolean errorInRouting;
     private boolean crcChecker;
     // Member variables for producing in kafka
     public String frame_json;
     public String bytes;
-
+    public String runNo;
     public String switchName;
+    public String table;
     public DBFrame() { id = UUIDs.timeBased(); }
-    public DBFrame(String frame_json, String switchName) {
+    public DBFrame(String frame_json,Long runNo, String switchName) {
         this.frame_json = frame_json;
         this.switchName = switchName;
+    }
+    public DBFrame(String frame_json,String runNo, String switchName,String table) {
+        this.frame_json = frame_json;
+        this.switchName = switchName;
+        this.runNo = runNo;
+        this.table = table;
     }
 
     public UUID getID() { return id; }

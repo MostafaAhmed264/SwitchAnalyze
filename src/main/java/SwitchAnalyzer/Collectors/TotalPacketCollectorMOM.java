@@ -15,7 +15,6 @@ public class TotalPacketCollectorMOM implements Collector
                 break;
             totalCount += Long.parseLong(masterOfMasters.HPCs.get(i).hpcInfo.map.get(NamingConventions.totalPacketCount));
         }
-        totalCount += Long.parseLong( MOMConsumer.results.get(NamingConventions.totalPacketCount));
         return String.valueOf(totalCount);
     }
 

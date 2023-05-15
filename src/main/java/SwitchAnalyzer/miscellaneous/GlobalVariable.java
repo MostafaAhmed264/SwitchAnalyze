@@ -16,7 +16,7 @@ public class GlobalVariable
     }
     public static int storageClass = 0;
     public static Map<Integer, MasterOfHPC> portHpcMap = new HashMap<Integer,MasterOfHPC>();
-    public static String interfaceName = "enp2s0";
+    public static String interfaceName;
     public static int webSocketPort = 9099;
     public static int webSocketMaxMessages = 100000;
     public static boolean stopRunSignal = false; //FOR NODE ONLY PAUSES THE RUN USING WAIT AND NOTIFY
@@ -32,6 +32,13 @@ public class GlobalVariable
         5 - USED  in ENDRUN MASTER & MOM TO STOP PRODUCING IN KAFKA
      */
     public static volatile boolean retrieveDataFromNode;
+
+    public static String consumer1 = "cons1@#11111ADSAD";
+    public static String consumer2 = "cons2@#22222ASD";
+    public static String consumer3 = "cons3@#33333ASD";
+    public static String consumer4 = "cons4@#44444ASD";
+    public static String consumer5 = "cons5@#55555ASD";
+    public static String consumer6 = "cons6@#66666ASD";
 
     public static boolean retreiveProcessedFramesFromHPC;
 

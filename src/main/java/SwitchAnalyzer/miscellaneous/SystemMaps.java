@@ -59,18 +59,22 @@ public class SystemMaps
     public static void MOMinitStub()
     {
         MasterOfHPC master1 = new MasterOfHPC(1,"Cluster1");
-        //MasterOfHPC master2 = new MasterOfHPC(1,"Cluster2");
+        MasterOfHPC master2 = new MasterOfHPC(2 ,"Cluster2");
+        MasterOfHPC master3 = new MasterOfHPC(3,"Cluster3");
         GlobalVariable.portHpcMap.put(1, master1);
-        //GlobalVariable.portHpcMap.put(2, master2);
+        GlobalVariable.portHpcMap.put(2, master2);
+        GlobalVariable.portHpcMap.put(3,master3);
 
         master1.childNodes.add(new MachineNode(0));
         //master1.childNodes.add(new MachineNode(1));
-        //master2.childNodes.add(new MachineNode(0));
+        master2.childNodes.add(new MachineNode(0));
         //master2.childNodes.add(new MachineNode(1));
+        master3.childNodes.add(new MachineNode(0));
 
         MainHandler_MOM.masterOfMasters = new MOM();
         MainHandler_MOM.masterOfMasters.HPCs.add(master1);
-        //MainHandler_MOM.masterOfMasters.HPCs.add(master2);
+        MainHandler_MOM.masterOfMasters.HPCs.add(master2);
+        MainHandler_MOM.masterOfMasters.HPCs.add(master3);
     }
 
 
@@ -108,39 +112,52 @@ public class SystemMaps
         commandClassesMaster.add(EndCmd_Master.class);
         collectors.put(NamingConventions.rates, new RatesCollectorMaster());
         collectors.put(NamingConventions.packetLoss, new PLossCollectorMaster());
-        //MasterinitStub();
+        //MasterinitStub();s
     }
 
     public static void MasterinitStub()
     {
         MasterOfHPC master1 = new MasterOfHPC(1,"Master1");
-        //MasterOfHPC master2 = new MasterOfHPC(1,"Cluster2");
+        MasterOfHPC master2 = new MasterOfHPC(2,"Cluster2");
+        MasterOfHPC master3 = new MasterOfHPC(3,"Cluster3");
         MachineNode machine1 = new MachineNode(0);
-        //MachineNode machine2 = new MachineNode(1);
-        //MachineNode machine3 = new MachineNode(1);
+        MachineNode machine2 = new MachineNode(0);
+        MachineNode machine3 = new MachineNode(0);
+
         //MachineNode machine4 = new MachineNode(1);
 
         GlobalVariable.portHpcMap.put(1, master1);
-        //GlobalVariable.portHpcMap.put(2, master2);
+
+        GlobalVariable.portHpcMap.put(2, master2);
+
+        GlobalVariable.portHpcMap.put(3, master3);
 
         master1.childNodes.add(machine1);
-        //master1.childNodes.add(machine2);
+        master2.childNodes.add(machine2);
+        master3.childNodes.add(machine3);
         //master2.childNodes.add(machine3);
         //master2.childNodes.add(machine4);
 
         try
         {
-            master1.HPCMacAddr = Builder.buildMacAddress("54:EE:75:DF:82:C4");
-            master1.HPCIp = Builder.buildIpV4Address("192.168.1.100");
+            //aymona
+            master1.HPCMacAddr = Builder.buildMacAddress("B8:88:E3:83:BE:73");
+            master1.HPCIp = Builder.buildIpV4Address("192.168.1.35");
+            //fadyola
+            master2.HPCMacAddr = Builder.buildMacAddress("54:EE:75:DF:82:C4");
+            master2.HPCIp = Builder.buildIpV4Address("192.168.1.100");
+            //abasola
+            master3.HPCMacAddr = Builder.buildMacAddress("34:e6:d7:5e:01:ce");
+            master3.HPCIp = Builder.buildIpV4Address("192.168.1.60");
 
-           // master2.HPCMacAddr = Builder.buildMacAddress("54:EE:75:DF:82:C4");
-           // master2.HPCIp = Builder.buildIpV4Address("192.168.1.100");
-
-            machine1.nodeMacAddress = Builder.buildMacAddress("8C:16:45:21:C5:E7");
+            machine1.nodeMacAddress = Builder.buildMacAddress("B8:88:E3:83:BE:73");
             machine1.nodeIp = Builder.buildIpV4Address("192.168.1.35");
 
-            //machine2.nodeMacAddress = Builder.buildMacAddress("00:00:00:00:00:01");
-            //  machine2.nodeIp = Builder.buildIpV4Address("192.168.1.100");
+            machine2.nodeMacAddress = Builder.buildMacAddress("54:EE:75:DF:82:C4");
+            machine2.nodeIp = Builder.buildIpV4Address("192.168.1.100");
+
+            machine3.nodeMacAddress = Builder.buildMacAddress("34:e6:d7:5e:01:ce");
+            machine3.nodeIp = Builder.buildIpV4Address("192.168.1.60");
 
             //machine3.nodeMacAddress = Builder.buildMacAddress("3C:2C:30:9B:3B:90");
             //machine3.nodeIp = Builder.buildIpV4Address("192.168.1.101");
@@ -150,7 +167,7 @@ public class SystemMaps
         }
         catch (Exception ignored){}
 
-        MainHandler_Master.master = master1;
+        MainHandler_Master.master = master2;
     }
 
     public static final String START_RUN_NODE_IDX = "0";
@@ -171,44 +188,50 @@ public class SystemMaps
 
     public static void nodeInitStub()
     {
-        MasterOfHPC master1 = new MasterOfHPC(0 ,"Cluster 1");
-        MasterOfHPC master2 = new MasterOfHPC(1,"Cluster 2");
+        MasterOfHPC master1 = new MasterOfHPC(1 ,"Cluster 1");
+        MasterOfHPC master2 = new MasterOfHPC(2,"Cluster 2");
+        MasterOfHPC master3 = new MasterOfHPC(3,"Cluster 3");
+
         MachineNode machine1 = new MachineNode(0);
-        //MachineNode machine2 = new MachineNode(1);
+        MachineNode machine2 = new MachineNode(0);
         MachineNode machine3 = new MachineNode(0);
         //MachineNode machine4 = new MachineNode(1);
 
         GlobalVariable.portHpcMap.put(1, master1);
         GlobalVariable.portHpcMap.put(2, master2);
+        GlobalVariable.portHpcMap.put(3, master3);
 
         master1.childNodes.add(machine1);
         // master1.childNodes.add(machine2);
-        master2.childNodes.add(machine3);
+        master2.childNodes.add(machine2);
         // master2.childNodes.add(machine4);
+        master3.childNodes.add(machine3);
 
         try
         {
-            master1.HPCMacAddr = Builder.buildMacAddress("54:EE:75:DF:82:C4");
-            master1.HPCIp = Builder.buildIpV4Address("192.168.1.100");
-
+            master1.HPCMacAddr = Builder.buildMacAddress("B8:88:E3:83:BE:73");
+            master1.HPCIp = Builder.buildIpV4Address("192.168.1.35");
+            //fadyola
             master2.HPCMacAddr = Builder.buildMacAddress("54:EE:75:DF:82:C4");
             master2.HPCIp = Builder.buildIpV4Address("192.168.1.100");
+            //abasola
+            master3.HPCMacAddr = Builder.buildMacAddress("34:e6:d7:5e:01:ce");
+            master3.HPCIp = Builder.buildIpV4Address("192.168.1.60");
 
-            machine1.nodeMacAddress = Builder.buildMacAddress("8C:16:45:21:C5:E7");
+            machine1.nodeMacAddress = Builder.buildMacAddress("68:f7:28:26:8b:19");
             machine1.nodeIp = Builder.buildIpV4Address("192.168.1.35");
 
-//            machine2.nodeMacAddress = Builder.buildMacAddress("00:00:00:00:00:01");
-//            machine2.nodeIp = Builder.buildIpV4Address("192.168.1.100");
+            machine2.nodeMacAddress = Builder.buildMacAddress("3C:2C:30:9B:3B:90");
+            machine2.nodeIp = Builder.buildIpV4Address("192.168.1.101");
 
-            machine3.nodeMacAddress = Builder.buildMacAddress("3C:2C:30:9B:3B:90");
-            machine3.nodeIp = Builder.buildIpV4Address("192.168.1.101");
-
+            machine3.nodeMacAddress = Builder.buildMacAddress("34:e6:d7:5e:01:ce");
+            machine3.nodeIp = Builder.buildIpV4Address("192.168.1.60");
 //            machine4.nodeMacAddress = Builder.buildMacAddress("00:00:00:00:00:01");
 //            machine4.nodeIp = Builder.buildIpV4Address("192.168.1.100");
         }
         catch (Exception ignored){}
 
-        MainHandler_Node.node = machine1;
+        MainHandler_Node.node = machine2;
     }
 
     public static void clear()

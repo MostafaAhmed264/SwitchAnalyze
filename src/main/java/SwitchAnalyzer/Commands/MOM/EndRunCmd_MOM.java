@@ -4,6 +4,7 @@ import SwitchAnalyzer.Collectors.MOMConsumer;
 import SwitchAnalyzer.Commands.ICommandMOM;
 import SwitchAnalyzer.Commands.Master.EndCmd_Master;
 import SwitchAnalyzer.Database.DBInsert;
+import SwitchAnalyzer.EndCmdUI;
 import SwitchAnalyzer.Kafka.Topics;
 import SwitchAnalyzer.MainHandler_MOM;
 import SwitchAnalyzer.Sockets.JettyWebSocketServer;
@@ -19,14 +20,10 @@ public class EndRunCmd_MOM implements ICommandMOM
 {
     public void processCmd()
     {
-        System.out.println("END");
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        Calendar cal = Calendar.getInstance();
-        MOMConsumer.results.put("EndTime", dateFormat.format(cal.getTime()));
-
-
-        //Add Insert Here for DB RUN
-        DBInsert.insertRun(JSONConverter.toJSON(MOMConsumer.results));
+          System.out.println("END");
+//        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+//        Calendar cal = Calendar.getInstance();
+//        MOMConsumer.results.put("EndTime", dateFormat.format(cal.getTime()));
 
         GlobalVariable.retrieveDataFromNode = false;
         GlobalVariable.endRun = true;

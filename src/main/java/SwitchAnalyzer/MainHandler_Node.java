@@ -8,17 +8,22 @@ import SwitchAnalyzer.Kafka.Producer;
 import SwitchAnalyzer.Kafka.Topics;
 import SwitchAnalyzer.Machines.MachineNode;
 import SwitchAnalyzer.Network.*;
+import SwitchAnalyzer.miscellaneous.GlobalVariable;
 import SwitchAnalyzer.miscellaneous.JSONConverter;
 import SwitchAnalyzer.miscellaneous.SystemMaps;
 import SwitchAnalyzer.miscellaneous.Time;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.pcap4j.core.PcapNetworkInterface;
+import org.pcap4j.core.Pcaps;
+
+import java.util.List;
 
 
 public class MainHandler_Node
 {
     public static boolean working = false;
-    public static String consumerGroup = "Node_cons1";
+    public static String consumerGroup = GlobalVariable.consumer2;
     static GenericConsumer consumer;
     public static MachineNode node;
     public static Producer dataProducer = new Producer(IP.ip1);
@@ -26,6 +31,13 @@ public class MainHandler_Node
 
     public static void init()
     {
+        try
+        {
+            List<PcapNetworkInterface> allDevs = Pcaps.findAllDevs();
+           PcapNetworkInterface nif = allDevs.get(0);
+           GlobalVariable.interfaceName = nif.getName();
+        }
+        catch (Exception ex) { System.out.println("Problem in setting pcap network device in node init"); }
        // SystemMaps.nodeInitStub();
         SystemMaps.initMapsNode();
         consumer = new GenericConsumer(IP.ip1 + ":" + Ports.port1, consumerGroup);

@@ -3,9 +3,11 @@ package SwitchAnalyzer.Database;
 import SwitchAnalyzer.Kafka.Producer;
 import SwitchAnalyzer.Kafka.Topics;
 import SwitchAnalyzer.Network.IP;
+import SwitchAnalyzer.Sockets.JettyWebSocketServer;
 import SwitchAnalyzer.miscellaneous.JSONConverter;
 import com.datastax.driver.core.*;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class DBSelect {
     //session is used in order to execute the query
@@ -64,7 +66,7 @@ public class DBSelect {
         tableName = "switches";
         begin();
     }
-    public static void beginSelectFrames(long runNo)
+    public static void beginSelectFrames(String runNo)
     {
         fromTableName = new StringBuilder("FROM frames_run").append(runNo);
         tableName = "frames";
@@ -210,12 +212,12 @@ public class DBSelect {
      *          build the string builder called wholeSelectQuery depending on different scenarios
      *          and set attributes for DBFrame and produce the frame in kafka
      */
-    public static void executeSelect(String switchName,long runNo)
+    public static void executeSelect(String switchName,String runNo,String table,int size)
     {
         ResultSet rs = beginExecuteSelect();
         if(JSON)
         {
-            selectJSON_frames_kafka(rs,switchName,runNo);
+            selectJSON_frames_kafka(rs,switchName,runNo,table,size);
         }
         else
         {
@@ -234,7 +236,11 @@ public class DBSelect {
         {
             String jsonString = row.getString("[json]");
             DBRun run = JSONConverter.fromJSON(jsonString,DBRun.class);
-            runs.add(run);
+            String runNo = "" + run.getRunNo();
+            Map<String, String> runDetails = run.rundetails;
+            Map<String, String> additonal = run.additional;
+            DBRun run_gui = new DBRun(runNo,runDetails,additonal);
+            runs.add(run_gui);
         }
         return runs;
     }
@@ -242,31 +248,41 @@ public class DBSelect {
      * Description :
      *          it iterates on the rows of resultSet and produce the frame in kafka
      */
-    private static void selectJSON_frames_kafka(ResultSet rs,String switchName,long runNo)
+    private static void selectJSON_frames_kafka(ResultSet rs,String switchName,String runNo,String table,int size)
     {
-        Producer dataProducer = new Producer(IP.ip1);
+//        Producer dataProducer = new Producer(IP.ip1);
         for (Row row : rs)
         {
             String frame_json = row.getString("[json]");
-            long runno = runNo;
-            String switchname = switchName;
-            dataProducer.produce(JSONConverter.toJSON(new DBFrame(frame_json,switchName)), Topics.ProcessedFramesFromHPC);
-            System.out.println("produced frame in kafka");
-            dataProducer.flush();
+            DBFrame frame = JSONConverter.fromJSON(frame_json, DBFrame.class);
+            frame.switchName = switchName;
+            frame.runNo = runNo;
+            frame.table = table;
+            frame.frameDetails = frame.framedetails;
+            frame.Direction = frame.direction;
+            frame.bytes = "Frame details";
+            if(size == 1)
+                frame.json = "history";
+            else
+                frame.json = "compare";
+            JettyWebSocketServer.writeMessage(JSONConverter.toJSON(frame));
+//            dataProducer.produce(JSONConverter.toJSON(new DBFrame(frame_json,runNo,switchName,table)), Topics.CompareRuns);
+//            System.out.println("produced frame in kafka");
+//            dataProducer.flush();
         }
     }
     /************************ selectAll based on specific frame data header **********************/
     public static String selectSpecificFrameDataHeader(String headerName)
     {
         setConditions_SpecificFrameDataHeader();
-        beginSelectFrames(DBConnect.getLastRun());
+        beginSelectFrames(""+DBConnect.getLastRun());
         conditionFrameData(headerName);
         return executeSelect();
     }
     public static String selectSpecificFrameDataHeader(long runNo,String headerName)
     {
         setConditions_SpecificFrameDataHeader();
-        beginSelectFrames(runNo);
+        beginSelectFrames(""+runNo);
         conditionFrameData(headerName);
         return executeSelect();
     }
@@ -274,7 +290,7 @@ public class DBSelect {
     {
         KeySpace.useKeyspace_Node(switchName);
         setConditions_SpecificFrameDataHeader();
-        beginSelectFrames(runNo);
+        beginSelectFrames(""+runNo);
         conditionFrameData(headerName);
         return executeSelect();
     }
@@ -294,7 +310,7 @@ public class DBSelect {
     public static String showHistory()
     {
         KeySpace.useKeyspace_Node("history");
-        return JSONConverter.toJSON(selectSwitches());
+        return JSONConverter.toJSON(selectSwitches().dbSwitches);
     }
     private static DBSwitches selectSwitches()
     {
@@ -307,10 +323,25 @@ public class DBSelect {
         ArrayList<DBSwitch> dbSwitches = convertResultSetHistory(historyResult);
         for (int i = 0; i < dbSwitches.size(); i++)
         {
+            if (dbSwitches.get(i).getSwitchName().contains(" ")) {
+                dbSwitches.get(i).setSwitchName(dbSwitches.get(i).getSwitchName().replace(" ", "_"));
+            }
             KeySpace.useKeyspace_Node(dbSwitches.get(i).getSwitchName());
             setJSON(true);
             beginSelectRuns();
-            dbSwitches.get(i).setSwitchRuns(executeSelect());
+            try {
+                dbSwitches.get(i).stats = executeSelect();
+            }
+            catch (Exception e)
+            {
+                dbSwitches.remove(i);
+                i--;
+            }
+            if(dbSwitches.get(i).stats.isEmpty())
+            {
+                dbSwitches.remove(i);
+                i--;
+            }
         }
         return new DBSwitches(dbSwitches);
     }
@@ -325,7 +356,12 @@ public class DBSelect {
         for (Row row : historyResult)
         {
             String switchName = row.getString("switchName");
-            long totalNoOfPorts = row.getLong("totalNoOfPorts");
+            Long noOfPorts = row.getLong("totalNoOfPorts");
+            String totalNoOfPorts;
+            if(noOfPorts == 0)
+                totalNoOfPorts = "Undefined";
+            else
+                totalNoOfPorts = "" + noOfPorts;
             DBSwitch dbswitch = new DBSwitch(switchName,totalNoOfPorts);
             switches.add(dbswitch);
         }
@@ -334,23 +370,35 @@ public class DBSelect {
     /************************************ Compare runs ******************************************/
     public static void compareRuns(ArrayList<Run_Gui> run_guis)
     {
+        ArrayList<Thread> threads = new ArrayList<>();
         for (int i = 0; i < run_guis.size(); i++)
         {
-            showSpecificRun(run_guis.get(i).switchName,run_guis.get(i).runNo);
+            int finalI = i;
+            Thread t = new Thread(() ->
+                    showSpecificRun(run_guis.get(finalI).switchName,run_guis.get(finalI).runNo,"" + (finalI +1),run_guis.size()));
+            t.start();
+            threads.add(t);
+        }
+        for (Thread t : threads) {
+            try { t.join(); }
+            catch (Exception e) {}
         }
     }
-    public static void showSpecificRun(String switchName, long runNo)
+    public static void showSpecificRun(String switchName, String runNo,String table,int size)
     {
+        if (switchName.contains(" ")) {
+            switchName = switchName.replace(" ", "_");
+        }
         KeySpace.useKeyspace_Node(switchName);
-        selectRunDetails(switchName, runNo);
+        selectRunDetails(switchName, runNo,table,size);
     }
-    private static void selectRunDetails(String switchName ,long runNo)
+    private static void selectRunDetails(String switchName ,String runNo,String table,int size)
     {
         setSelectAll(true);
         setJSON(true);
         setCondition(false);
         setALLOWFILTERING(false);
         beginSelectFrames(runNo);
-        executeSelect(switchName,runNo);
+        executeSelect(switchName,runNo,table,size);
     }
 }

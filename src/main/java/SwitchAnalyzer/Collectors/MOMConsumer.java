@@ -1,5 +1,6 @@
 package SwitchAnalyzer.Collectors;
 
+import SwitchAnalyzer.Database.DBInsert;
 import SwitchAnalyzer.EndCmdUI;
 import SwitchAnalyzer.Kafka.GenericConsumer;
 import SwitchAnalyzer.Kafka.Topics;
@@ -29,7 +30,7 @@ import static SwitchAnalyzer.MainHandler_MOM.masterOfMasters;
 
 public class MOMConsumer {
     public static ArrayList<Integer> ids = new ArrayList<>();
-    static String consumerGroup = "Mfnctosddsadasysr1";
+    static String consumerGroup = GlobalVariable.consumer5;
     static GenericConsumer consumer = new GenericConsumer(IP.ip1 + ":" + Ports.port1, consumerGroup);
     //arraylist of collectors
     public static ArrayList<Collector> collectors = new ArrayList<>();
@@ -59,6 +60,7 @@ public class MOMConsumer {
         results.put(NamingConventions.overAllAvgLatency, String.valueOf(Double.parseDouble(results.get(NamingConventions.overAllAvgLatency))/LatencyCollectorMOM.count));
         EndCmdUI endcmdUi=new EndCmdUI();
         endcmdUi.mapResultToObj(results);
+        DBInsert.insertRun(endcmdUi.objToMap(),endcmdUi.additional);
         String json = JSONConverter.toJSON(endcmdUi);
         System.out.println(json);
         try { JettyWebSocketServer.writeMessage(json); }
@@ -95,7 +97,7 @@ public class MOMConsumer {
             {
                 String json = record.value();
                 HPC_INFO hpcInfo = JSONConverter.fromJSON(json, HPC_INFO.class);
-                masterOfMasters.HPCs.get(0).hpcInfo = hpcInfo;
+                masterOfMasters.HPCs.get(hpcInfo.id-1).hpcInfo = hpcInfo;
             }
             if(records.count() > 0)
                 break;
