@@ -13,10 +13,10 @@ public class PortSelector
     public static MasterOfHPC selectRandomly()
     {
         Random rand = new Random();
-        MasterOfHPC hpc = GlobalVariable.portHpcMap.get(rand.nextInt(GlobalVariable.portHpcMap.size()));
+        MasterOfHPC hpc = GlobalVariable.portHpcMap.get(rand.nextInt(GlobalVariable.portHpcMap.size()) + 1);
         if (hpc.getHPCID() == MainHandler_Master.master.getHPCID())
         {
-            return GlobalVariable.portHpcMap.get((hpc.getHPCID() + 1) % GlobalVariable.portHpcMap.size());
+            return GlobalVariable.portHpcMap.get(((hpc.getHPCID() + 1) % GlobalVariable.portHpcMap.size()) + 1);
         }
         return hpc;
     }
@@ -30,10 +30,10 @@ public class PortSelector
     public static int selectRandomPort()
     {
         Random rand = new Random();
-        int number = rand.nextInt(GlobalVariable.portHpcMap.size());
+        int number = rand.nextInt(GlobalVariable.portHpcMap.size()) + 1;
         if (number == MainHandler_Master.master.getHPCID())
         {
-            return (number+ 1) % GlobalVariable.portHpcMap.size();
+            return ((number+ 1) % GlobalVariable.portHpcMap.size()) + 1;
         }
         return number;
     }

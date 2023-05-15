@@ -20,16 +20,10 @@ public class EndRunCmd_MOM implements ICommandMOM
 {
     public void processCmd()
     {
-        System.out.println("END");
+          System.out.println("END");
 //        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 //        Calendar cal = Calendar.getInstance();
 //        MOMConsumer.results.put("EndTime", dateFormat.format(cal.getTime()));
-
-        EndCmdUI result = new EndCmdUI();
-        result.mapResultToObj(MOMConsumer.results);
-
-        //Add Insert Here for DB RUN
-        DBInsert.insertRun(result.objToMap(),result.additional);
 
         GlobalVariable.retrieveDataFromNode = false;
         GlobalVariable.endRun = true;

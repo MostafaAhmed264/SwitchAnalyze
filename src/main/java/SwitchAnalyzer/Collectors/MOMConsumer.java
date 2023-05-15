@@ -1,5 +1,6 @@
 package SwitchAnalyzer.Collectors;
 
+import SwitchAnalyzer.Database.DBInsert;
 import SwitchAnalyzer.EndCmdUI;
 import SwitchAnalyzer.Kafka.GenericConsumer;
 import SwitchAnalyzer.Kafka.Topics;
@@ -59,6 +60,7 @@ public class MOMConsumer {
         results.put(NamingConventions.overAllAvgLatency, String.valueOf(Double.parseDouble(results.get(NamingConventions.overAllAvgLatency))/LatencyCollectorMOM.count));
         EndCmdUI endcmdUi=new EndCmdUI();
         endcmdUi.mapResultToObj(results);
+        DBInsert.insertRun(endcmdUi.objToMap(),endcmdUi.additional);
         String json = JSONConverter.toJSON(endcmdUi);
         System.out.println(json);
         try { JettyWebSocketServer.writeMessage(json); }

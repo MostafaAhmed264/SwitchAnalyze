@@ -18,7 +18,9 @@ public class DBFrame {
     public enum Direction {INBOUND,OUTBOUND}
     public Direction directionEnum;
     public String Direction;
+    public String direction;
     public HashMap<String, String> frameDetails;
+    public HashMap<String, String> framedetails;
     private boolean errorInRouting;
     private boolean crcChecker;
     // Member variables for producing in kafka
@@ -26,13 +28,13 @@ public class DBFrame {
     public String bytes;
     public String runNo;
     public String switchName;
-    public int table;
+    public String table;
     public DBFrame() { id = UUIDs.timeBased(); }
     public DBFrame(String frame_json,Long runNo, String switchName) {
         this.frame_json = frame_json;
         this.switchName = switchName;
     }
-    public DBFrame(String frame_json,String runNo, String switchName,int table) {
+    public DBFrame(String frame_json,String runNo, String switchName,String table) {
         this.frame_json = frame_json;
         this.switchName = switchName;
         this.runNo = runNo;
