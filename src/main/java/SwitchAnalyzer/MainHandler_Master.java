@@ -40,6 +40,7 @@ public class MainHandler_Master
     public static void end() { working = false; }
     public static void start()
     {
+        System.out.println("in MainHandler Master");
         working = true;
         init();
         int commandTypeIndex;

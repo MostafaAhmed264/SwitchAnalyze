@@ -1,3 +1,4 @@
+
 package SwitchAnalyzer;
 
 import SwitchAnalyzer.ClusterConfigurations.ClusterConfiguartions;
@@ -12,17 +13,17 @@ import SwitchAnalyzer.Machines.MachineNode;
 import SwitchAnalyzer.Network.IP;
 import SwitchAnalyzer.Network.Ports;
 import SwitchAnalyzer.SystemInitializer.SystemInitializer;
+import SwitchAnalyzer.miscellaneous.GlobalVariable;
 import SwitchAnalyzer.miscellaneous.JSONConverter;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 
 public class Main
 {
-    static String consumerConfigurationGroup = "foihsfihifh";
     public static void start()
     {
         MachineNode myNode = new MachineNode();
-        GenericConsumer MainConsumer = new GenericConsumer(IP.ConfigurationsIP + ":" + Ports.port1, consumerConfigurationGroup);
+        GenericConsumer MainConsumer = new GenericConsumer(IP.ConfigurationsIP + ":" + Ports.port1, GlobalVariable.consumer0);
         MainConsumer.selectTopic("FARES");
         System.out.println("before while in main");
         while (true)

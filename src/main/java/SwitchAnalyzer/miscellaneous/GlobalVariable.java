@@ -32,7 +32,7 @@ public class GlobalVariable
         5 - USED  in ENDRUN MASTER & MOM TO STOP PRODUCING IN KAFKA
      */
     public static volatile boolean retrieveDataFromNode;
-
+    public static String consumer0 ="cons0@#11111ADSAD";
     public static String consumer1 = "cons1@#11111ADSAD";
     public static String consumer2 = "cons2@#22222ASD";
     public static String consumer3 = "cons3@#33333ASD";
