@@ -2,6 +2,7 @@ package SwitchAnalyzer.Sockets;
 
 import SwitchAnalyzer.Commands.ICommand;
 import SwitchAnalyzer.MainHandler_MOM;
+import SwitchAnalyzer.Responses;
 import SwitchAnalyzer.miscellaneous.JSONConverter;
 import SwitchAnalyzer.miscellaneous.SystemMaps;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -26,7 +27,7 @@ public class JettyWebSocketServer
     {
         this.session = session;
         System.out.println("Connected: " + session.getRemoteAddress().getHostName());
-        writeMessage("\"ack\":1");
+        writeMessage(Responses.initialAck);
     }
 
     @OnWebSocketClose
