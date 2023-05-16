@@ -16,7 +16,7 @@ public class Topics {
     public static String  configurations ="FARES";
     public static void setTopicsNames(String clusterName){
         cmdFromHpcMaster=cmdFromHpcMaster+clusterName;
-    ratesFromHPCs=ratesFromHPCs+clusterName;
+        FramesFromHPC=FramesFromHPC+clusterName;
     ratesFromMachines=ratesFromMachines+clusterName;
     }
 }
