@@ -4,8 +4,7 @@ package SwitchAnalyzer.Kafka;
  * this class will hold all the topics used inside our system
  */
 public class Topics {
-    public static  String configurationsTopic="" +
-            "";
+    public static  String configurationsTopic="CONFIG";
     public static String  cmdFromMOM="CMDFromMOMM";
     public static String  ratesFromHPCs="RatesFromHPCs1";
     public static String  ratesFromMachines = "RatesFromMachines155";
