@@ -26,6 +26,7 @@ public class JettyWebSocketServer
     {
         this.session = session;
         System.out.println("Connected: " + session.getRemoteAddress().getHostName());
+        writeMessage("\"ack\":1");
     }
 
     @OnWebSocketClose

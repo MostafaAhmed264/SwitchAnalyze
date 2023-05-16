@@ -56,10 +56,12 @@ public class Main
                         {
                             if (machineConfig.getMac().equals(myNode.nodeMacAddress))
                             {
+                                Topics.setTopicsNames(clusterConfig.getCluster_name());
                                 if (machineConfig.Is_master())
                                 {
                                     new EndCmd_Master(0).processCmd();
                                     MainHandler_Master.working = false;
+
                                     SystemInitializer.MasterInit(myNode, machineConfig, clusterConfig,momConfigurations);
                                     HandlerThread = new Thread(MainHandler_Master::start);
                                 }
