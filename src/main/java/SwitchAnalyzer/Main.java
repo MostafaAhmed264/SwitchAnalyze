@@ -59,7 +59,7 @@ public class Main
                                 Topics.setTopicsNames(clusterConfig.getCluster_name());
                                 if (machineConfig.Is_master())
                                 {
-                                    new EndCmd_Master(0).processCmd();
+                                    //new EndCmd_Master(0).processCmd();
                                     MainHandler_Master.working = false;
 
                                     SystemInitializer.MasterInit(myNode, machineConfig, clusterConfig,momConfigurations);
@@ -124,8 +124,7 @@ public class Main
 //        }
 //    }
 //
-
-    public static void main(String[] args)
+public static void main(String[] args)
     {
         start();
     }
