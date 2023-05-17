@@ -24,6 +24,7 @@ public class PortSelector
     public static MasterOfHPC selectForPort(int portID)
     {
         if (portID == -1) return selectRandomly();
+
         return GlobalVariable.portHpcMap.get(portID);
     }
 
@@ -33,7 +34,10 @@ public class PortSelector
         int number = rand.nextInt(GlobalVariable.portHpcMap.size()) + 1;
         if (number == MainHandler_Master.master.getHPCID())
         {
-            return ((number+ 1) % GlobalVariable.portHpcMap.size()) + 1;
+            number=((number+ 1) % (GlobalVariable.portHpcMap.size() + 1));
+            if(number==0){
+                number=1;
+            }
         }
         return number;
     }

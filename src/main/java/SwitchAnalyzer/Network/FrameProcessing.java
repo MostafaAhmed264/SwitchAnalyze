@@ -113,6 +113,7 @@ public class FrameProcessing
 
     private static void consumeFrames()
     {
+
         ConsumerRecords<String, byte[]> frames = consumer.consumeByteArray(Time.waitTime);
         for (ConsumerRecord<String, byte[]> frame : frames)
         {

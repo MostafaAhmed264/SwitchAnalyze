@@ -92,14 +92,14 @@ public class PacketLossCalculate {
                     .ttl((byte) 100)
                     .protocol(IpNumber.ICMPV4)
                     .srcAddr(MainHandler_Node.node.nodeIp)
-                    .dstAddr(GlobalVariable.portHpcMap.get(2).HPCIp)
+                    .dstAddr(GlobalVariable.portHpcMap.get(PortSelector.selectRandomPort()).HPCIp)
                     .payloadBuilder(icmpV4CommonBuilder)
                     .correctChecksumAtBuild(true)
                     .correctLengthAtBuild(true);
 
             EthernetPacket.Builder etherBuilder = new EthernetPacket.Builder();
             etherBuilder
-                    .dstAddr(GlobalVariable.portHpcMap.get(2).HPCMacAddr)
+                    .dstAddr(GlobalVariable.portHpcMap.get(PortSelector.selectRandomPort()).HPCMacAddr)
                     .srcAddr(MainHandler_Node.node.nodeMacAddress)
                     .type(EtherType.IPV4)
                     .paddingAtBuild(true);
@@ -111,13 +111,13 @@ public class PacketLossCalculate {
                 sendTimes.add(System.nanoTime());
                 sendHandle.sendPacket(p);
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(500);
                 } catch (InterruptedException e) {
                     System.out.println(";-;");
                     break;
                 }
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(500);
                 } catch (InterruptedException e) {
                     System.out.println(";-;");
                     break;
