@@ -29,6 +29,8 @@ import static org.pcap4j.util.ByteArrays.calcCrc32Checksum;
 public class FrameProcessing
 {
     static GenericConsumer consumer = new GenericConsumer(IP.ip1 + ":" + Ports.port1, GlobalVariable.consumer3, true);
+    static GenericConsumer consumer_IN = new GenericConsumer(IP.ip1 + ":" + Ports.port1, GlobalVariable.consumer3, true);
+
     public static Producer packetProducer = new Producer(IP.ip1);
     public static ErrorDetectingAlgorithms errorDetectingAlgorithms = null;
     public static ConcurrentHashMap<String, String> countMap = new ConcurrentHashMap<>();
@@ -98,9 +100,23 @@ public class FrameProcessing
     {
         countMap.putIfAbsent(NamingConventions.crcError, "0");
         countMap.putIfAbsent(NamingConventions.totalPacketCount, "0");
-        consumer.selectTopicByteArray(Topics.FramesFromHPC);
-        while (!GlobalVariable.stopRecieving) { consumeFrames();
-            System.out.println("checking flag in while");}
+
+        consumer.selectTopicByteArray(Topics.FramesFromHPC_OUT);
+        consumer_IN.selectTopicByteArray(Topics.FramesFromHPC_IN);
+        Thread t_out = new Thread( () ->
+        {
+            while (!GlobalVariable.stopRecieving)
+                consumeFrames(consumer, "Out");
+        });
+
+        Thread t_in = new Thread( () ->
+        {
+            while (!GlobalVariable.stopRecieving)
+                consumeFrames(consumer_IN, "IN");
+        });
+
+        t_out.start();
+        t_in.start();
 
         clear();
     }
@@ -111,14 +127,13 @@ public class FrameProcessing
         errorDetectingAlgorithms = null;
     }
 
-    private static void consumeFrames()
+    private static void consumeFrames(GenericConsumer consumer, String dir)
     {
-
         ConsumerRecords<String, byte[]> frames = consumer.consumeByteArray(Time.waitTime);
         for (ConsumerRecord<String, byte[]> frame : frames)
         {
             DBFrame dbFrame = processFrames(frame.value());
-            dbFrame.Direction = "In";
+            dbFrame.Direction = dir;
             dbFrame.port = String.valueOf(MainHandler_Master.master.getHPCID());
             MainHandler_Master.storages.get(GlobalVariable.storageClass).store(dbFrame);
             if(GlobalVariable.retreiveProcessedFramesFromHPC)
