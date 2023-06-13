@@ -105,8 +105,9 @@ public class PacketLossCalc
         //listen on other port
         try {
             echoHandle = nif.openLive(SNAPLEN, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, READ_TIMEOUT);
+            echoHandle.setDirection(PcapHandle.PcapDirection.IN);
             try {
-                echoHandle.setFilter("inbound udp dst port "+echoPlossPort ,  BpfProgram.BpfCompileMode.OPTIMIZE);
+                echoHandle.setFilter("udp dst port "+echoPlossPort ,  BpfProgram.BpfCompileMode.OPTIMIZE);
                 PacketListener listener =
                         new PacketListener() {
                             @Override
@@ -125,13 +126,16 @@ public class PacketLossCalc
             }
         } catch (PcapNativeException e) {
             throw new RuntimeException(e);
+        } catch (NotOpenException e) {
+            throw new RuntimeException(e);
         }
     }
     public void generateEcho()
     {
         try {
             genEchoHandle = nif.openLive(SNAPLEN, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, READ_TIMEOUT);
-            genEchoHandle.setFilter("inbound udp dst port "+ plossPort ,  BpfProgram.BpfCompileMode.OPTIMIZE);
+            genEchoHandle.setDirection(PcapHandle.PcapDirection.IN);
+            genEchoHandle.setFilter("udp dst port "+ plossPort ,  BpfProgram.BpfCompileMode.OPTIMIZE);
             PacketListener listener =
                     new PacketListener() {
                         @Override
