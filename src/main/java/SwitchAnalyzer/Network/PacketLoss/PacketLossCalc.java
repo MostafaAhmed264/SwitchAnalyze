@@ -47,6 +47,7 @@ public class PacketLossCalc
             UdpPacket.Builder udpBuilder = new UdpPacket.Builder();
             udpBuilder.payloadBuilder(new UnknownPacket.Builder().rawData("Schoolfellow".getBytes()));
             udpBuilder.dstPort(new UdpPort(plossPort ,"port"));
+
             IpV4Packet.Builder ipV4Builder = new IpV4Packet.Builder();
             ipV4Builder.version(IpVersion.IPV4)
                     .tos(IpV4Rfc791Tos.newInstance((byte) 0))
@@ -116,7 +117,9 @@ public class PacketLossCalc
                             }
                         };
                 Task t = new Task(echoHandle, listener);
-                pool.execute(t);
+                //pool.execute(t);
+                Thread t1 = new Thread(t);
+                t1.start();
             } catch (NotOpenException e) {
                 throw new RuntimeException(e);
             }
@@ -157,7 +160,9 @@ public class PacketLossCalc
 
                     };
             Task t = new Task(genEchoHandle, listener);
-            pool.execute(t);
+            Thread t1 = new Thread(t);
+            t1.start();
+            //pool.execute(t);
         } catch (PcapNativeException | NotOpenException e) {
             throw new RuntimeException(e);
         }

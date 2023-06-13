@@ -32,6 +32,7 @@ public class PortSelector
     {
         Random rand = new Random();
         int number = rand.nextInt(GlobalVariable.portHpcMap.size()) + 1;
+        System.out.println("porthpcmap size"+GlobalVariable.portHpcMap.size());
         if (number == MainHandler_Master.master.getHPCID())
         {
             number=((number+ 1) % (GlobalVariable.portHpcMap.size() + 1));

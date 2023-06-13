@@ -8,6 +8,7 @@ import SwitchAnalyzer.Kafka.Topics;
 import SwitchAnalyzer.MainHandler_Master;
 import SwitchAnalyzer.Network.ErrorDetection.CRC;
 import SwitchAnalyzer.Network.FrameProcessing;
+import SwitchAnalyzer.Network.PCAP;
 import SwitchAnalyzer.Network.PacketLoss.PacketLossCalc;
 import SwitchAnalyzer.ProduceData_Master;
 import SwitchAnalyzer.miscellaneous.GlobalVariable;
@@ -67,6 +68,7 @@ public class StartRunALL extends ICommandMaster
     }
     private void openGenEchoThread()
     {
+        PCAP.initialize();
         PacketLossCalc p = new PacketLossCalc();
         p.generateEcho();
     }
