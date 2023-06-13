@@ -8,6 +8,7 @@ import SwitchAnalyzer.Kafka.Topics;
 import SwitchAnalyzer.MainHandler_Master;
 import SwitchAnalyzer.Network.ErrorDetection.CRC;
 import SwitchAnalyzer.Network.FrameProcessing;
+import SwitchAnalyzer.Network.PacketLoss.PacketLossCalc;
 import SwitchAnalyzer.ProduceData_Master;
 import SwitchAnalyzer.miscellaneous.GlobalVariable;
 import SwitchAnalyzer.miscellaneous.JSONConverter;
@@ -37,7 +38,9 @@ public class StartRunALL extends ICommandMaster
         GlobalVariable.retrieveDataFromNode = true;
         GlobalVariable.storageClass = 2;
         addCollectors();
+        openGenEchoThread();
         openProcessFramesAndProduceDataThreads();
+
     }
 
     private void addCollectors()
@@ -62,6 +65,12 @@ public class StartRunALL extends ICommandMaster
         });
         dataConsumeAndProduceThread.start();
     }
+    private void openGenEchoThread()
+    {
+        PacketLossCalc p = new PacketLossCalc();
+        p.generateEcho();
+    }
+
     @Override
     public void GenCmd(int machineID) {
         String json = JSONConverter.toJSON(new StartRunAllNodes(machineID));

@@ -1,11 +1,9 @@
 package SwitchAnalyzer.Network.PacketLoss;
 
+import SwitchAnalyzer.MainHandler_Master;
 import SwitchAnalyzer.MainHandler_Node;
 import SwitchAnalyzer.NamingConventions;
-import SwitchAnalyzer.Network.PacketGenerator;
-import SwitchAnalyzer.Network.PacketInfo;
-import SwitchAnalyzer.Network.PortSelector;
-import SwitchAnalyzer.Network.UDPModifier;
+import SwitchAnalyzer.Network.*;
 import SwitchAnalyzer.Sockets.PacketInfoGui;
 import SwitchAnalyzer.UtilityExecution.UtilityExecutor;
 import SwitchAnalyzer.miscellaneous.GlobalVariable;
@@ -15,7 +13,9 @@ import org.pcap4j.packet.namednumber.EtherType;
 import org.pcap4j.packet.namednumber.IpNumber;
 import org.pcap4j.packet.namednumber.IpVersion;
 import org.pcap4j.packet.namednumber.UdpPort;
+import org.pcap4j.util.MacAddress;
 
+import java.net.Inet4Address;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
@@ -26,9 +26,11 @@ import static SwitchAnalyzer.Network.PCAP.nif;
 public class PacketLossCalc
 {
     public static final short plossPort = 9974;
+    public static final short echoPlossPort = 9999;
     public static Packet plossPacket ;
     public  PcapHandle sendHandle;
     public  PcapHandle echoHandle;
+    public PcapHandle genEchoHandle;
     private static final int SNAPLEN = 65536;
     public static final int count = 5;
     private static final int READ_TIMEOUT = 10;
@@ -36,6 +38,7 @@ public class PacketLossCalc
     private static final ExecutorService pool = Executors.newSingleThreadExecutor();
     ArrayList<Long> sendTimes = new ArrayList<Long>();
     ArrayList<Long> receiveTimes = new ArrayList<Long>();
+
     public  void init()
     {
         try
@@ -98,10 +101,11 @@ public class PacketLossCalc
     }
     public  void startEchoListner()
     {
+        //listen on other port
         try {
             echoHandle = nif.openLive(SNAPLEN, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, READ_TIMEOUT);
             try {
-                echoHandle.setFilter("inbound udp dst port "+plossPort ,  BpfProgram.BpfCompileMode.OPTIMIZE);
+                echoHandle.setFilter("inbound udp dst port "+echoPlossPort ,  BpfProgram.BpfCompileMode.OPTIMIZE);
                 PacketListener listener =
                         new PacketListener() {
                             @Override
@@ -120,6 +124,46 @@ public class PacketLossCalc
             throw new RuntimeException(e);
         }
     }
+    public void generateEcho()
+    {
+        try {
+            genEchoHandle = nif.openLive(SNAPLEN, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, READ_TIMEOUT);
+            genEchoHandle.setFilter("inbound udp dst port "+ plossPort ,  BpfProgram.BpfCompileMode.OPTIMIZE);
+            PacketListener listener =
+                    new PacketListener() {
+                        @Override
+                        public void gotPacket(PcapPacket pcapPacket)
+                        {
+                            Packet p;
+                            Packet.Builder builder = pcapPacket.getBuilder();
+                            EthernetPacket.Builder ethBuilder = builder.get(EthernetPacket.Builder.class);
+                            MacAddress srcAddr = pcapPacket.get(EthernetPacket.class).getHeader().getSrcAddr();
+                            ethBuilder.dstAddr(srcAddr);
+                            ethBuilder.srcAddr(MainHandler_Master.master.HPCMacAddr);
+                            IpV4Packet.Builder ipbuilder = builder.get(IpV4Packet.Builder.class);
+                            Inet4Address srcIpAddr = pcapPacket.get(IpV4Packet.class).getHeader().getSrcAddr();
+                            ipbuilder.dstAddr(srcIpAddr);
+                            ipbuilder.srcAddr(MainHandler_Master.master.HPCIp);
+                            UDPModifier.modifiyDstPort(builder,echoPlossPort);
+                            p = builder.build();
+                            try {
+                                genEchoHandle.sendPacket(p);
+                            } catch (PcapNativeException e) {
+                                throw new RuntimeException(e);
+                            } catch (NotOpenException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+
+                    };
+            Task t = new Task(genEchoHandle, listener);
+            pool.execute(t);
+        } catch (PcapNativeException | NotOpenException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
     private static class Task implements Runnable
     {
         private final PcapHandle handle;
@@ -141,8 +185,8 @@ public class PacketLossCalc
 
     public static float startPacketLossTest()
     {
-        PacketLossCalculate packetLossCalculate = new PacketLossCalculate();
-        packetLossCalculate.claculatePacketLoss();
+        PacketLossCalc packetLossCalculate = new PacketLossCalc();
+        packetLossCalculate.calculatePacketLoss();
         float pl = (((float)count - packetLossCalculate.recievedPacketCount)/count) * 100;
         if (pl < 0)
             return 0;
@@ -160,5 +204,4 @@ public class PacketLossCalc
         }
         return max/2;
     }
-
 }

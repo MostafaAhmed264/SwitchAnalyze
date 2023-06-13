@@ -2,6 +2,7 @@ package SwitchAnalyzer.Network;
 
 import SwitchAnalyzer.Kafka.Topics;
 import SwitchAnalyzer.MainHandler_Node;
+import org.pcap4j.core.BpfProgram;
 import org.pcap4j.core.PacketListener;
 import org.pcap4j.core.PcapHandle;
 
@@ -12,14 +13,18 @@ public class FrameReciever
 {
     private static final PcapHandle handle_IN = PCAP.createHandle();
     private static final PcapHandle handle2_OUT = PCAP.createHandle();
+    private static final PcapHandle plossHandle = PCAP.createHandle();
+    private static final short plossPort = 9974;
     static int count = 0;
     public static void startRec()
     {
+
+
         try
         {
             handle_IN.setDirection(PcapHandle.PcapDirection.IN);
             handle2_OUT.setDirection(PcapHandle.PcapDirection.OUT);
-            
+
             PacketListener listener = pcapPacket ->
             {
                 count ++;
@@ -33,7 +38,7 @@ public class FrameReciever
                 if (count % 10 == 0)
                     MainHandler_Node.packetProducer.send(Topics.FramesFromHPC_OUT, pcapPacket.getRawData());
             };
-            
+
             ExecutorService pool = Executors.newCachedThreadPool();
             ExecutorService pool2 = Executors.newCachedThreadPool();
 
@@ -42,6 +47,7 @@ public class FrameReciever
                 try { handle_IN.loop(-1,listener,pool); }
                 catch (Exception e) {}
             });
+
             Thread t2 = new Thread( () ->
             {
                 try { handle2_OUT.loop(-1,listener1,pool2); }
