@@ -21,7 +21,8 @@ public class CountTypeCollectorMOM implements Collector
             {
                 long currTypeNoPacketsFromSingleHPC = Long.parseLong(masterOfMasters.HPCs.get(i).hpcInfo.map.get(key));
                 MOMConsumer.results.putIfAbsent(key.substring(3), "0");
-                MOMConsumer.results.put(key.substring(3),String.valueOf(currTypeNoPacketsFromSingleHPC));
+                long prev = Long.parseLong(MOMConsumer.results.get(key.substring(3)));
+                MOMConsumer.results.put(key.substring(3),String.valueOf(currTypeNoPacketsFromSingleHPC + prev));
             }
         }
         return "-1";

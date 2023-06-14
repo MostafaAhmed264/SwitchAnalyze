@@ -26,6 +26,7 @@ public class MainHandler_Master
     public static Producer cmdProducer = new Producer(IP.ip1);
     public static Producer dataProducer = new Producer(IP.ip1);
     static GenericConsumer consumer;
+
     public static MasterOfHPC master;
     public static ArrayList<IStorage> storages = new ArrayList<>(Arrays.asList(new NoStore() , new HeadersOnly(), new Headers_Data()));
 

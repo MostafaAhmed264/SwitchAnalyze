@@ -18,6 +18,7 @@ import org.pcap4j.util.MacAddress;
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -25,7 +26,7 @@ import static SwitchAnalyzer.Network.PCAP.nif;
 
 public class PacketLossCalc
 {
-    public static final short plossPort = 9974;
+    public static final short plossPort = 9778;
     public static final short echoPlossPort = 9999;
     public static Packet plossPacket ;
     public  PcapHandle sendHandle;
@@ -41,33 +42,46 @@ public class PacketLossCalc
 
     public  void init()
     {
+
+        byte[] echoData = new byte[1000 - 28];
+        for (int i = 0; i < echoData.length; i++) {echoData[i] = (byte) i;}
+
         try
         {
             sendHandle = nif.openLive(SNAPLEN, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, READ_TIMEOUT);
             UdpPacket.Builder udpBuilder = new UdpPacket.Builder();
-            udpBuilder.payloadBuilder(new UnknownPacket.Builder().rawData("Schoolfellow".getBytes()));
-            udpBuilder.dstPort(new UdpPort(plossPort ,"port"));
+            udpBuilder
+                    .payloadBuilder(new UnknownPacket.Builder().rawData(echoData))
+                    .dstPort(UdpPort.getInstance(plossPort))
+                    .srcPort(UdpPort.getInstance((short) 8855))
+                    .correctLengthAtBuild(true);
+            int randomPort = PortSelector.selectRandomPort2();
 
-            IpV4Packet.Builder ipV4Builder = new IpV4Packet.Builder();
-            ipV4Builder.version(IpVersion.IPV4)
-                    .tos(IpV4Rfc791Tos.newInstance((byte) 0))
+            System.out.println("the selected port is : " + randomPort);
+
+            IpV4Packet.Builder ipBuilder = new IpV4Packet.Builder();
+            ipBuilder
+                    .tos((IpV4Packet.IpV4Tos) () -> (byte) 0)
+                    .identification((short) new Random().nextInt())
                     .ttl((byte) 100)
-                    .protocol(IpNumber.ICMPV4)
                     .srcAddr(MainHandler_Node.node.nodeIp)
-                    .dstAddr(GlobalVariable.portHpcMap.get(PortSelector.selectRandomPort()).HPCIp)
+                    .dstAddr(GlobalVariable.portHpcMap.get(randomPort).machineNode.nodeIp)
                     .payloadBuilder(udpBuilder)
                     .correctChecksumAtBuild(true)
                     .correctLengthAtBuild(true);
+            ipBuilder.protocol(IpNumber.UDP);
+            ipBuilder.version(IpVersion.IPV4);
+
             EthernetPacket.Builder etherBuilder = new EthernetPacket.Builder();
             etherBuilder
-                    .dstAddr(GlobalVariable.portHpcMap.get(PortSelector.selectRandomPort()).HPCMacAddr)
+                    .dstAddr(GlobalVariable.portHpcMap.get(randomPort).machineNode.nodeMacAddress)
                     .srcAddr(MainHandler_Node.node.nodeMacAddress)
                     .type(EtherType.IPV4)
                     .paddingAtBuild(true)
-                    .payloadBuilder(ipV4Builder);
+                    .payloadBuilder(ipBuilder);
             plossPacket = etherBuilder.build();
         } catch (PcapNativeException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
@@ -78,26 +92,16 @@ public class PacketLossCalc
         startEchoListner();
         for (int i = 0 ; i < count ; ++i)
         {
-            try {
+            try
+            {
                 sendHandle.sendPacket(plossPacket);
                 sendTimes.add(System.nanoTime());
-            } catch (PcapNativeException e) {
-                throw new RuntimeException(e);
-            } catch (NotOpenException e) {
-                throw new RuntimeException(e);
             }
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                System.out.println(";-;");
-                break;
-            }
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                System.out.println(";-;");
-                break;
-            }
+            catch (Exception e) {}
+            try {Thread.sleep(100);}
+            catch (InterruptedException e) {break;}
+            try {Thread.sleep(244);}
+            catch (InterruptedException e) {break;}
         }
     }
     public  void startEchoListner()
@@ -146,11 +150,11 @@ public class PacketLossCalc
                             EthernetPacket.Builder ethBuilder = builder.get(EthernetPacket.Builder.class);
                             MacAddress srcAddr = pcapPacket.get(EthernetPacket.class).getHeader().getSrcAddr();
                             ethBuilder.dstAddr(srcAddr);
-                            ethBuilder.srcAddr(MainHandler_Master.master.HPCMacAddr);
+                            ethBuilder.srcAddr(MainHandler_Master.master.machineNode.nodeMacAddress);
                             IpV4Packet.Builder ipbuilder = builder.get(IpV4Packet.Builder.class);
                             Inet4Address srcIpAddr = pcapPacket.get(IpV4Packet.class).getHeader().getSrcAddr();
                             ipbuilder.dstAddr(srcIpAddr);
-                            ipbuilder.srcAddr(MainHandler_Master.master.HPCIp);
+                            ipbuilder.srcAddr(MainHandler_Master.master.machineNode.nodeIp);
                             UDPModifier.modifiyDstPort(builder,echoPlossPort);
                             p = builder.build();
                             try {
@@ -172,7 +176,11 @@ public class PacketLossCalc
         }
 
     }
-
+    public void stop_echoing()
+    {
+        try { genEchoHandle.breakLoop(); }
+        catch (NotOpenException e) { throw new RuntimeException(e); }
+    }
     private static class Task implements Runnable
     {
         private final PcapHandle handle;
@@ -199,7 +207,7 @@ public class PacketLossCalc
         float pl = (((float)count - packetLossCalculate.recievedPacketCount)/count) * 100;
         if (pl < 0)
             return 0;
-        UtilityExecutor.result.put(NamingConventions.latency, String.valueOf(packetLossCalculate.calculateLatency()));
+        UtilityExecutor.result.put(NamingConventions.latency, String.valueOf(packetLossCalculate.calculateLatency() * Math.pow(10, -6)));
         return pl ;
     }
     public long calculateLatency()

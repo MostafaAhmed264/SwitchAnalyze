@@ -19,6 +19,7 @@ public class StartRunALL extends ICommandMaster
 {
     int saveOption;
     String switchName;
+    public static PacketLossCalc p;
     public StartRunALL(int saveOption, String switchName)
     {
         this.saveOption = saveOption;
@@ -69,7 +70,7 @@ public class StartRunALL extends ICommandMaster
     private void openGenEchoThread()
     {
         PCAP.initialize();
-        PacketLossCalc p = new PacketLossCalc();
+        p = new PacketLossCalc();
         p.generateEcho();
     }
 

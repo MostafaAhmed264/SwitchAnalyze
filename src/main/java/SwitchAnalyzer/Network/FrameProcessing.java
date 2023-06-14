@@ -103,20 +103,9 @@ public class FrameProcessing
 
         consumer.selectTopicByteArray(Topics.FramesFromHPC_OUT);
         consumer_IN.selectTopicByteArray(Topics.FramesFromHPC_IN);
-        Thread t_out = new Thread( () ->
-        {
-            while (!GlobalVariable.stopRecieving)
-                consumeFrames(consumer, "Out");
-        });
 
-        Thread t_in = new Thread( () ->
-        {
-            while (!GlobalVariable.stopRecieving)
-                consumeFrames(consumer_IN, "IN");
-        });
-
-        t_out.start();
-        t_in.start();
+        while (!GlobalVariable.stopRecieving) { consumeFrames();
+            System.out.println("checking flag in while");}
 
         clear();
     }
@@ -127,9 +116,17 @@ public class FrameProcessing
         errorDetectingAlgorithms = null;
     }
 
-    private static void consumeFrames(GenericConsumer consumer, String dir)
+    private static void consumeFrames()
     {
         ConsumerRecords<String, byte[]> frames = consumer.consumeByteArray(Time.waitTime);
+        ConsumerRecords<String, byte[]> frames_IN = consumer_IN.consumeByteArray(Time.waitTime);
+
+        processFrames(frames_IN, "IN");
+        processFrames(frames, "OUT");
+    }
+
+    private static void processFrames(ConsumerRecords<String, byte[]> frames, String dir)
+    {
         for (ConsumerRecord<String, byte[]> frame : frames)
         {
             DBFrame dbFrame = processFrames(frame.value());
